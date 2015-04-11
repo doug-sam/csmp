@@ -1,0 +1,99 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Tool;
+using CSMP.Model;
+using CSMP.BLL;
+using System.IO;
+using System.Net;
+
+public partial class page_Record_Play : BasePage
+{
+    private const string DeadPath = "/file/download/wav/";
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        CallInfo info = GetInfo();
+        if (null == info)
+        {
+            Function.AlertBack("报修不存在");
+        }
+        ViewState["info"] = info;
+        if (info.ExtInfo != null)
+        {
+            DeleteOldFile();
+            
+            if (File.Exists(Server.MapPath(DeadPath)+DateTime.Now.ToString("yyyy-MM-dd")+info.ID+".wav"))
+            {
+                LtlSrc1.Text = LtlSrc2.Text = DeadPath + DateTime.Now.ToString("yyyy-MM-dd") + info.ID + ".wav";
+            }
+            else
+            {
+                LtlSrc1.Text = LtlSrc2.Text = DownLoad(info);
+            }
+        }
+        StoreInfo sinfo = StoresBLL.Get(info.StoreID);
+        if (null == sinfo)
+        {
+            Response.End();
+        }
+        LtlStoreNo.Text = sinfo.No;
+    }
+
+    /// <summary>
+    /// 每次看录音。系统都会删除两日前的目录
+    /// </summary>
+    private void DeleteOldFile()
+    {
+        if (!Directory.Exists(Server.MapPath(DeadPath)))
+        {
+            Directory.CreateDirectory(Server.MapPath(DeadPath));
+        }
+        foreach (string item in Directory.GetDirectories(Server.MapPath(DeadPath)))
+        {
+            if (item != DateTime.Now.ToString("yyyy-MM-dd") && item != DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"))
+            {
+                Directory.Delete(item,true);
+            }
+        }
+    }
+
+    private static CallInfo GetInfo()
+    {
+        int CallID = Function.GetRequestInt("CallID");
+        CallInfo info = CallBLL.Get(CallID);
+        return info;
+    }
+    public string DownLoad(CallInfo info)
+    {
+        string DeadUrl = ProfileBLL.GetValue(ProfileInfo.UserKey.电话服务器录音根地址, true);
+        RecordInfo recinfo = RecordBLL.Get(info.ExtInfo.VideoID);
+        if (null == recinfo) Response.End();
+        string Url = DeadUrl.Replace("recording_file_path", recinfo.filepath).Replace("recording_file_name", recinfo.recordname);
+       // Response.Write(Url);
+        string SavePath = DeadPath + DateTime.Now.ToString("yyyy-MM-dd") + "/";
+        string SaveMapPath = Server.MapPath("~" + SavePath);
+        if (!Directory.Exists(SaveMapPath))
+        {
+            Directory.CreateDirectory(SaveMapPath);
+        }
+        string SaveName = Function.GetRequestInt("CallID") + ".wav";
+        WebClient myWebClient = new WebClient();
+        try
+        {
+            myWebClient.DownloadFile(Url, SaveMapPath + SaveName);
+        }
+        catch (Exception)
+        {
+            Function.AlertMsg("系统目前无法找到录音文件。");
+            return string.Empty;
+           // throw;
+        }
+
+        return SavePath + SaveName;
+    }
+
+
+}

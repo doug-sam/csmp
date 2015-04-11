@@ -1,0 +1,113 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using CSMP.BLL;
+using CSMP.Model;
+using Tool;
+using System.Text;
+using System.Data;
+
+public partial class page_Report_BrandClass2 : _Report_ReportI
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            DdlCustomer.DataSource = CustomersBLL.GetList(CurrentUser);
+            DdlCustomer.DataBind();
+            DdlCustomer.Items.Insert(0, new ListItem("请选择", "0"));
+
+            TxtDateBegin.Text = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd");
+            TxbDateEnd.Text = DateTime.Now.ToString("yyyy-MM-dd");
+
+        }
+    }
+
+
+    protected void BtnSearch_Click(object sender, EventArgs e)
+    {
+        DateTime DateBegin = Function.ConverToDateTime(TxtDateBegin.Text.Trim());
+        DateTime DateEnd = Function.ConverToDateTime(TxbDateEnd.Text.Trim());
+        int CustomerID = Function.ConverToInt(DdlCustomer.SelectedValue, 0);
+        int BrandID = Function.ConverToInt(DdlBrand.SelectedValue, 0);
+        if (DateBegin == Function.ErrorDate)
+        {
+            Function.AlertMsg("开始日期有误"); return;
+        }
+        if (DateEnd == Function.ErrorDate)
+        {
+            Function.AlertMsg("结束日期有误"); return;
+        }
+        if (DateBegin > DateEnd)
+        {
+            Function.AlertMsg("开始日期不能大于结束日期"); return;
+        }
+        if (CustomerID <= 0)
+        {
+            Function.AlertMsg("请选择客户"); return;
+        }
+
+        DataTable dt = new DataTable();
+        dt.Columns.Add("大类故障");
+        dt.Columns.Add("中类故障");
+        for (DateTime i = DateBegin; i <= DateEnd; i=i.AddDays(1))
+        {
+            dt.Columns.Add(i.ToString("yyyy-MM-dd"));
+        }
+        List<Class1Info> listc1 = Class1BLL.GetList(CustomerID);
+        List<Class2Info> listc2 = null;
+        DataRow dr = dt.NewRow();
+        foreach (Class1Info C1info in listc1)
+        {
+            listc2 = Class2BLL.GetList(C1info.ID);
+            foreach (Class2Info C2info in listc2)
+            {
+                dr = dt.NewRow();
+                dr["大类故障"]=C1info.Name;
+                dr["中类故障"] = C2info.Name;
+                for (DateTime i = DateBegin; i <= DateEnd; i = i.AddDays(1))
+                {
+                    dr[i.ToString("yyyy-MM-dd")] = StatBLL.StatCount11_BrandClass2(i, i, CustomerID, BrandID, C2info.ID);
+                }
+                dt.Rows.Add(dr);
+            }
+        }
+
+        dr = dt.NewRow();
+        dr["大类故障"] ="合计";
+        dr["中类故障"] ="";
+        for (int j = 2; j < dt.Columns.Count; j++)
+        {
+            int SumColumn = 0;
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                SumColumn += Function.ConverToInt(dt.Rows[i][j], 0);
+            }
+            dr[j] = SumColumn;
+        }
+        dt.Rows.Add(dr);
+
+
+        GridView1.DataSource = dt;
+        GridView1.DataBind();
+    }
+    protected void DdlCustomer_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int ID = Function.ConverToInt(DdlCustomer.SelectedValue);
+        if (ID > 0)
+        {
+            DdlBrand.DataSource = BrandBLL.GetList(ID);
+            DdlBrand.DataBind();
+        }
+        else
+        {
+            DdlBrand.DataSource = null;
+            DdlBrand.DataBind();
+        }
+        DdlBrand.Items.Insert(0, new ListItem("不限", "0"));
+    }
+
+}

@@ -1,0 +1,154 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using CSMP.BLL;
+using CSMP.Model;
+using Tool;
+using System.Text;
+using System.Data;
+
+public partial class page_Report_StatBrand : _Report_ReportE
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            TxtDateBegin.Text = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd");
+            TxbDateEnd.Text = DateTime.Now.ToString("yyyy-MM-dd");
+
+        }
+    }
+
+
+    protected void BtnSearch_Click(object sender, EventArgs e)
+    {
+        DateTime DateBegin = Function.ConverToDateTime(TxtDateBegin.Text.Trim());
+        DateTime DateEnd = Function.ConverToDateTime(TxbDateEnd.Text.Trim());
+        //Response.Write((DateEnd - DateBegin).TotalDays);
+        //Response.Write("<br/>");
+        //return;
+        if (DateBegin == Function.ErrorDate)
+        {
+            Function.AlertMsg("开始日期有误"); return;
+        }
+        if (DateEnd == Function.ErrorDate)
+        {
+            Function.AlertMsg("结束日期有误"); return;
+        }
+        if (DateBegin > DateEnd)
+        {
+            Function.AlertMsg("开始日期不能大于结束日期"); return;
+        }
+
+
+        DataTable dt = CreateDatatable(DateBegin, DateEnd);
+
+
+        GridView1.DataSource = dt;
+        GridView1.DataBind();
+
+
+    }
+
+    private DataTable CreateDatatable(DateTime DateBegin, DateTime DateEnd)
+    {
+        DataTable dt = new DataTable();
+        dt.Columns.Add(new DataColumn("客户"));
+        dt.Columns.Add(new DataColumn("品牌"));
+        dt.Columns.Add(new DataColumn("总报修量"));
+        dt.Columns.Add(new DataColumn("项目报修量"));
+        dt.Columns.Add(new DataColumn("非项目报修总量"));
+        dt.Columns.Add(new DataColumn("日均非项目报修量"));
+        dt.Columns.Add(new DataColumn("Pending总量"));
+        dt.Columns.Add(new DataColumn("Pending率"));
+        dt.Columns.Add(new DataColumn("超SLA报修数量"));
+        dt.Columns.Add(new DataColumn("SLA满足率"));
+        dt.Columns.Add(new DataColumn("平均当日完成率"));
+        dt.Columns.Add(new DataColumn("小于4H完成(数量)"));
+        dt.Columns.Add(new DataColumn("小于4H完成(比例)"));
+        dt.Columns.Add(new DataColumn("4-8H完成(数量)"));
+        dt.Columns.Add(new DataColumn("4-8H完成(比例)"));
+        dt.Columns.Add(new DataColumn("8-24H完成(数量)"));
+        dt.Columns.Add(new DataColumn("8-24H完成(比例)"));
+        dt.Columns.Add(new DataColumn("24-48H完成(数量)"));
+        dt.Columns.Add(new DataColumn("24-48H完成(比例)"));
+        dt.Columns.Add(new DataColumn("大于48H完成(数量)"));
+        dt.Columns.Add(new DataColumn("大于48H完成(比例)"));
+
+        List<CustomersInfo> listcustomer = null;
+
+        if (CurrentUser.Rule.Contains( SysEnum.Rule.管理员.ToString()))
+        {
+            listcustomer = CustomersBLL.GetList();
+        }
+        else
+        {
+            listcustomer = CustomersBLL.GetList(CurrentUser);
+        }
+
+
+        DataRow dr;
+        double TotalDays = (DateEnd - DateBegin).TotalDays + 1;
+        List<BrandInfo> listbrand = null;
+        foreach (CustomersInfo itemC in listcustomer)
+        {
+            listbrand = BrandBLL.GetList(itemC.ID);
+            foreach (BrandInfo itemB in listbrand)
+            {
+                int IsProject = StatBLL.StatCount3(DateBegin, DateEnd, true, itemB.ID);
+                int IsNotProject = StatBLL.StatCount3(DateBegin, DateEnd, false, itemB.ID);
+                int RowCountALL = IsProject + IsNotProject;
+
+                int in4 = StatBLL.StatCount4(DateBegin, DateEnd, itemB.ID, 0, 4);
+                int in8 = StatBLL.StatCount4(DateBegin, DateEnd, itemB.ID, 4, 8);
+                int in24 = StatBLL.StatCount4(DateBegin, DateEnd, itemB.ID, 8, 24);
+                int in48 = StatBLL.StatCount4(DateBegin, DateEnd, itemB.ID, 24, 48);
+                int than48 = StatBLL.StatCount4(DateBegin, DateEnd, itemB.ID, 48, 999999999);
+                int OverSlaCount = StatBLL.StatCount6_OverSla(DateBegin, DateEnd, itemB.ID);
+
+                int Unfinish = StatBLL.StatCount12_UnFinish(DateBegin, DateEnd, itemC.ID, itemB.ID);
+                dr = dt.NewRow();
+                dr["客户"] = itemC.Name;
+                dr["品牌"] = itemB.Name;
+                dr["总报修量"] = RowCountALL;
+                dr["项目报修量"] = IsProject;
+                dr["非项目报修总量"] = IsNotProject;
+                dr["日均非项目报修量"] = Math.Round((decimal)IsNotProject / (decimal)TotalDays, 2);
+
+                dr["超SLA报修数量"] = OverSlaCount;
+                if ((IsProject + IsNotProject) != 0)
+                {
+                    dr["SLA满足率"] = Math.Round((decimal)(IsProject + IsNotProject - OverSlaCount) / (decimal)(IsProject + IsNotProject) * 100, 2);
+                }
+                else
+                {
+                    dr["SLA满足率"] = 0;
+                }
+                dr["SLA满足率"] += "%";
+
+                dr["Pending总量"] = Unfinish;
+                dr["Pending率"] = (0 == Unfinish ? 0 : Math.Round((decimal)Unfinish / (decimal)(IsProject + IsNotProject)*100,2))+"%";
+
+                dr["平均当日完成率"] = RowCountALL == 0 ? "0" : Math.Round((decimal)StatBLL.StatCount4(DateBegin, DateEnd, itemB.ID) / (decimal)RowCountALL * 100, 2) + "%";
+                dr["小于4H完成(数量)"] = in4;
+                dr["小于4H完成(比例)"] = RowCountALL == 0 ? "0" : Math.Round((decimal)in4 / (decimal)RowCountALL * 100, 2) + "%";
+                dr["4-8H完成(数量)"] = in8;
+                dr["4-8H完成(比例)"] = RowCountALL == 0 ? "0" : Math.Round((decimal)in8 / (decimal)RowCountALL * 100, 2) + "%";
+                dr["8-24H完成(数量)"] = in24;
+                dr["8-24H完成(比例)"] = RowCountALL == 0 ? "0" : Math.Round((decimal)in24 / (decimal)RowCountALL * 100, 2) + "%";
+                dr["24-48H完成(数量)"] = in48;
+                dr["24-48H完成(比例)"] = RowCountALL == 0 ? "0" : Math.Round((decimal)in48 / (decimal)RowCountALL * 100, 2) + "%";
+                dr["大于48H完成(数量)"] = than48;
+                dr["大于48H完成(比例)"] = RowCountALL == 0 ? "0" : Math.Round((decimal)than48 / (decimal)RowCountALL * 100, 2) + "%";
+                dt.Rows.Add(dr);
+            }
+
+        }
+        return dt;
+    }
+
+
+}

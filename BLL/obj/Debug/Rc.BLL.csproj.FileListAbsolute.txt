@@ -1,0 +1,11 @@
+D:\ZC\BLL\bin\Debug\BLL.dll
+D:\ZC\BLL\bin\Debug\BLL.pdb
+D:\ZC\BLL\bin\Debug\DAL.dll
+D:\ZC\BLL\bin\Debug\Model.dll
+D:\ZC\BLL\bin\Debug\DBUtility.dll
+D:\ZC\BLL\bin\Debug\Model.pdb
+D:\ZC\BLL\bin\Debug\DBUtility.pdb
+D:\ZC\BLL\bin\Debug\DAL.pdb
+D:\ZC\BLL\obj\Debug\ResolveAssemblyReference.cache
+D:\ZC\BLL\obj\Debug\BLL.dll
+D:\ZC\BLL\obj\Debug\BLL.pdb

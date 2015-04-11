@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <div style=" font-size:20px; color:Red; font-weight:bold; text-align:center; line-height:300px;">
+        系统维护中，
+        问题反馈：<a href="http://wpa.qq.com/msgrd?v=3&amp;uin=249881532&amp;site=qq&amp;menu=yes" target="_blank"><img title="点击这里给我发消息" border="0" alt="点击这里给我发消息" src="http://wpa.qq.com/pa?p=2:249881532:41" /></a>
+        请 <a href="javascript:history.go(-2);"> 后退 </a> 或<span id="SpanSecond">10</span>秒后回到 <a href="/login.aspx"> 登录 </a> 页
+    </div>
+    <script language="javascript">
+	function CountDown()
+	{
+	   var seconds=document.getElementById("SpanSecond").innerHTML;
+	   seconds--;
+	   if(seconds<=0)
+	   {
+		top.location.href='/login.aspx';
+	   }
+	   else
+	   {
+		   document.getElementById("SpanSecond").innerHTML=seconds;
+		   setTimeout("CountDown()",1000);
+	   }
+	}
+		CountDown();
+    </script>
+</body>
+</html>

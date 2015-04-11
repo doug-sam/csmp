@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js"></script>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js"></script>
+
+    <script src="js/AppConstant.js"></script>
+    <script type="text/javascript" src="js/cordova.js"></script>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" /> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     
+
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function () {
+            $.mobile.autoInitialize = false; //删除这行配置参数就会出现渲染错误 
+        });
+    </script>
+    <script type="text/javascript">
+
+        $('#knowledgeSch').live('pageshow', function (event, ui) {
+            onPageShow();
+        });
+
+        function onPageShow()
+        {
+            var Class3ID = window.localStorage.getItem("CallInfo.Class3");
+            var WD = window.localStorage.getItem("KnowledgeBaseWD");
+            if (null==WD) {
+                WD = "";
+            }
+            var URL =MainURL+ "/services/knowledgebase/Get.ashx";
+            if (Class3ID != null && Class3ID != "") {
+                URL += "?ActionID=1";
+                URL += "&Class3ID=" + Class3ID;
+                $("#DivSch").hide();
+            }
+            else {
+                URL += "?ActionID=2";
+                if (""==WD) {
+                    return;
+                }
+            }
+            URL += "&wd=" + WD;
+            URL += "&callback=?";
+            showLoader();
+            var li_array = "";
+           // document.write(MainURL + URL);
+            $.getJSON(URL, function (result) {
+                if (result == "") {
+                    if (WD == "") {
+                        li_array = '<li style="text-align:center;" >亲，输入关键字搜索</li>';
+                    }
+                    else {
+                        li_array = '<li style="text-align:center;" >亲，我们尚没有这方面的资料</li>';
+                    }
+                }
+                else {
+                    $.each(result, function (i, field) {
+                        li_array += TplNew(field);
+                    });
+                }
+
+                $('#ulContent').html(li_array);
+                $('#ulContent').listview('refresh');
+                hideLoader();
+            });
+
+        }
+
+        function TplNew(newItem) {
+            //<li ><a  rel="external" href="#">如果设置路由器</a><span class="ui-li-count">22</span></li>
+            var itemHtml = '<li >';
+            itemHtml += '   <a  rel="external" href="knowledgeView.html" onclick="SetViewItem(' + newItem.ID + ');">';
+            itemHtml += newItem.Title;
+            itemHtml += '   </a>';
+            itemHtml += '   <span class="ui-li-count">';
+            itemHtml += newItem.ViewCount;
+            itemHtml += '   </span>';
+            itemHtml += '</li>';
+            return itemHtml;
+        }
+
+        function SetViewItem(v_Value) {
+            window.localStorage.setItem("KnowledgeBaseID", v_Value);
+        }
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            document.addEventListener("backbutton", onBackButton, false);
+        }
+        function onBackButton() {
+            var Class3ID = window.localStorage.getItem("CallInfo.Class3");
+            if (Class3ID != null && Class3ID != "") {
+                location.href = "CallView.html";
+            }
+            else {
+                location.href = "index.html";
+            }
+        }
+
+        function BtnSch_Click()
+        {
+            window.localStorage.setItem("KnowledgeBaseWD", $("#TxbSch").val());
+            onPageShow();
+        }
+
+    </script>
+</head>
+<body>
+
+    <div data-role="page" id="knowledgeSch" >
+        <div data-role="header">
+            <h4>
+                <a href="javascript:onBackButton();" data-icon="back" data-role="button"  class="ui-btn-left">返回</a> 
+               知识库列表
+            </h4>
+        </div>
+        <div data-role="content" style="padding:1px 5px 0px 5px; ">
+            <div style="height:15px;"></div>
+           <div id="DivSch" style="margin-bottom:8px;">
+               <div  data-inline="true" style="display:inline; width:100px;"> 
+                   <input type="text" id="TxbSch" data-inline="true" style="display:inline; width:100px;" />
+               </div>
+                <a href="javascript:BtnSch_Click();" data-role="button" data-inline="true">服务器搜索</a>
+           </div>
+            <div style="height:10px;"></div>
+            <ul data-role="listview" id="ulContent" data-filter="true" style="margin:13px 5px 5px 5px; padding:5px;">
+                <li style="text-align:center;" >请输入关键字搜索</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

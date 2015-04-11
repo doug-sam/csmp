@@ -1,0 +1,132 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Controls/Site1.master" AutoEventWireup="true"
+    CodeFile="Class3.aspx.cs" Inherits="page_Report_Class3" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+
+    <script type="text/javascript" src="/js/Highcharts-2.1.9/js/highcharts.js"></script>
+
+    <!-- 1a) Optional: add a theme file -->
+    <!--
+			<script type="text/javascript" src="../js/themes/gray.js"></script>
+		-->
+    <!-- 2. Add the JavaScript to initialize the chart on document ready -->
+
+		<script type="text/javascript">
+
+		    var chart;
+		    function Draw() {
+		        chart = new Highcharts.Chart({
+		            chart: {
+		            renderTo: 'ViewReport',         //放置图表的容器
+		            defaultSeriesType: 'line',      //图表类型line, spline, area, areaspline, column, bar, pie , scatter
+		                marginRight: 130,
+		                marginBottom: 25
+		            },
+		            title: {
+		            text: '报修趋势',           //图标的标题
+		                x: -20 //center
+		            },
+		            subtitle: {
+		            text: 'Source: X月份',   //图标的副标题
+		                x: -20
+		            },
+		            xAxis: {
+                    //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+		            //							'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+		                categories: [<asp:Literal runat="server" ID="LtlFootTxt"></asp:Literal>]
+		            },
+		            yAxis: {
+		                title: {
+		                    text: '报修数(个)'
+		                },
+		                plotLines: [{
+		                    value: 0,
+		                    width: 1,
+		                    color: '#808080'
+}]
+		                },
+		                tooltip: {
+		                    formatter: function() {
+		                        return '<b>' + this.series.name + '</b><br/>' +
+								this.x + ': ' + this.y + '°C';
+		                    }
+		                },
+		                legend: {
+		                    layout: 'vertical',
+		                    align: 'right',
+		                    verticalAlign: 'top',
+		                    x: -10,
+		                    y: 100,
+		                    borderWidth: 0
+		                },
+		                series: [
+//		                            {
+//		                                name: '硬件类',
+//		                                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+//		                            }, 
+//		                            {
+//		                                name: '系统软件类',
+//		                                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
+//		                            }
+		                    <asp:Literal runat="server" ID="LtlPrecent"></asp:Literal>
+                        ]
+		            });
+		        }	
+    </script>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div class="search_frame">
+        <div class="title-search">
+            大类故障报修数量的报修周/月走势图</div>
+        <div class="search_conditiontable">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="conditiontable">
+                <tr>
+                    <td class="conditiontext">
+                        月份选择
+                    </td>
+                    <td class="conditioninput">
+                        <asp:DropDownList ID="DdlYear" runat="server">
+                            <asp:ListItem Value="2010"></asp:ListItem>
+                            <asp:ListItem Value="2011"></asp:ListItem>
+                            <asp:ListItem Value="2012"></asp:ListItem>
+                            <asp:ListItem Value="2013"></asp:ListItem>
+                            <asp:ListItem Value="2014"></asp:ListItem>
+                            <asp:ListItem Value="2015"></asp:ListItem>
+                            <asp:ListItem Value="2016"></asp:ListItem>
+                            <asp:ListItem Value="2017"></asp:ListItem>
+                            <asp:ListItem Value="2018"></asp:ListItem>
+                            <asp:ListItem Value="2019"></asp:ListItem>
+                        </asp:DropDownList>
+                        年
+                        <asp:DropDownList ID="DdlMonth" runat="server">
+                            <asp:ListItem Value="01"></asp:ListItem>
+                            <asp:ListItem Value="02"></asp:ListItem>
+                            <asp:ListItem Value="03"></asp:ListItem>
+                            <asp:ListItem Value="04"></asp:ListItem>
+                            <asp:ListItem Value="05"></asp:ListItem>
+                            <asp:ListItem Value="06"></asp:ListItem>
+                            <asp:ListItem Value="07"></asp:ListItem>
+                            <asp:ListItem Value="08"></asp:ListItem>
+                            <asp:ListItem Value="09"></asp:ListItem>
+                            <asp:ListItem Value="10"></asp:ListItem>
+                            <asp:ListItem Value="11"></asp:ListItem>
+                            <asp:ListItem Value="12"></asp:ListItem>
+                        </asp:DropDownList>
+                        月
+                    </td>
+                </tr>
+                <tr class="conditionbutton">
+                    <td colspan="2">
+                        <asp:Button ID="BtnSearch" runat="server" Text="查询" class="button" OnClick="BtnSearch_Click" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="title-search">
+            报表详细</div>
+        <div class="resulttable">
+            <div id="ViewReport">
+            </div>
+        </div>
+    </div>
+</asp:Content>

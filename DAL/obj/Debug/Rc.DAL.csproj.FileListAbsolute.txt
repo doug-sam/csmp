@@ -1,0 +1,9 @@
+D:\ZC\DAL\bin\Debug\DAL.dll
+D:\ZC\DAL\bin\Debug\DAL.pdb
+D:\ZC\DAL\bin\Debug\DBUtility.dll
+D:\ZC\DAL\bin\Debug\Model.dll
+D:\ZC\DAL\bin\Debug\Model.pdb
+D:\ZC\DAL\bin\Debug\DBUtility.pdb
+D:\ZC\DAL\obj\Debug\ResolveAssemblyReference.cache
+D:\ZC\DAL\obj\Debug\DAL.dll
+D:\ZC\DAL\obj\Debug\DAL.pdb

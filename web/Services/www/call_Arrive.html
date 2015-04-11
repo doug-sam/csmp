@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js"></script>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js"></script>
+
+  
+    
+      <script src="js/AppConstant.js"></script>
+    <script type="text/javascript" src="js/cordova.js"></script>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" /> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <script src="js/location.js"></script>
+    <script type="text/javascript">
+        var GetLocation = function () {
+            Tips_Hide();
+            $("#Btn_Submit").css("display", "none");
+            $("#div_Position").html("正在更新你的位置。。。");
+            var cb = function (data) {  //回调函数
+                $("#div_Position").html(data.add);
+                $("#Btn_Submit").css("display", "block");
+                Tips_Show(data.lot, data.lat, data.Satellite);
+                ShowSonMap(data.lot, data.lat, data.add);
+            };
+            window.plugins.locPlugin.location(cb);
+        }
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            document.addEventListener("backbutton", onBackButton, false);
+        }
+        function onBackButton() {
+            location.href = "CallView.html";
+        }
+
+        $('#PageCallArrive').live('pageshow', function (event, ui) {
+            var CallInfo_StateDetail=  window.localStorage.getItem("CallInfo.StateDetail");
+            if (CallInfo_StateDetail != CallStateDetail.WaitForArrive && CallInfo_StateDetail != CallStateDetail.WaitForOtherDeal && CallInfo_StateDetail != CallStateDetail.UserGetDropInList)
+            {
+                alert("数据有误，可能数据已被后台人员处理。");
+                history.go(-1);
+                return;
+            }
+             GetLocation();
+        }); 
+
+        function ShowSonMap(lot,lat,address)
+        {
+            // $('#IMap')[0].contentWindow.MapShow(lot, lat, address);
+            var URL="Map.html?lot="+lot;
+            URL+="&lat="+lat;
+            URL += "&address=" + encodeURI(encodeURI(address));
+            document.getElementById("IMap").src = URL;
+
+        }
+
+    </script>
+
+    <!--提交-->
+    <script type="text/javascript">
+        $('#Btn_Submit').live('click', function (event, ui) {
+            $('#Btn_Submit').hide();
+            var v_Address=$("#div_Position").html();
+            if (v_Address == "请点击获取位置。。。" || v_Address == "正在更新你的位置。。。")
+            {
+                alert("尚未得到你的具体位置。等下重试吧。");
+                $('#Btn_Submit').show();
+                return;
+            }
+            var URL = "/services/callstep/add2.ashx?ActionID=1";
+            URL += "&CurrentUserID=" + window.localStorage.getItem("UserID");
+            URL += "&CurrentUserName=" + window.localStorage.getItem("UserName");
+            URL += "&CallID=" + window.localStorage.getItem("ViewItem");
+            URL += "&Details=" + v_Address;
+            URL += "&callback=?";
+            //alert(MainURL + URL);
+            //return;
+            $.getJSON(encodeURI(MainURL + URL), function (result) {
+                if (result.Text=="1") {
+                    alert("签到成功");
+                    location.href = "CallView.html";
+                    return;
+                }
+                alert("签到失败:" + result.Text);
+                $('#Btn_Submit').show();
+            });
+        });
+
+    </script>
+
+
+    <!--显示隐藏Tip-->
+    <script type="text/javascript">
+        function Tips_Show(Lot, lat, SatelliteNumber) {
+            $("#HTips").show();
+            if (SatelliteNumber < 0) {
+                SatelliteNumber = 0;
+            }
+            var myhtml = "Tips:当前有" + SatelliteNumber;
+            myhtml += "颗卫星为你的神器定位；<br/>";
+            if (SatelliteNumber == 0) {
+                myhtml += "没有卫星定位偏差很大，请注意<br />";
+            }
+            myhtml += "经 度：" + Lot+"<br />";
+            myhtml += "纬 度：" + lat + "";
+            $("#HTips").html(myhtml);
+        }
+        function Tips_Hide()
+        {
+            $("#HTips").hide();
+            $("#HTips").html("");
+        }
+
+
+</script>
+
+
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+</style>
+
+</head>
+<body  style="height:100%;">
+        <div data-role="page" id="PageCallArrive" data-add-back-btn="true" style="height:100%;">
+        <div data-role="header">
+            <h4>
+                <a href="javascript:onBackButton();" data-icon="back" data-role="button"  class="ui-btn-left">返回</a> 
+                签到
+            </h4>
+        </div> 
+        <div data-role="content" style="padding: 5px;height:100%; ">
+            <div style="font-size:14px;" id="HTips"></div>
+            <div id="div_Position" style="text-align:center;font-size:14px; font-weight:400; margin-top:10px; " >请点击获取位置。。。</div>
+            <div data-role="button" id="Btn_Submit" style="display:none;" >确认提交</div>
+            <div data-role="button" data-inline="true" onclick="GetLocation();">更新我的位置</div>
+            <div data-role="button" data-inline="true" onclick="javascirpt:window.history.back();">返回</div>
+            <iframe src="Map.html" width="100%" height="100%" name="IMap" id="IMap" 
+                 frameBorder="0" noresize="noresize" scrolling="no"></iframe>
+        </div>
+        <div data-role="footer" data-position="fixed"></div>
+        
+    </div>
+
+</body>
+</html>

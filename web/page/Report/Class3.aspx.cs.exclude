@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using CSMP.BLL;
+using CSMP.Model;
+using Tool;
+using System.Text;
+using System.Data;
+
+public partial class page_Report_Class3 : _Report_Report
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            DdlYear.SelectedValue = (DateTime.Now.Year - (DateTime.Now.Month == 1 ? 1 : 0)).ToString();
+            DdlMonth.SelectedValue = DateTime.Now.Month == 1 ? "12" : DateTime.Now.Month.ToString();
+
+        }
+    }
+
+
+    protected void BtnSearch_Click(object sender, EventArgs e)
+    {
+        
+        DateTime DateBegin = new DateTime(Convert.ToInt16(DdlYear.SelectedValue), Convert.ToInt16(DdlMonth.SelectedValue), 1);//自然月的一号
+        DateTime DateEnd = DateTimeHelper.getMonthEnd(DateBegin.Year, DateBegin.Month);                                                //自然月的最后一天
+        if (DateBegin > DateTime.Now)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "", "alert('时间超前！');", true);
+            return;
+        }
+        DateBegin = DateTimeHelper.GetMondayDate(DateBegin);                                                                             //一号所在周的星期1
+        DateEnd = DateTimeHelper.GetMondayDate(DateEnd).AddDays(6);                                                                      //该月最后一天，它所在周的周日
+        DataTable dt = StatBLL.StatWeekCountClass(DateBegin, DateEnd);
+        if (dt == null || dt.Rows.Count == 0)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "", "alert('找不到数据！');", true);
+            return;
+        }
+        StringBuilder sbFoot = new StringBuilder();
+        StringBuilder sbData = new StringBuilder();
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            sbFoot.Append("'第").Append(dt.Rows[i]["周数"]).Append("周(");
+            sbFoot.Append(DateBegin.AddDays(i * 7).ToString("MM-dd"));
+            sbFoot.Append("至");
+            sbFoot.Append(DateBegin.AddDays((i + 1) * 7).ToString("MM-dd"));
+            sbFoot.Append(")',");
+        }
+        LtlFootTxt.Text = sbFoot.ToString().Trim(',');
+
+        for (int i = 1; i < dt.Columns.Count; i++)
+        {
+            sbData.Append("{name: '").Append(dt.Columns[i].ColumnName).Append("', data:[");
+            for (int j = 0; j < dt.Rows.Count; j++)
+            {
+                sbData.Append(dt.Rows[j][i]).Append(",");
+            }
+            sbData.Remove(sbData.Length - 2, 1);
+            sbData.Append("]},");
+        }
+        LtlPrecent.Text = sbData.ToString().Trim(',');
+        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "", "Draw();", true);
+    }
+}

@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js"></script>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js"></script>
+
+    <script src="js/AppConstant.js"></script>
+    <script type="text/javascript" src="js/cordova.js"></script>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" /> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <link rel="stylesheet" href="css/base.css" />
+    <style type="text/css">
+        #ulContent
+        {
+            padding: 5px
+        }
+        #ulContent li
+        {
+            padding:3px; margin:3px;
+        }
+        #ulContent li table
+        {
+            margin:0px; padding:0px; border:0px;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            document.addEventListener("backbutton", onBackButton, false);
+        }
+        function onBackButton() {
+            location.href = "call_Attachment.html";
+        }
+
+        $("#index").live("pageshow", function (event, ui) {
+            onPageShow();
+        });
+
+        function onPageShow() {
+            showLoader();
+            var URL = MainURL + "/services/Doc/GetHistory.ashx";
+            URL += "?CallID="+window.localStorage.getItem("ViewItem");
+            URL += "&DropInUserID=" + window.localStorage.getItem("UserID");
+            URL += "&callback=?";
+            //alert(URL);
+            //document.write(URL);
+            var li_array = "";
+            $.getJSON(URL, function (result) {
+                $.each(result, function (i, field) {
+                        li_array += TplNew(field);
+                });
+                if ("" == li_array) {
+                    li_array = " <li style='text-align:center; padding:20px 0px;'>没有任何资料</li>";
+                }
+                $('#ulContent').html(li_array);                
+                $('#ulContent').listview('refresh');
+                hideLoader();
+            });
+        }
+
+        function TplNew(newItem) {
+            var itemHtml = "";
+            itemHtml = '<li > ';
+            itemHtml += '  <table>';
+            itemHtml += '       <tr>';
+            itemHtml += '           <td>';
+            itemHtml += '               <img src="' + MainURL + '/Services/Doc/GetSmallImg.ashx?path=http://127.0.0.1:' + ServerPort + '/page/sys/DownLoadFile.ashx?ID=' + newItem.ID + '" />';
+            itemHtml += '           </td>';
+            itemHtml += '           <td>';
+            itemHtml += '                <div >' + newItem.Addtime + '上传</div>';
+            itemHtml += '                <div >' + newItem.FileSize + ' Byte &nbsp;&nbsp;&nbsp;&nbsp;by '+newItem.UserName+'</div>';
+            itemHtml += '           </td>';
+            itemHtml += '       </tr>';
+            itemHtml += '  </table>';
+            itemHtml += '</li > ';
+            return itemHtml;
+        }
+
+
+    </script>
+</head>
+<body>
+        <div data-role="page" id="index" data-add-back-btn="true">
+        <div data-role="header">
+            <h4>
+                <a href="javascript:onBackButton();" data-icon="back" data-role="button"  class="ui-btn-left">返回</a> 
+                附件列表
+            </h4>
+        </div>
+        <div data-role="content" style="padding: 5px; ">
+            <ul data-role="listview" id="ulContent" >
+               
+                <!--<li >
+                   <table>
+                       <tr>
+                           <td>
+                               <img src="http://localhost:22102/Services/Doc/GetSmallImg.ashx?path=http://www.baidu.com/img/bdlogo.gif" />
+                           </td>
+                           <td>
+                               <div >上传时间</div>
+                                <div >上传人</div>
+                           </td>
+                       </tr>
+                   </table> 
+                </li>-->
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

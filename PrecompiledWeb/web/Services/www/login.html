@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js" charset="utf-8" ></script>
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js" charset="utf-8" ></script>
+
+    <script src="js/AppConstant.js"></script>
+    <script type="text/javascript" src="js/cordova.js"></script>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" /> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+     <script type="text/javascript">
+
+         $(document).bind("mobileinit", function () {
+             $.mobile.autoInitialize = false; //删除这行配置参数就会出现渲染错误 
+         });
+
+         if (null != window.localStorage.getItem("UserID")) {
+             location.href = "index.html";
+         }
+
+
+         $('#BtnLogin').live('click', function (event, ui) {
+             showLoader();
+             var URL = MainURL + "/services/user/Login2.ashx?_UserName=" + $("#txbName").val();
+             URL += "&_Pwd=" + $("#txbPwd").val();
+             URL += "&callback=?";
+             try {
+                 $.getJSON(URL, function (result) {
+                     if (0 == result.UserID) {
+                         hideLoader();
+                         alert(result.Result);
+                         return;
+                     }
+                     window.localStorage.setItem("UserID", result.UserID);
+                     window.localStorage.setItem("UserRule", result.Rule);
+                     window.localStorage.setItem("UserName", $("#txbName").val());
+                     location.href = "index.html";
+                     hideLoader();
+                 });
+
+             } catch (e) {
+                 hideLoader();
+                 alert("系统错误，请检测网络环境"+e.message);
+             }
+         });
+
+         function gender_onChange(genderValue) {
+             var URLToUse = URLOutWeb;
+             if (genderValue == 1) {
+                 URLToUse = URLInWeb;
+             }
+             window.localStorage.setItem("MainURL", URLToUse);
+             location.href = this.location.href;
+         }
+
+     </script>   
+
+</head>
+<body>
+    <div data-role="page" id="index" data-ajax="false" style="background-image: url(images/BG_Login.png)">
+        <div data-role="header">
+            <h4>CSMP系统
+            </h4>
+        </div>
+        <div data-role="content" style="padding: 5px">
+            <div data-role="content">
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 90%; margin: 50px auto; padding: 0; vertical-align:middle; border: 0;">
+                    <tr>
+                        <td style="height: 60px; color: #FFF; font-weight: 400; padding-left: 20px; line-height: 60px; background: url(images/login_top.png); border-left: 1px solid #8C6591;">
+                            <div style="float:left">Login.....</div>
+                            <div style="float:right;">
+                                <script type="text/javascript">
+
+                                    document.write('<select name="gender" id="gender" data-role="slider" onchange="gender_onChange(this.value);" >  ');
+                                    document.write('<option value="0">普通网络</option>  ');
+                                    document.write('<option value="1" ');
+                                    if (window.localStorage.getItem("MainURL") == URLInWeb)
+                                        document.write(' selected="selected" ');
+                                    document.write(' >上海内网</option>  ');
+                                    document.write(' </select>  ');
+                                </script>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #FFF; background-color: #F2F2F2; padding: 3px 10px; text-align: left;">
+                            <div style="margin: 5px;">
+                                <label for="txbName">用户名</label>
+                                <input id="txbName" name="txbName" required="required" type="text" value="" />
+                            </div>
+                            <div style="margin: 5px;">
+                                <label for="txbPwd">密码</label>
+                                <input id="txbPwd" name="txbPwd" type="password" required="required" type="text" value="" />
+                            </div>
+                            <div style="margin: 5px;">
+                                <a href="#" id="BtnLogin" data-role="button" data-inline="true" data-icon="gear">登录</a>
+                                <a href="javascript:navigator.app.exitApp(); " data-role="button" data-inline="true" data-icon="delete" >退出</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;padding-right:20px;padding-top:30px;">
+                            <div  style="text-align:right;  height:30px; line-height:30px;">MVS all right reserved</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

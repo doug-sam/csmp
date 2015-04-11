@@ -1,0 +1,8 @@
+﻿Open time: (((((报修时间)))))
+Customer: YUM
+Store: (((((店铺名)))))
+Customer Ticket: (((((来源单号)))))
+SN:
+Error Type: (((((大类故障)))))::(((((中类故障)))))::(((((小类故障)))))
+SLA: (((((扩展SLA)))))
+Description: (((((故障描述)))))

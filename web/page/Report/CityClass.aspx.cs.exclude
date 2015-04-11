@@ -1,0 +1,106 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using CSMP.BLL;
+using CSMP.Model;
+using Tool;
+using System.Text;
+using System.Data;
+
+public partial class page_Report_CityClass : _Report_ReportB
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            TxtDateBegin.Text = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd");
+
+            TxbDateEnd.Text = DateTime.Now.ToString("yyyy-MM-dd");
+        }
+    }
+
+
+    protected void BtnSearch_Click(object sender, EventArgs e)
+    {
+        #region Validator
+        DateTime dBegin = new DateTime();
+        DateTime dEnd = new DateTime();
+        try { dBegin = Convert.ToDateTime(TxtDateBegin.Text.Trim()); }
+        catch (Exception)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "", "alert('开始日期填写有误');", true);
+            return;
+        }
+        try { dEnd = Convert.ToDateTime(TxbDateEnd.Text.Trim()); }
+        catch (Exception)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "", "alert('结束日期填写有误');", true);
+            return;
+        }
+        if (dBegin >= dEnd)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "", "alert('开始日期不能大于结束日期');", true);
+            return;
+        }
+        if (dEnd > DateTime.Now.Date)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "", "alert('结束日期不能大于今天');", true);
+            return;
+        }
+        #endregion
+
+        DataTable dt = StatBLL.StatCityClass(dBegin, dEnd);
+        if (dt == null || dt.Rows.Count == 0)
+        {
+            //alert;
+            return;
+        }
+        // DataTable dtFinal = dt.Clone();
+        dt.Columns.Add(new DataColumn("合计", typeof(string)));
+        dt.Columns.Add(new DataColumn("占报修总量比例", typeof(string)));
+
+        int AllCount = 0;   //总记录数
+        int RowCount = 0;   //每行记录数
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            RowCount = 0;
+            for (int j = 1; j < dt.Columns.Count - 2; j++)
+            {
+                RowCount += Convert.ToInt32(dt.Rows[i][j]);
+            }
+            AllCount += RowCount;
+            dt.Rows[i]["合计"] = RowCount.ToString();
+        }
+        foreach (DataRow item in dt.Rows)
+        {
+            item["占报修总量比例"] = (Math.Round(((decimal)(Convert.ToInt32(item["合计"]) * 100) / AllCount), 2)).ToString() + "%";
+        }
+        GridView1.DataSource = dt;
+        GridView1.DataBind();
+
+        StringBuilder sbFoot = new StringBuilder();
+        StringBuilder sbData = new StringBuilder();
+
+        foreach (DataRow item in dt.Rows)
+        {
+            sbFoot.Append("'").Append(item[0]).Append("',");
+        }
+
+        LtlFootTxt.Text = sbFoot.ToString().Trim(',');
+        for (int i = 1; i < dt.Columns.Count - 2; i++)
+        {
+            sbData.Append("{name: '").Append(dt.Columns[i].ColumnName).Append("', data:[");
+            for (int j = 0; j < dt.Rows.Count; j++)
+            {
+                sbData.Append(dt.Rows[j][i]).Append(",");
+            }
+            sbData.Remove(sbData.Length - 2, 1);
+            sbData.Append("]},");
+        }
+        LtlPrecent.Text = sbData.ToString().Trim(',');
+        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "", "Draw();", true);
+    }
+}

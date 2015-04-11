@@ -1,0 +1,134 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using CSMP.BLL;
+using CSMP.Model;
+using Tool;
+using System.Text;
+using System.Data;
+
+public partial class page_Report_Pending : _Report_ReportD
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            DdlCustomer.DataSource = CustomersBLL.GetList(CurrentUser);
+            DdlCustomer.DataBind();
+            DdlCustomer.Items.Insert(0, new ListItem("不限", "0"));
+            TxtDateBegin.Text = DateTime.Now.AddDays(-8).ToString("yyyy-MM-dd");
+            TxbDateEnd.Text = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+        }
+    }
+
+
+    protected void BtnSearch_Click(object sender, EventArgs e)
+    {
+        DateTime DateBegin = Function.ConverToDateTime(TxtDateBegin.Text.Trim());
+        DateTime DateEnd = Function.ConverToDateTime(TxbDateEnd.Text.Trim());
+        int BrandID = Function.ConverToInt(DdlBrand.SelectedValue, 0);
+        if (DateBegin == Function.ErrorDate)
+        {
+            Function.AlertMsg("开始日期有误"); return;
+        }
+        if (DateEnd == Function.ErrorDate)
+        {
+            Function.AlertMsg("结束日期有误"); return;
+        }
+        if (DateBegin > DateEnd)
+        {
+            Function.AlertMsg("开始日期不能大于结束日期"); return;
+        }
+
+
+        DataTable dt = CreateDatatable(DateBegin, DateEnd);
+        foreach (DataRow item in dt.Rows)
+        {
+            DateTime RowDate = Function.ConverToDateTime(item[0]);
+            DataTable dtRow= StatBLL.PendingDateBrand(RowDate, BrandID, CurrentUser.WorkGroupID);
+            item["当日报修量"] = dtRow.Rows[0][0];
+            item["当日项目量"] = dtRow.Rows[0][1];
+            item["当日完成量(不含项目)"] = dtRow.Rows[0][2];
+
+
+           // DateTime RowDate = Function.ConverToDateTime(item[0]);
+           // int CurrenetSum = StatBLL.StatCount1_Pending(RowDate, StatInfo.ProjectType.NeverMind, BrandID, CurrentUser.WorkGroupID, StatInfo.PendingType.NeverMind);
+           // int NotProjcetCount = StatBLL.StatCount1_Pending(RowDate, StatInfo.ProjectType.NotProject, BrandID, CurrentUser.WorkGroupID, StatInfo.PendingType.NeverMind);
+           // int FinishNotProjectCount = StatBLL.StatCount1_Pending(RowDate, StatInfo.ProjectType.NotProject, BrandID, CurrentUser.WorkGroupID, StatInfo.PendingType.No);
+           //int CurrentDateOverSLA = StatBLL.StatCount2_OverSla(null, RowDate, BrandID, CurrentUser.WorkGroupID);
+           // SumALL += CurrenetSum;
+           // SumProject += (CurrenetSum - NotProjcetCount);
+           //  SumUnFinish=StatBLL.StatCount1_Pending(RowDate,StatInfo.ProjectType.NeverMind,BrandID,CurrentUser.WorkGroupID,StatInfo.PendingType.Yes);
+
+           // item["当日报修量"] = CurrenetSum;
+           // item["当日项目量"] = CurrenetSum - NotProjcetCount;
+           // item["当日完成量(不含项目)"] = FinishNotProjectCount;
+           // item["当日完成率"] = NotProjcetCount == 0 ? 0 : Math.Round(((decimal)FinishNotProjectCount / (decimal)NotProjcetCount) * 100, 2);
+           // item["当日完成率"] += "%";
+           // item["当日超SLA报修量"] = CurrentDateOverSLA;
+           // item["当日SLA满足率"] = NotProjcetCount == 0 ? 0 : Math.Round((1 - ((decimal)CurrentDateOverSLA / (decimal)NotProjcetCount)) * 100, 2);
+           // item["当日SLA满足率"] += "%";
+           // item["累计报修量"] = SumALL;
+           // item["累计项目量"] = SumProject;
+           // item["累计未完成"] = SumUnFinish;
+           // item["累计完成率"] = SumALL == 0 ? 0 : Math.Round((decimal)(SumALL - SumProject - SumUnFinish) / (decimal)SumALL * 100, 2);
+           // item["累计完成率"] += "%";
+
+           // item["累计超SLA报修量"] = StatBLL.StatCount2_OverSla(DateBegin, RowDate, BrandID, CurrentUser.WorkGroupID);
+           // item["月度SLA满足率"] = "这是什么？";
+           //                 // (SumALL - SumProject) == 0 ? 0 : Math.Round((1 - (decimal)SumOverSla / (decimal)(SumALL - SumProject)) * 100, 2);
+           // item["月度SLA满足率"] += "%";
+
+        }
+        GridView1.DataSource = dt;
+        GridView1.DataBind();
+
+
+    }
+
+    private static DataTable CreateDatatable(DateTime DateBegin, DateTime DateEnd)
+    {
+        DataTable dt = new DataTable();
+        dt.Columns.Add(new DataColumn("日期"));
+        dt.Columns.Add(new DataColumn("当日报修量"));
+        dt.Columns.Add(new DataColumn("当日项目量"));
+        dt.Columns.Add(new DataColumn("当日完成量(不含项目)"));
+        dt.Columns.Add(new DataColumn("当日完成率"));
+        dt.Columns.Add(new DataColumn("当日超SLA报修量"));
+        dt.Columns.Add(new DataColumn("当日SLA满足率"));
+        dt.Columns.Add(new DataColumn("累计报修量"));
+        dt.Columns.Add(new DataColumn("累计项目量"));
+        dt.Columns.Add(new DataColumn("累计未完成"));
+        dt.Columns.Add(new DataColumn("累计完成率"));
+        dt.Columns.Add(new DataColumn("累计超SLA报修量"));
+        dt.Columns.Add(new DataColumn("月度SLA满足率"));
+
+
+        DataRow dr;
+        for (DateTime i = DateBegin; i <= DateEnd; i = i.AddDays(1))
+        {
+            dr = dt.NewRow();
+            dr["日期"] = i.ToString("yyyy-MM-dd");
+            dt.Rows.Add(dr);
+        }
+        return dt;
+    }
+
+    protected void DdlCustomer_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int ID = Function.ConverToInt(DdlCustomer.SelectedValue);
+        if (ID > 0)
+        {
+            DdlBrand.DataSource = BrandBLL.GetList(ID);
+            DdlBrand.DataBind();
+        }
+        else
+        {
+            DdlBrand.Items.Clear();
+        }
+        DdlBrand.Items.Insert(0, new ListItem("不限", "0"));
+    }
+}

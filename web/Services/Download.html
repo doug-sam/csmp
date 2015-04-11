@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="www/js/AppConstant.js"></script>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+</head>
+<body>
+    <div style="text-align: center;">
+        <div style="border: 1px solid #CCC; padding: 2px;">
+            <h3 style="text-align: center;">外网下载</h3>
+            <p>
+                请复制地址在浏览器中下载
+             <div>
+                 <input type="text" style="width:100%;border:none;" onclick="this.select();" value="http://124.74.9.202:85/services/csmp.apk" />
+             </div>
+
+            </p>
+            <img src="#" id="Img1" alt="二维码正在拼命加载，亲，等我。。" title="二维码正在拼命加载，亲，等我。。" />
+        </div>
+        <div style="border: 1px solid #CCC; padding: 2px;">
+            <h3 style="text-align: center;">上海wifi下载二维码</h3>
+            <p>
+                请复制地址在浏览器中下载    
+               <div>
+                   <input type="text" style="width:100%; border:none;" onclick="this.select();" value="http://10.0.101.201:85/services/csmp.apk" />
+               </div>
+
+            </p>
+            <img src="#" id="Img2" alt="二维码正在拼命加载，亲，等我。。" title="二维码正在拼命加载，亲，等我。。" />
+        </div>
+
+
+    </div>
+    <script type="text/ecmascript">
+        document.getElementById("Img1").src = "http://qr.liantu.com/api.php?text=http://124.74.9.202:85/services/csmp.apk&logo=http://124.74.9.202:85/services/icon.png";
+        document.getElementById("Img2").src = "http://qr.liantu.com/api.php?text=http://10.0.101.201:85/services/csmp.apk&logo=http://124.74.9.202:85/services/icon.png";
+    </script>
+</body>
+</html>

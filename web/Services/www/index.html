@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js" charset="utf-8" ></script>
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js" charset="utf-8" ></script>
+
+    <script src="js/AppConstant.js"></script>
+    <script type="text/javascript" src="js/cordova.js" charset="utf-8"></script>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" /> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function () {
+            $.mobile.autoInitialize = false; //删除这行配置参数就会出现渲染错误 
+        });
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            CheckVersion();
+            CheckLogin();
+            document.addEventListener("backbutton", onBackButton, false);
+            //document.removeEventListener("backbutton");
+            document.addEventListener("resume", onResume, false);
+        }
+
+        function CheckVersion() {
+            console.log("checkversion has been excuse");
+            var URL = "/services/Profile/Validate.ashx";
+            URL += "?ClientVersion=" + app_ClientVersion;
+            URL += "&callback=?";
+            console.log("the url is "+URL);
+            try {
+                $.getJSON(encodeURI(MainURL + URL), function (result) {
+                    console.log("result is:"+result);
+                    if (result.Text == "false") {
+                        alert("当前系统版本已不可以，请更新");
+                        $.mobile.changePage("#Update", "slideup");
+                        return false;
+                    }
+                });
+            } catch (e) {
+                $.mobile.changePage("#Error", "slideup");
+                return false;
+            }
+            return true;
+        }
+
+        function CheckLogin()
+        {
+            if (null == window.localStorage.getItem("UserID")) {
+                location.href = "login.html";
+                return false;
+            }
+            return true;
+        }
+
+        function onResume()
+        {
+            onDeviceReady();
+        }
+
+        //返回键
+        function onBackButton() {
+            navigator.notification.confirm(
+                '你确定退出程序吗？',
+                function (button) {
+                    if (button == '1') {
+                        navigator.app.exitApp()
+                    }
+                }, '退出', '确定,取消');
+        }
+
+        $('#Btn_LoginOut').live('click', function (event, ui) {
+            //window.localStorage.getItem("UserID")
+            window.localStorage.removeItem("UserID");
+            location.href = "login.html";
+        });
+
+        function CleanClass3()
+        {
+            window.localStorage.setItem("CallInfo.Class3", "");
+        }
+        $('#frmmain').live('pageshow', function (event, ui) {
+            var RuleNames = window.localStorage.getItem("UserRule");
+            if (null != RuleNames && RuleNames.indexOf("现场工程师")<0) {
+                $("#DivCall").hide();
+            }
+
+        });
+    </script>
+    <style type="text/css">
+        .Tip
+        {width:100px; height:100px; margin:4px; padding:5px;color:#FFF; float:left;text-align:center;
+        }
+    </style>
+</head>
+
+<body>
+    <div data-role="page" id="frmmain"  style="background:#c6def7 url(images/index.png) no-repeat 100% 100%;">
+        <div data-role="header">
+             <h4>
+                CSMP
+            </h4>
+                <a href="#" id="Btn_LoginOut" data-icon="info"  class="ui-btn-right"  data-role="button">注销</a>
+        </div>
+        <div data-role="content" style="padding: 5px">
+            <div class="Tip" onclick="location.href='list.html';" id="DivCall">
+                <img src="images/Call.png" />
+                <div>报修数据</div>
+            </div>
+            <div class="Tip" onclick="CleanClass3();location.href='knowledgeSch.html';">
+                <img src="images/KnowledgeBase.png" />
+                <div>知识库</div>
+            </div>
+            <div class="Tip" onclick="location.href='punchIn.html';">
+                <img src="images/punchIn.png" />
+                <div>上班下班</div>
+            </div>
+            <div class="Tip" onclick="location.href='Profile.html';">
+                <img src="images/Profile.png" />
+                <div>系统设置</div>
+            </div>
+            <div class="Tip" onclick="alert('骗你的，这功能还没做出来。等吧。。');">
+                <img src="images/FeedBack.png" />
+                <div>问题反馈</div>
+            </div>
+            <div class="Tip" onclick="location.href='about.html';">
+                <img src="images/Next.png" />
+                <div>关于CSMP</div>
+            </div>
+        </div>
+
+    </div>
+    <div data-role="page" id="Update" >
+        <div data-role="header">
+            <h4>
+                系统更新
+            </h4>
+        </div>
+        <div data-role="content" style="padding: 5px">
+            <a  href="http://124.74.9.202:85/services/Download.html" rel="external"  data-role="button" style="  margin-top:40% ; font-size:33px;">
+                马上更新(我连接着外网)</a>
+            <a  href="http://10.0.101.201:85/services/Download.html" rel="external"  data-role="button" style="  margin-top:40% ; font-size:33px;">
+                马上更新(我连接上海办公室wifi)</a>
+        </div>
+    </div>
+    <div data-role="page" id="Error" >
+        <div data-role="header">
+            <h4>
+                出错啦
+            </h4>
+        </div>
+        <div data-role="content" style="padding: 5px">
+            <div>亲，出错啦。是不是网络连接给关掉了？</div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

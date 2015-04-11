@@ -1,0 +1,140 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using CSMP.BLL;
+using CSMP.Model;
+using Tool;
+using System.IO;
+using System.Data;
+
+public partial class page_Inport_Class2 : _Sys_Inport
+{
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+
+        }
+    }
+
+
+
+    protected void BtnCheck_Click(object sender, EventArgs e)
+    {
+        string FileDir = Upload();
+        if (string.IsNullOrEmpty(FileDir))
+        {
+            return;
+        }
+        DataTable dt = new DataTable();
+        try
+        {
+            dt = Function.ExcelToDatatable(FileDir, string.Empty);
+        }
+        catch (Exception ex)
+        {
+            Function.AlertMsg("系统内部错误，请联系管理员，错误代码见：\n" + ex.Message.Replace("\"", " ").Replace("'", " "));
+            return;
+        }
+        #region 列
+        if (dt.Columns.Count < 2)
+        {
+            Function.AlertBack("格式错误，表中应该拥有二列"); return;
+        }
+        if (dt.Columns[0].ColumnName.Trim() != "二级故障名")
+        {
+            Function.AlertBack("格式错误，表中第一列应为二级故障名"); return;
+        }
+        if (dt.Columns[1].ColumnName.Trim() != "所属一级故障名")
+        {
+            Function.AlertBack("格式错误，表中第二列应为所属一级故障名"); return;
+        }
+        #endregion
+
+        Class1Info c1;
+        Class2Info c2;
+        List<Class2Info> list = new List<Class2Info>();
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            if (string.IsNullOrEmpty(dt.Rows[i][0].ToString())) break;
+            c1 = Class1BLL.Get(dt.Rows[i][1].ToString().Trim());
+            if (c1 == null)
+            {
+                Function.AlertBack(string.Format("第{0}行中《所属一级故障名》无法在系统中找到！", (i+1))); return;
+            }
+            if (Class2BLL.NameExit(dt.Rows[i][0].ToString().Trim(), c1.ID))
+            {
+                Function.AlertBack(string.Format("第{0}行中《二级故障名》在系统中已存在相同的记录！", (i+1))); return;
+            }
+            if (dt.Rows[i][0].ToString().Trim().Length>50)
+            {
+                Function.AlertBack(string.Format("第{0}行中《二级故障名》过长！", (i+1))); return;
+            }
+            c2 = new Class2Info();
+            c2.Class1ID = c1.ID;
+            c2.Class1Name = c1.Name;
+            c2.IsClosed = false;
+            c2.Name = dt.Rows[i][0].ToString().Trim();
+            list.Add(c2);
+        }
+        if (list.Count > 0)
+        {
+            Function.AlertMsg("数据验证成功。亲可以导入了！");
+            GridView1.DataSource = list;
+            GridView1.DataBind();
+            ViewState["list"] = list;
+            BtnSubmit.Visible = true;
+        }
+        else
+        {
+            Function.AlertBack("表中没有任何数据。\n请确定故障名称不能为空\n否则空名称以下记录将视为无效！");
+        }
+    }
+    protected void BtnSubmit_Click(object sender, EventArgs e)
+    {
+        if (null == ViewState["list"]) return;
+        List<Class2Info> list = (List<Class2Info>)ViewState["list"];
+        int Flag = 0;
+        foreach (Class2Info item in list)
+        {
+            if (Class2BLL.Add(item) > 0)
+            {
+                Flag++;
+            }
+        }
+        Function.AlertRefresh(Flag + "条数据成功导入");
+    }
+    private string Upload()
+    {
+        if (!FileUpload1.HasFile)
+        {
+            Function.AlertBack("请选择文件");
+            return string.Empty;
+        }
+        if (FileUpload1.PostedFile.ContentType != "application/vnd.ms-excel" && FileUpload1.PostedFile.ContentType != "application/octet-stream")
+        {
+            Function.AlertBack("请上传excel，并保证为97-2003格式");
+            return string.Empty;
+        }
+        string Filename = FileUpload1.PostedFile.FileName;
+        Filename = Filename.Replace("/", "\\");
+        if (Filename.IndexOf("\\") > 0)
+        {
+            Filename = Filename.Substring(Filename.LastIndexOf("\\"));
+        }
+        string Path = Server.MapPath("~/excel/" + DateTime.Now.Year + "/" + DateTime.Now.Month + "/");
+        if (!Directory.Exists(Path))
+        {
+            Directory.CreateDirectory(Path);
+        }
+        FileUpload1.PostedFile.SaveAs(Path + Filename);
+        return Path + Filename;
+    }
+
+
+
+}

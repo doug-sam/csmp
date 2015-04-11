@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js"></script>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js"></script>
+
+    <script src="js/AppConstant.js"></script>
+    <script type="text/javascript" src="js/cordova.js"></script>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="CSS/table.css" rel="stylesheet" />
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            document.addEventListener("backbutton", onBackButton, false);
+        }
+        function onBackButton() {
+            location.href = "index.html";
+        }
+
+        $('#index').live('pageshow', function (event, ui) {
+        });
+
+
+
+
+
+    </script>
+</head>
+<body>
+    <div data-role="page" id="index" data-add-back-btn="true">
+        <div data-role="header">
+            <a href="javascript:onBackButton();" data-icon="back" data-role="button" class="ui-btn-left">返回</a>
+            <h4>关于这个CSMP
+            </h4>
+        </div>
+        <div data-role="content" style="padding: 5px;">
+            <h2>更新内容如下：</h2>
+            <ul>
+                <li>登录时默认登录人不再是杨火奴
+                </li>
+                <li>报修数据已经加入单号搜索功能
+                </li>
+                <li>签到时加以显示有没有成功连接GPS、经纬度，并加载地图
+                </li>
+                <li>非现场工程师登录无法查看报修数据
+                </li>
+                <li>报修的处理记录以日期倒序排列（包括序号）
+                </li>
+                <li>解决页面出现一条黑色横线问题
+                </li>
+                <li>系统瘦身，app更新更省流量
+                </li>
+                
+            </ul>
+        </div>
+        <div data-role="footer" data-position="fixed"></div>
+    </div>
+
+</body>
+</html>

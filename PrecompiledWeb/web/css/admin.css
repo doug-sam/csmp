@@ -1,0 +1,27 @@
+INPUT {
+	FONT-SIZE: 12px; FONT-FAMILY: "Verdana", "Arial", "Helvetica", "sans-serif"
+}
+SELECT {
+	FONT-SIZE: 12px; FONT-FAMILY: "Verdana", "Arial", "Helvetica", "sans-serif"
+}
+TEXTAREA {
+	FONT-SIZE: 12px; FONT-FAMILY: "Verdana", "Arial", "Helvetica", "sans-serif"
+}
+
+body
+{
+	margin: 0px;
+	padding:0px;
+	color:#333;
+	font-size:12px;
+}
+a{	text-decoration: none; color:#333;}
+a,a:link{ text-decoration:none;}
+a:hover{ text-decoration:underline; color:#000;}
+input{ padding:2px 3px;  }
+img{border: 0px;}
+
+.MeunContainer{ margin-left:10px; text-align:left; margin-top:4px;}
+.MeunFirst{ background:url(/images/menu_bt.jpg) no-repeat; width:150px; height:22px; line-height:22px; padding-left:30px;cursor:pointer; }
+.LeftMeunUl{ padding:0px; margin:0px; }
+.LeftMeunUl li{ list-style:none; background:url(/images/menu_icon.gif) no-repeat 10px 50%; height:20px; line-height:20px; padding-left:28px;}

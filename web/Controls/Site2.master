@@ -1,0 +1,12 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/Controls/Site1.master" AutoEventWireup="true" CodeFile="Site2.master.cs" Inherits="Controls_Site2" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div style="padding-right: 20px;">
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+        </asp:ContentPlaceHolder>
+    </div>
+</asp:Content>

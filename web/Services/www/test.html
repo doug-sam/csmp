@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js"></script>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js"></script>
+
+    <script src="js/AppConstant.js"></script>
+    <!--<script type="text/javascript" src="js/cordova.js"></script>-->
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="CSS/table.css" rel="stylesheet" />
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            document.addEventListener("backbutton", onBackButton, false);
+        }
+        function onBackButton() {
+            location.href = "index.html";
+        }
+
+        $('#index').live('pageshow', function (event, ui) {
+        });
+
+
+
+
+
+    </script>
+</head>
+<body>
+    <div data-role="page" id="index" data-add-back-btn="true">
+        <div data-role="header">
+            <a href="javascript:onBackButton();" data-icon="back" data-role="button" class="ui-btn-left">返回</a>
+            <h4>关于这个CSMP
+            </h4>
+        </div>
+        <div data-role="content" style="padding: 5px;">
+
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="fade" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="pop" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="flip" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="turn" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="flow" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="slidefade" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="slide" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="slideup" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="slidedown" data-inline="true">dialog</a>
+<a href="dialog.html" data-role="button" data-rel="dialog" data-transition="none" data-inline="true">dialog</a>        </div>
+        <div data-role="footer" data-position="fixed"></div>
+    </div>
+
+</body>
+</html>

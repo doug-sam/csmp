@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js"></script>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js"></script>
+
+    <script src="js/AppConstant.js"></script>
+    <script type="text/javascript" src="js/cordova.js"></script>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" /> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+    <link href="CSS/table.css" rel="stylesheet" />
+    
+
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function () {
+            $.mobile.autoInitialize = false; //删除这行配置参数就会出现渲染错误 
+        });
+
+        
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            document.addEventListener("backbutton", onBackButton, false);
+        }
+        function onBackButton() {
+            location.href = "list.html";
+        }
+
+
+        function ShowHideButton(CallInfo)
+        {   
+            $("#BtnArrive").hide();
+            $("#BtnLeave").hide();
+            $("#BtnAttachment").hide();
+            if (CallInfo.StateDetail == CallStateDetail.WaitForArrive || CallInfo.StateDetail == CallStateDetail.WaitForOtherDeal || CallInfo.StateDetail == CallStateDetail.UserGetDropInList) {
+                $("#BtnArrive").show();
+            }
+            if (CallInfo.StateDetail == CallStateDetail.UserArrived)
+            {
+                $("#BtnLeave").show();
+                $("#BtnAttachment").show();
+            }
+            if (CallInfo.StateMain != CallStateMain.Colsed) {
+                $("#BtnAttachment").show();
+            }
+        }
+
+        $('#PageCallView').live('pageshow', function (event, ui) {
+            showLoader();
+            var tempitem = window.localStorage.getItem("ViewItem");
+            var URL = "/services/Call/Get.ashx?ActionID=3&CallID=" + tempitem
+            URL += "&callback=?";
+            URL = MainURL + URL;
+            $.getJSON(URL, function (CallInfo) {
+                window.localStorage.setItem("CallInfo.StateDetail", CallInfo.StateDetail);
+                window.localStorage.setItem("CallInfo.Class3", CallInfo.Class3);
+                $('#info_No').html(CallInfo.No);
+                $('#info_ReporterName').html(CallInfo.ReporterName);
+                $('#info_CustomerName').html(CallInfo.CustomerName);
+                $('#info_BrandName').html(CallInfo.BrandName);
+                $('#info_ProvinceName').html(CallInfo.info_ProvinceName);
+                $('#info_CityName').html(CallInfo.CityName);
+                $('#info_StoreNo').html(CallInfo.StoreNo);
+                $('#info_StoreName').html(CallInfo.StoreName);
+                //$('#info_Tel').html(CallInfo.);
+                //$('#info_Address').html(CallInfo.);
+                $('#info_ReportSourceName').html(CallInfo.ReportSourceName);
+                $('#info_ReportSourceNo').html(CallInfo.ReportSourceNo);
+                $('#info_ErrorDate').html(CallInfo.ErrorDate);
+                $('#info_SLA').html(CallInfo.SLA);
+                $('#info_ClassName1').html(CallInfo.ClassName1);
+                $('#info_ClassName2').html(CallInfo.ClassName2);
+                $('#info_ClassName3').html(CallInfo.ClassName3);
+                $('#info_PriorityName').html(CallInfo.PriorityName);
+                $('#info_Details').html(CallInfo.Details);
+                $('#info_MaintaimUserName').html(CallInfo.MaintaimUserName);
+                $('#info_CreatorName').html(CallInfo.CreatorName);
+                ShowHideButton(CallInfo);
+                hideLoader();
+            });
+
+        });
+
+        //$('#PageCallView').live('swiperight', function (e) {
+        //    $.mobile.changePage("list.html", { transition: "slide", reverse: "true", changeHash: true });
+        //    e.stopImmediatePropagation();
+        //    return false;
+        //});
+
+    </script>
+
+</head>
+
+<body>
+
+    <div data-role="page" id="PageCallView" >
+        <div data-role="header">
+            <h4><a href="javascript:onBackButton();" data-icon="back" data-role="button"  class="ui-btn-left">返回</a> 
+                报修数据
+            </h4>
+        </div>
+        <div data-role="content" style="padding: 5px">
+            <div>
+                <a id="BtnArrive" rel="external" href="call_Arrive.html" data-role="button" style="display:none;">签到</a>
+                <a id="BtnLeave" rel="external" href="call_Leave.html" data-role="button"  style="display:none;">签离</a>
+                <a id="BtnAttachment" rel="external" href="call_Attachment.html" data-role="button"  style="display:none;">上传资料</a>
+                <a  href="knowledgeSch.html" rel="external" data-role="button">知识库</a>
+                <a  href="CallStep.html" rel="external" data-role="button">处理记录</a>
+            </div>
+            <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">
+                <tr>
+                    <td style="height: 30px" colspan="2" class="td1_1">报修信息查看
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2" colspan="8">(店铺信息)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">系统单号：
+                    </td>
+                    <td class="td1_3" id="info_No">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">报修人：
+                    </td>
+                    <td class="td1_3" id="info_ReporterName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">客户：
+                    </td>
+                    <td class="td1_3" id="info_CustomerName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">品牌：
+                    </td>
+                    <td class="td1_3" id="info_BrandName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">省份：
+                    </td>
+                    <td class="td1_3" id="info_ProvinceName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">城市：
+                    </td>
+                    <td class="td1_3" id="info_CityName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">店铺名称：
+                    </td>
+                    <td class="td1_3" id="info_StoreNo">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">店铺编号：
+                    </td>
+                    <td class="td1_3" id="info_StoreName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">店铺联系电话：
+                    </td>
+                    <td class="td1_3"  id="info_Tel">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">地址：
+                    </td>
+                    <td class="td1_3"  id="info_Address">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2" colspan="2">(报修信息)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">报修来源：
+                    </td>
+                    <td class="td1_3" id="info_ReportSourceName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">来源单号：
+                    </td>
+                    <td class="td1_3" id="info_ReportSourceNo">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">报修时间：
+                    </td>
+                    <td class="td1_3" id="info_ErrorDate">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">SLA：
+                    </td>
+                    <td class="td1_3" id="info_SLA">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">大类故障：
+                    </td>
+                    <td class="td1_3" id="info_ClassName1">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">中类故障：
+                    </td>
+                    <td class="td1_3" id="info_ClassName2">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">小类故障：
+                    </td>
+                    <td class="td1_3" id="info_ClassName3">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">优先级：
+                    </td>
+                    <td class="td1_3" id="info_PriorityName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">故障描述：
+                    </td>
+                    <td class="td1_3"  id="info_Details">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">二线负责人：
+                    </td>
+                    <td class="td1_3" id="info_MaintaimUserName">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">报修创建人：
+                    </td>
+                    <td class="td1_3" id="info_CreatorName">
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMP.Model", "Model\CSMP.Model.csproj", "{B3636822-0EEF-4AF8-AEB6-A9C0879AF901}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMP.DAL", "DAL\CSMP.DAL.csproj", "{DA6A0473-20A7-41B7-91BC-38244EE7ADCA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B3636822-0EEF-4AF8-AEB6-A9C0879AF901} = {B3636822-0EEF-4AF8-AEB6-A9C0879AF901}
+		{A67AC06D-ED23-468F-A646-95BCB86901D0} = {A67AC06D-ED23-468F-A646-95BCB86901D0}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMP.BLL", "BLL\CSMP.BLL.csproj", "{05BCD8A5-0177-4B58-AE45-CB345DD396FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B3636822-0EEF-4AF8-AEB6-A9C0879AF901} = {B3636822-0EEF-4AF8-AEB6-A9C0879AF901}
+		{DA6A0473-20A7-41B7-91BC-38244EE7ADCA} = {DA6A0473-20A7-41B7-91BC-38244EE7ADCA}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBUtility", "DBUtility\DBUtility.csproj", "{75BE1B89-B5F8-4042-9A90-37BA93316A25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tool", "Tool\Tool.csproj", "{A67AC06D-ED23-468F-A646-95BCB86901D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileMsg", "MobileMsg\MobileMsg.csproj", "{15613B91-7980-4DE4-8EAC-A27A9B9AFF0A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B3636822-0EEF-4AF8-AEB6-A9C0879AF901} = {B3636822-0EEF-4AF8-AEB6-A9C0879AF901}
+		{A67AC06D-ED23-468F-A646-95BCB86901D0} = {A67AC06D-ED23-468F-A646-95BCB86901D0}
+		{05BCD8A5-0177-4B58-AE45-CB345DD396FF} = {05BCD8A5-0177-4B58-AE45-CB345DD396FF}
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "web\", "{1505D345-FEB9-4077-A664-011EA4C750AF}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFramework = "3.5"
+		ProjectReferences = "{05BCD8A5-0177-4B58-AE45-CB345DD396FF}|CSMP.BLL.dll;{B3636822-0EEF-4AF8-AEB6-A9C0879AF901}|CSMP.Model.dll;{DA6A0473-20A7-41B7-91BC-38244EE7ADCA}|CSMP.DAL.dll;{75BE1B89-B5F8-4042-9A90-37BA93316A25}|DBUtility.dll;{A67AC06D-ED23-468F-A646-95BCB86901D0}|Tool.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/web"
+		Debug.AspNetCompiler.PhysicalPath = "web\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\web\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/web"
+		Release.AspNetCompiler.PhysicalPath = "web\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\web\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "27774"
+		VWDVirtualPath = "/"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMPTask", "CSMPTask\CSMPTask.csproj", "{495A78C8-FED2-420A-9C4C-3AEB61751FD2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3636822-0EEF-4AF8-AEB6-A9C0879AF901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3636822-0EEF-4AF8-AEB6-A9C0879AF901}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3636822-0EEF-4AF8-AEB6-A9C0879AF901}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3636822-0EEF-4AF8-AEB6-A9C0879AF901}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA6A0473-20A7-41B7-91BC-38244EE7ADCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA6A0473-20A7-41B7-91BC-38244EE7ADCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA6A0473-20A7-41B7-91BC-38244EE7ADCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA6A0473-20A7-41B7-91BC-38244EE7ADCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05BCD8A5-0177-4B58-AE45-CB345DD396FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05BCD8A5-0177-4B58-AE45-CB345DD396FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05BCD8A5-0177-4B58-AE45-CB345DD396FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05BCD8A5-0177-4B58-AE45-CB345DD396FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75BE1B89-B5F8-4042-9A90-37BA93316A25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75BE1B89-B5F8-4042-9A90-37BA93316A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75BE1B89-B5F8-4042-9A90-37BA93316A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75BE1B89-B5F8-4042-9A90-37BA93316A25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A67AC06D-ED23-468F-A646-95BCB86901D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A67AC06D-ED23-468F-A646-95BCB86901D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A67AC06D-ED23-468F-A646-95BCB86901D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A67AC06D-ED23-468F-A646-95BCB86901D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15613B91-7980-4DE4-8EAC-A27A9B9AFF0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15613B91-7980-4DE4-8EAC-A27A9B9AFF0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15613B91-7980-4DE4-8EAC-A27A9B9AFF0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15613B91-7980-4DE4-8EAC-A27A9B9AFF0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1505D345-FEB9-4077-A664-011EA4C750AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1505D345-FEB9-4077-A664-011EA4C750AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1505D345-FEB9-4077-A664-011EA4C750AF}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{1505D345-FEB9-4077-A664-011EA4C750AF}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{495A78C8-FED2-420A-9C4C-3AEB61751FD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{495A78C8-FED2-420A-9C4C-3AEB61751FD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{495A78C8-FED2-420A-9C4C-3AEB61751FD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{495A78C8-FED2-420A-9C4C-3AEB61751FD2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

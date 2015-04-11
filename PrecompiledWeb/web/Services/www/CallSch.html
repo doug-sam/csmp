@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="jquery.mobile-1.1.2/jquery-1.5.min.js"></script>
+    <link href="jquery.mobile-1.1.2/jquery.mobile-1.1.2.css" rel="stylesheet" />
+    <script src="jquery.mobile-1.1.2/jquery.mobile-1.1.2.js"></script>
+
+    <script src="js/AppConstant.js"></script>
+    <script type="text/javascript" src="js/cordova.js"></script>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" /> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     
+
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function () {
+            $.mobile.autoInitialize = false; //删除这行配置参数就会出现渲染错误 
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        $('#index').live('pageshow', function (event, ui) {
+
+        });
+
+
+        function TplNew(newItem) {
+            var itemHtml = "";
+            itemHtml = '<li ><a ';
+            if (newItem.StateDetail == GetCallStateDetail().UserArrived) {
+                itemHtml += ' class="Red" ';
+            }
+            else if (newItem.StateDetail != GetCallStateDetail().WaitForOtherDeal
+                && newItem.StateDetail != GetCallStateDetail().WaitForArrive
+                 && newItem.StateDetail != GetCallStateDetail().UserGetDropInList) {
+                itemHtml += ' class="Dead" ';
+            }
+            itemHtml += '  rel="external" href="CallView.html" onclick="SetViewItem(' + newItem.ID + ');">';
+            itemHtml += '<h3>' + newItem.No + '<span style=" padding-left:10px;">' + newItem.StoreName + '</span></h3>';
+            itemHtml += newItem.MaintaimUserName + '<span style=" padding-left:10px;">' + newItem.ClassName3.replace(/(^\s*)|(\s*$)/g, "") + '</span>';
+            itemHtml += '</a></li>';
+            return itemHtml;
+        }
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            document.addEventListener("backbutton", onBackButton, false);
+        }
+        function onBackButton() {
+            location.href = "list.html";
+        }
+
+        function BtnSch_Click() {
+            showLoader();
+            $("#tips").show();
+            var CallNo=$('#TxbSch').val();
+            if (CallNo=="") {
+                alert("请输入单号");
+                hideLoader();
+                $("#tips").hide();
+                return;
+            }
+
+            var URL = MainURL + "/services/Call/Get.ashx";
+            URL += "?ActionID=4";
+            URL += "&CallNo=" + CallNo;
+            URL += "&DropInUserID=" + window.localStorage.getItem("UserID");
+            URL += "&callback=?";
+            console.log(MainURL + URL);
+            var li_array = "";
+            $.getJSON( URL, function (result) {
+                $.each(result, function (i, field) {
+                    if (li_array.indexOf(field.No) <= 0) {
+                        li_array += TplNew(field);
+                    }
+                });
+                $('#ulContent').html(li_array);
+                $('#ulContent').listview('refresh');
+
+                hideLoader();
+                $("#tips").hide();
+            });
+        }
+
+    </script>
+
+</head>
+<body>
+
+    <div data-role="page" id="index" >
+        <div data-role="header">
+            <h4>
+                <a href="javascript:onBackButton();" data-icon="back" data-role="button"  class="ui-btn-left">返回</a> 
+               报修数据检索
+            </h4>
+        </div>
+        <div data-role="content" style="padding:1px 5px 0px 5px; ">
+           <div id="DivSch" style="margin-bottom:8px;">
+            <table cellpadding="0" cellspacing="0" width="100%" border="0" >
+                <tr>
+                    <td>
+                       单号
+                    </td>
+                    <td>
+                       <input type="text" id="TxbSch" data-inline="true"  />
+                    </td>
+                    <td>
+                        <a href="javascript:BtnSch_Click();" data-role="button">服务器搜索</a>
+                    </td>
+                </tr>
+            </table>
+           </div>
+            <ul data-role="listview" id="ulContent"  style="margin:13px 5px 5px 5px; padding:5px;">
+                <!--<li ><a  rel="external" href="#">正在拼命加载中。。。</a><span class="ui-li-count">0</span></li>-->
+
+            </ul>
+            <div id="tips" style="display:none;">亲，为节省你的流量，我们最多为你模糊匹配50条报修数据，一般输入单号后五位，就能轻易找到what you want</div>
+        </div>
+    </div>
+
+</body>
+</html>

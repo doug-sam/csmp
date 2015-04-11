@@ -1,0 +1,76 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Controls/Site1.master" AutoEventWireup="true"
+    CodeFile="ViewOld.aspx.cs" Inherits="page_KnowledgeBase_View" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <style type="text/css">
+        .DivItem ul li
+        {
+            margin: 5px;
+            padding: 5px;
+        }
+    </style>
+    <style type="text/css">
+        .ulClass
+        {
+            margin: 3px;
+            padding: 3px 10px;
+            list-style: none;
+        }
+
+            .ulClass li
+            {
+                margin: 3px;
+                padding: 3px;
+                border: 1px solid #CCC;
+                float: left;
+            }
+
+        .DivItem li
+        {
+            list-style-type: decimal;
+        }
+
+        .ulAttachment
+        {
+            list-style:decimal;margin:5px;padding:0px;
+        }
+            .ulAttachment li
+            {
+                margin:3px 2px;padding:2px;
+            }
+    </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <div style="margin: 5px; padding: 10px; border: 1px solid #CCC;">
+        <h1 style="text-align: center; font-size: 22px; font-weight: 700; color: #000; height: 35px; line-height: 35px; margin: 4px;">
+            <%=GetInfo().Title %>
+        </h1>
+
+        <div style="border: 1px solid #CCC; text-align: center; height: 32px; line-height: 32px;">
+            <span style="color: #999;">发布于： <%=GetInfo().AddDate.ToString("yyyy年MM月dd日 HH:mm") %></span>
+            <span style="color: #999; padding-left: 20px;">发布人： <%=GetInfo().AddByUserName %></span>
+            <span style="color: #999; padding-left: 20px;">查看: <%=GetInfo().ViewCount %></span>
+            <span style="color: #999; padding-left: 20px;">
+                <asp:LinkButton ID="LbGood" runat="server" OnClick="LbGood_Click">顶起:</asp:LinkButton>
+                <%=GetInfo().GoodCount %></span>
+        </div>
+        <div>
+            <div>附件下载</div>
+            <ul class="ulAttachment">
+                <asp:Repeater ID="Repeater1" runat="server">
+                    <ItemTemplate>
+                        <li>
+                            <a href='/page/sys/DownLoadFile.ashx?ID=<%#Eval("ID") %>' target="_blank"><%#Eval("Memo") %></a>
+                        </li>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </ul>
+
+        </div>
+        <div style="margin: 10px 3px;">
+            <%=GetInfo().Content %>
+        </div>
+    </div>
+
+
+</asp:Content>

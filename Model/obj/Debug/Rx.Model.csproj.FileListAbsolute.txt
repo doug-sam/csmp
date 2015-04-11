@@ -1,0 +1,10 @@
+D:\荣信OA\Model\bin\Debug\Rx.Model.dll
+D:\荣信OA\Model\bin\Debug\Rx.Model.pdb
+D:\荣信OA\Model\obj\Debug\ResolveAssemblyReference.cache
+D:\荣信OA\Model\obj\Debug\Rx.Model.dll
+D:\荣信OA\Model\obj\Debug\Rx.Model.pdb
+D:\OA\Model\bin\Debug\Rx.Model.dll
+D:\OA\Model\bin\Debug\Rx.Model.pdb
+D:\OA\Model\obj\Debug\ResolveAssemblyReference.cache
+D:\OA\Model\obj\Debug\Rx.Model.dll
+D:\OA\Model\obj\Debug\Rx.Model.pdb

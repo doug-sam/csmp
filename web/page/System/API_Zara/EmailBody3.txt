@@ -1,0 +1,68 @@
+﻿此单已完成，解决方案：(((((解决详细)))))
+<style type="text/css">
+.table1{ border-bottom:1px solid #CCCCCC;border-left:1px solid #CCCCCC; margin:0px auto 5px;}
+.td1_1{ border-top:1px solid #CCCCCC;border-right:1px solid #CCCCCC; padding:2px 5px; background-color:#DDEEFE; font-weight:bold; text-align:center; color:#133163;}
+.td1_2{ border-top:1px solid #CCCCCC;border-right:1px solid #CCCCCC; padding:2px 5px; background-color:#EEF7FF; }
+.td1_3{ border-top:1px solid #CCCCCC;border-right:1px solid #CCCCCC; padding:2px 5px; }
+.td1_4{ border-bottom:1px solid #CCCCCC; padding:2px 5px; text-align:center; line-height:23px; }
+.td1_5{ border-top:1px solid #CCCCCC; padding:2px 5px; background-color:#EEF7FF; }
+
+</style>
+<table class="table1">
+	<tr>
+    	<td class="td1_2">
+        	系统单号
+        </td>
+    	<td class="td1_3">
+        	(((((系统单号)))))
+        </td>
+    </tr>
+	<tr>
+    	<td class="td1_2">
+        	店铺名称：
+        </td>
+    	<td class="td1_3">
+        	(((((店铺名称)))))
+        </td>
+    </tr>
+	<tr>
+    	<td class="td1_2">
+        	店铺号：
+        </td>
+    	<td class="td1_3">
+        	(((((店铺号)))))
+        </td>
+    </tr>
+	<tr>
+    	<td class="td1_2">
+        	来源单号：
+        </td>
+    	<td class="td1_3">
+        	(((((来源单号)))))
+        </td>
+    </tr>
+	<tr>
+    	<td class="td1_2">
+        	故障详细：
+        </td>
+    	<td class="td1_3">
+        	(((((故障详细)))))
+        </td>
+    </tr>
+	<tr>
+    	<td class="td1_2">
+        	工程师
+        </td>
+    	<td class="td1_3">
+        	(((((工程师)))))
+        </td>
+    </tr>
+	<tr>
+    	<td class="td1_2">
+        	解决详细
+        </td>
+    	<td class="td1_3">
+        	(((((解决详细)))))
+        </td>
+    </tr>
+</table>
