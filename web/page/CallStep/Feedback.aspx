@@ -15,7 +15,7 @@
                     Width="360px"></asp:TextBox>
             </td>
             <td class="td1_2">
-                <input type="button" onclick="OutboundCall();" value=" 拨打电话回访 " class="BigButton" /><input type="text" name="callbackrecordid" id="callbackrecid" value="8iu76t"/>
+                <input type="button" onclick="OutboundCall();" value=" 拨打电话回访 " class="BigButton" /><input type="text" name="callbackrecordid" id="callbackrecid" value=""/>
             </td>
         </tr>
     </table>
@@ -92,8 +92,9 @@
         }
         
         function OutboundCall() {
+            var urlStr = encodeURIComponent("http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=6002&<%= CTIWSObAniName %>=6001");
             $.ajax({
-                url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random(),
+                url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
                 success: function(data) {
                     $("#callbackrecid").val(data);
                 }

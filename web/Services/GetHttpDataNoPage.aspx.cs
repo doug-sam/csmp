@@ -11,6 +11,15 @@ public partial class Services_GetHttpDataNoPage : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        Response.Write(DataHelper.GetHttpData("http://10.0.29.241:8012/?outbound=6002&ext=6001"));
+        string url;
+        if (!string.IsNullOrEmpty(Request.QueryString["url"]))
+            url = Request.QueryString["url"];
+        else
+        {
+            Response.Write("url parameter lost");
+            return;
+        }
+
+        Response.Write(DataHelper.GetHttpData(url));
     }
 }

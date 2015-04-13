@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Configuration;
 using CSMP.BLL;
 using CSMP.Model;
 using Tool;
@@ -11,6 +12,22 @@ using Tool;
 public partial class page_callStep_Feedback : _Call_Feedback
 {
     private const string JS = "window.clipboardData.setData('Text','AAAA$$$$BBBB$$$$CCCC::{0}');";
+    public string CTIWSIP
+    {
+        get { return ConfigurationManager.AppSettings["CTIWSIP"].ToString(); }
+    }
+    public string CTIWSPort
+    {
+        get { return ConfigurationManager.AppSettings["CTIWSPort"].ToString(); }
+    }
+    public string CTIWSObAniName
+    {
+        get { return ConfigurationManager.AppSettings["CTIWSObAniName"].ToString(); }
+    }
+    public string CTIWSObDnisName
+    {
+        get { return ConfigurationManager.AppSettings["CTIWSObDnisName"].ToString(); }
+    }
     private CallInfo GetInfo()
     {
         if (ViewState["info"] != null)
@@ -231,7 +248,10 @@ public partial class page_callStep_Feedback : _Call_Feedback
         info.AddDate = DateTime.Now;
         info.CallID = cinfo.ID;
         info.DateBegin = info.DateEnd = DateTime.Now;
-        info.Details = TxbFeedbackUserName.Text.Trim() + "  A$B$C" + callbackrecordid + "D$E$F";
+        if ( string.IsNullOrEmpty(callbackrecordid) )
+            info.Details = TxbFeedbackUserName.Text.Trim();
+        else
+            info.Details = TxbFeedbackUserName.Text.Trim() + "  A$B$C" + callbackrecordid + "D$E$F";
         info.MajorUserID = CurrentUserID;
         info.MajorUserName = CurrentUserName;
         info.SolutionID = 0;
