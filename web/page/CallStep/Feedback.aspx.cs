@@ -90,7 +90,7 @@ public partial class page_callStep_Feedback : _Call_Feedback
             {
                 BtnSubmit.Visible = false;
                 TableCall.Visible = false;
-                TxbFeedbackUserName.Text = sinfo.Details;
+                TxbFeedbackUserName.Text = ProcessDetails(sinfo.Details);
             }
 
 
@@ -325,6 +325,15 @@ public partial class page_callStep_Feedback : _Call_Feedback
                 Ct1.Text = ainfo.Answer;
             }
         }
+    }
+    protected string ProcessDetails(string Details)
+    {
+        string recordid = Details;
+        int POS1 = recordid.IndexOf("A$B$C");
+        int POS2 = recordid.IndexOf("D$E$F");
+        if (POS1 != -1 && POS2 != -1 && POS2 > POS1)
+            recordid = recordid.Remove(POS1);
+        return recordid;
     }
 
 
