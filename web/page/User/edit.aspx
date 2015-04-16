@@ -46,6 +46,14 @@
                 </tr>--%>
                 <tr>
                     <td class="td1_2">
+                        座席工号：
+                    </td>
+                    <td class="td1_3">
+                        <asp:TextBox ID="TxbOperatorID" runat="server" CssClass="input1" Width="150px"></asp:TextBox>
+                    </td>
+                </tr>                
+                <tr>
+                    <td class="td1_2">
                         联系电话：
                     </td>
                     <td class="td1_3">

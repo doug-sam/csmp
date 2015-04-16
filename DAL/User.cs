@@ -11,11 +11,11 @@ namespace CSMP.DAL
 {
     public class UserDAL
     {
-        private const string ALL_PARM = "  ID,f_Name,f_Code,f_PassWord,f_Email,f_Tel,f_Phone,f_Sex,f_CityID,f_CreateDate,f_LastDate,f_Enable,f_WorkGroupID,f_PowerGroupID,f_Rule ";
+        private const string ALL_PARM = "  ID,f_Name,f_Code,f_PassWord,f_Email,f_OperatorID, f_Tel,f_Phone,f_Sex,f_CityID,f_CreateDate,f_LastDate,f_Enable,f_WorkGroupID,f_PowerGroupID,f_Rule ";
         private const string FROM_TABLE = " from [sys_User] ";
         private const string TABLE = " sys_User ";
-        private const string INSET = " (f_Name,f_Code,f_PassWord,f_Email,f_Tel,f_Phone,f_Sex,f_CityID,f_CreateDate,f_LastDate,f_Enable,f_WorkGroupID,f_PowerGroupID,f_Rule) values(@Name,@Code,@PassWord,@Email,@Tel,@Phone,@Sex,@CityID,@CreateDate,@LastDate,@Enable,@WorkGroupID,@PowerGroupID,@Rule)  ";
-        private const string UPDATE = " f_Name=@Name,f_Code=@Code,f_PassWord=@PassWord,f_Email=@Email,f_Tel=@Tel,f_Phone=@Phone,f_Sex=@Sex,f_CityID=@CityID,f_CreateDate=@CreateDate,f_LastDate=@LastDate,f_Enable=@Enable,f_WorkGroupID=@WorkGroupID,f_PowerGroupID=@PowerGroupID,f_Rule=@Rule ";
+        private const string INSET = " (f_Name,f_Code,f_PassWord,f_Email,f_OperatorID,f_Tel,f_Phone,f_Sex,f_CityID,f_CreateDate,f_LastDate,f_Enable,f_WorkGroupID,f_PowerGroupID,f_Rule) values(@Name,@Code,@PassWord,@Email,@OperatorID,@Tel,@Phone,@Sex,@CityID,@CreateDate,@LastDate,@Enable,@WorkGroupID,@PowerGroupID,@Rule)  ";
+        private const string UPDATE = " f_Name=@Name,f_Code=@Code,f_PassWord=@PassWord,f_Email=@Email,f_OperatorID=@OperatorID,f_Tel=@Tel,f_Phone=@Phone,f_Sex=@Sex,f_CityID=@CityID,f_CreateDate=@CreateDate,f_LastDate=@LastDate,f_Enable=@Enable,f_WorkGroupID=@WorkGroupID,f_PowerGroupID=@PowerGroupID,f_Rule=@Rule ";
 
         #region ReadyData
         private UserInfo GetByDataReader(SqlDataReader rdr)
@@ -26,6 +26,7 @@ namespace CSMP.DAL
             info.Code = rdr["f_Code"].ToString();
             info.PassWord = rdr["f_PassWord"].ToString();
             info.Email = rdr["f_Email"].ToString();
+            info.OperatorID = rdr["f_OperatorID"].ToString();
             info.Tel = rdr["f_Tel"].ToString();
             info.Phone = rdr["f_Phone"].ToString();
             info.Sex = Convert.ToBoolean(rdr["f_Sex"]);
@@ -55,6 +56,7 @@ namespace CSMP.DAL
             new SqlParameter("@Code", info.Code),
             new SqlParameter("@PassWord", info.PassWord),
             new SqlParameter("@Email", info.Email),
+            new SqlParameter("@OperatorID", info.OperatorID),
             new SqlParameter("@Tel", info.Tel),
             new SqlParameter("@Phone", info.Phone),
             new SqlParameter("@Sex", info.Sex),

@@ -39,6 +39,7 @@ public partial class page_User_edit : _User_User_Edit
                 ViewState["info"] = info;
                 TxbCode.Text = info.Code;
                 TxbName.Text = info.Name;
+                TxbOperatorID.Text = info.OperatorID;
                 TxbTel.Text = info.Tel;
                 TxbPhone.Text = info.Phone;
                 TxbEmail.Text = info.Email;
@@ -109,6 +110,7 @@ public partial class page_User_edit : _User_User_Edit
 
         info.Code = TxbCode.Text.Trim();
         info.Name = TxbName.Text.Trim();
+        info.OperatorID = TxbOperatorID.Text.Trim();
         info.Tel = TxbTel.Text.Trim();
         info.Phone = TxbPhone.Text.Trim();
         info.Email = TxbEmail.Text.Trim();
