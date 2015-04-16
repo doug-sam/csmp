@@ -30,7 +30,7 @@ public partial class page_call_view : _Call_list
         List<CallStepInfo> stepInfoList = CallStepBLL.GetListJoin(info);
         foreach (CallStepInfo stepInfo in stepInfoList)
         {
-            if (stepInfo.StepName == "回访")
+            if (stepInfo.StepName.TrimEnd() == "回访")
             {
                 callbackStepInfo = stepInfo;
                 break;
@@ -45,12 +45,12 @@ public partial class page_call_view : _Call_list
 
             string UrlDead = ProfileBLL.GetValue(ProfileInfo.UserKey.电话服务器录音根地址);
 
-            DateTime now = DateTime.Now;
             DateTime useNewCCDate = new DateTime(2015, 4, 8);
-            if (now >= useNewCCDate)
-                RecordPlay1.UseOldRecordDB = RecordPlay2.UseOldRecordDB = false;
+            if (info.CreateDate >= useNewCCDate)
+                RecordPlay1.UseOldRecordDB = false;
             else
-                RecordPlay1.UseOldRecordDB = RecordPlay2.UseOldRecordDB = true;
+                RecordPlay1.UseOldRecordDB = true;
+            RecordPlay2.UseOldRecordDB = false;
             if (!string.IsNullOrEmpty(info.VideoID))
             {
                 RecordPlay1.info = info;
@@ -63,12 +63,13 @@ public partial class page_call_view : _Call_list
             }
             if (null != callbackStepInfo && !string.IsNullOrEmpty(callbackStepInfo.Details))
             {
+                RecordPlay2.info = info;
                 RecordPlay2.stepinfo = callbackStepInfo;
                 RecordPlay2.IsIncommingRecord = false;
             }
             else
             {
-                RecordPlay2.info = null;
+                RecordPlay2.info = info;
                 RecordPlay2.stepinfo = null;
             }
         }

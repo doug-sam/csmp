@@ -15,7 +15,7 @@
                     Width="360px"></asp:TextBox>
             </td>
             <td class="td1_2">
-                <input type="button" onclick="OutboundCall();" value=" 拨打电话回访 " class="BigButton" /><input type="text" name="callbackrecordid" id="callbackrecid" value=""/>
+                <input type="button" onclick="OutboundCall();" value=" 拨打电话回访 " class="BigButton" /><input type="text" name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
             </td>
         </tr>
     </table>

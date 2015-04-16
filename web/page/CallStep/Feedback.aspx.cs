@@ -101,8 +101,6 @@ public partial class page_callStep_Feedback : _Call_Feedback
                 //这里听说放进剪切板就可以打出电话了。神奇
                 // ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "make a call", string.Format(JS, stinfo.Tel), true);
             }
-            string callbackrecordid = Request["callbackrecordid"];
-            TxbTel.Text = callbackrecordid;
         }
     }
 
@@ -216,7 +214,9 @@ public partial class page_callStep_Feedback : _Call_Feedback
     {
         string callbackrecordid = Request["callbackrecordid"];
         int POS1 = callbackrecordid.IndexOf("#");
-        int POS2 = callbackrecordid.LastIndexOf("#");
+        if ((POS1 + 1) >= callbackrecordid.Length)
+            POS1 = -1;
+        int POS2 = callbackrecordid.IndexOf("#", POS1 + 1);
 
         if (POS1 != -1 && POS2 != -1 && POS2 > POS1)
         {
