@@ -7,8 +7,7 @@
     <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1" id="TableCall" runat="server">
         <tr>
             <td class="td1_2">
-                拨打电话<br />
-                only IE support
+                拨打电话
             </td>
             <td class="td1_3">
                 <asp:TextBox ID="TxbTel" CssClass="myTel" runat="server" 
