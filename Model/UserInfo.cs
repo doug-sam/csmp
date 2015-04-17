@@ -32,11 +32,6 @@ namespace CSMP.Model
         public string Email { get; set; }
 
         /// <summary>
-        ///座席工号
-        /// </summary>
-        public string OperatorID { get; set; }
-
-        /// <summary>
         ///
         /// </summary>
         public string Tel { get; set; }
