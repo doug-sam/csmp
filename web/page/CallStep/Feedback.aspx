@@ -98,7 +98,13 @@
         }
         
         function OutboundCall() {
-            var urlStr = encodeURIComponent("http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=6002&<%= CTIWSObAniName %>=6001");
+            var dnis = $(".myTel").val();
+            if ( !dnis || dnis == "" )
+                {alert("请输入被叫号码，否则无法执行外呼!");return;}
+            var ani = $(".myExtensionID").val();
+            if ( !ani || ani == "" )
+                {alert("请输入您登录的分机号，否则无法执行外呼!");return;}
+            var urlStr = encodeURIComponent("http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=" + dnis + "&<%= CTIWSObAniName %>=" + ani);
             $.ajax({
                 url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
                 success: function(data) {
