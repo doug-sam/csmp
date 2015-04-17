@@ -53,14 +53,22 @@
                             AutoPostBack="True" OnSelectedIndexChanged="DdlState_SelectedIndexChanged">
                         </asp:DropDownList>
                     </td>
-                    <td class="td1_2">
-                        详细状态
+                    <%--<td class="td1_2">
+                        详细状态 ZQL2015.4.15注释 替换为报修人
                     </td>
                     <td class="td1_3">
                         <asp:DropDownList ID="DdlStateDetail" runat="server" DataTextField="value" DataValueField="key"
                             Visible="false">
                         </asp:DropDownList>
+                        
+                    </td>--%>
+                    <td class="td1_2">
+                        报修人
                     </td>
+                    <td class="td1_3">
+                         <asp:TextBox ID="TxbErrorReportUser" runat="server"></asp:TextBox>                     
+                    </td>
+                    
                 </tr>
                 <tr>
                     <td class="td1_2">
@@ -181,6 +189,12 @@
             <asp:TemplateField HeaderText="报修日期">
                 <ItemTemplate>
                     <%#Tool.Function.ConverToDateTime(Eval("ErrorDate")).ToString("yyyy-MM-dd HH:mm")%>
+                </ItemTemplate>
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="报修人">
+                <ItemTemplate>
+                    <%# Eval("ErrorReportUser")%>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>

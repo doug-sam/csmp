@@ -40,10 +40,10 @@ public partial class page_call_Sch : _Call_Sch
 
             DdlState.DataSource = SysEnum.ToDictionary(typeof(SysEnum.CallStateMain));
             DdlState.DataBind();
-            DdlStateDetail.DataSource = SysEnum.ToDictionary(typeof(SysEnum.CallStateDetails));
-            DdlStateDetail.DataBind();
+            //DdlStateDetail.DataSource = SysEnum.ToDictionary(typeof(SysEnum.CallStateDetails));
+            //DdlStateDetail.DataBind();
             DdlState.Items.Insert(0, new ListItem("不限", "0"));
-            DdlStateDetail.Items.Insert(0, new ListItem("不限", "0"));
+            //DdlStateDetail.Items.Insert(0, new ListItem("不限", "0"));
             DdlSolvedBy.DataSource = SysEnum.ToDictionary(typeof(SysEnum.SolvedBy));
             DdlSolvedBy.DataBind();
             DdlSolvedBy.Items.Insert(0, new ListItem("不限", "0"));
@@ -129,6 +129,8 @@ public partial class page_call_Sch : _Call_Sch
 
         SchCategory(ref url, ref strWhere);
 
+        SchErrorReportUser(ref url, ref strWhere);//ZQL 15.4.15新增
+
         #endregion
         if (!IsAdmin)
         {
@@ -207,7 +209,7 @@ public partial class page_call_Sch : _Call_Sch
             {
                 if (StateDetail > 0)
                 {
-                    DdlStateDetail.SelectedValue = StateDetail.ToString();
+                    //DdlStateDetail.SelectedValue = StateDetail.ToString();
                     strWhere += " and f_StateDetail=" + StateDetail;
                     url += "&StateDetail=" + StateDetail;
                 }
@@ -354,7 +356,7 @@ public partial class page_call_Sch : _Call_Sch
     //        url += "&SolvedBy=" + SolvedBy;
     //    }
     //}
-
+    
     private void SchCategory(ref string url, ref string strWhere)
     {
         int Category = Function.GetRequestInt("Category");
@@ -366,7 +368,23 @@ public partial class page_call_Sch : _Call_Sch
         url += "&Category=" + Category;
 
     }
+    /// <summary>
+    /// 报修人 查询条件
+    /// ZQL 15/4/15新增
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="strWhere"></param>
+    private void SchErrorReportUser(ref string url, ref string strWhere)
+    {
+        string ErrorReportUser = Function.GetRequestSrtring("ErrorReportUser");
+        if (!string.IsNullOrEmpty(ErrorReportUser))
+        {
+            strWhere += string.Format(" AND f_ErrorReportUser LIKE '%{0}%' ", ErrorReportUser);
+            url += "&ErrorReportUser=" + ErrorReportUser;
+            TxbErrorReportUser.Text = ErrorReportUser;
+        }
 
+    }
 
     #endregion
 
@@ -403,7 +421,8 @@ public partial class page_call_Sch : _Call_Sch
     {
         string Url = "Sch.aspx";
         Url += "?State=" + DdlState.SelectedValue;
-        Url += "&StateDetail=" + DdlStateDetail.SelectedValue;
+        //Url += "&StateDetail=" + DdlStateDetail.SelectedValue;ZQL2015.4.15注释
+        Url += "&ErrorReportUser=" + TxbErrorReportUser.Text.Trim();//ZQL2015.4.15新增
         Url += "&DtBegin=" + TxtDateBegin.Text.Trim();
         Url += "&DtEnd=" + TxbDateEnd.Text.Trim();
         Url += "&FinishDateBegin=" + TxbFinishDateBegin.Text.Trim();
@@ -434,7 +453,7 @@ public partial class page_call_Sch : _Call_Sch
     protected void DdlState_SelectedIndexChanged(object sender, EventArgs e)
     {
         int ID = Function.ConverToInt(DdlState.SelectedValue);
-        DdlStateDetail.Visible = (ID == (int)SysEnum.CallStateMain.处理中);
+        //DdlStateDetail.Visible = (ID == (int)SysEnum.CallStateMain.处理中);
     }
 
     protected void DdlCustomer_SelectedIndexChanged(object sender, EventArgs e)
