@@ -11,8 +11,15 @@
             </td>
             <td class="td1_3">
                 <asp:TextBox ID="TxbTel" CssClass="myTel" runat="server" 
-                    Width="360px"></asp:TextBox>
+                    Width="200px"></asp:TextBox>
             </td>
+            <td class="td1_2">
+                分机号码
+            </td>
+            <td class="td1_3">
+                <asp:TextBox ID="TxbExt" CssClass="myExtensionID" runat="server" 
+                    Width="120px"></asp:TextBox>
+            </td>            
             <td class="td1_2">
                 <input type="button" onclick="OutboundCall();" value=" 拨打电话回访 " class="BigButton" /><input type="text" name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
             </td>
