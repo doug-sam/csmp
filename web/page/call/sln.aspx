@@ -18,7 +18,7 @@
                          line-height: 22px; padding: 10px 10px;">
                         <asp:Label ID="labStation" runat="server" Text="分机号："></asp:Label><asp:TextBox ID="txtStation" runat="server"></asp:TextBox>
                         <asp:Label ID="labCalledNO" runat="server" Text="被叫号码："></asp:Label><asp:TextBox ID="txtCalledNO" runat="server"></asp:TextBox>
-                        <asp:Button ID="btnDoCall" runat="server" Text="拨打" />
+                        <input type="button" onclick="OutboundCall();" Text="拨打" class="BigButton"/><input type="text" name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
                     </div>
             </td></tr>
             </table>
@@ -54,4 +54,21 @@
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>
+    <script type="text/javascript">        
+        function OutboundCall() {
+            var dnis = $("#<%=labCalledNO.ClientID %>").val();
+            if ( !dnis || dnis == "" )
+                {alert("请输入被叫号码，否则无法执行外呼!");return;}
+            var ani = $("#<%=labStation.ClientID %>").val();
+            if ( !ani || ani == "" )
+                {alert("请输入您登录的分机号，否则无法执行外呼!");return;}
+            var urlStr = encodeURIComponent("http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=" + dnis + "&<%= CTIWSObAniName %>=" + ani);
+            $.ajax({
+                url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
+                success: function(data) {
+                    $("#callbackrecid").val(data);
+                }
+            });
+        }
+    </script>    
 </asp:Content>
