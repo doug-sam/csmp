@@ -40,9 +40,9 @@ public partial class page_call_sln : _Call_Step
                 Function.AlertBack("数据有误。");
             }
             CallState1.CallID = info.ID;
-
-
             CheckStatus(info);
+            //绑定呼叫信息 ZQL
+            BlindCallInfo(info.StoreID);
 
         }
     }
@@ -186,6 +186,28 @@ public partial class page_call_sln : _Call_Step
             Function.AlertMsg("提交失败，重试不行的话联系管理员");
             return;
         }
+    }
+
+    /// <summary>
+    /// ZQL 2015.4.19
+    /// 获取呼叫信息
+    /// </summary>
+    /// <param name="StoreID"></param>
+    protected void BlindCallInfo(int StoreID)
+    {
+        //绑定店铺号码
+        StoreInfo sinfo = StoresBLL.Get(StoreID);
+        if (null == sinfo)
+        {
+            return;
+        }
+        txtCalledNO.Text = sinfo.Tel;
+        //绑定坐席分机
+        if (HttpContext.Current.Request.Cookies != null && HttpContext.Current.Request.Cookies["Station"] != null)
+        {
+            txtStation.Text = HttpContext.Current.Request.Cookies["Station"].Value.ToString();
+        }
+        
     }
 }
 

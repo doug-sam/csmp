@@ -5,6 +5,26 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <uc1:CallState ID="CallState1" runat="server" FocusItemIndex="2" />
+    <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+        <ContentTemplate>
+            <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">
+                <tr>
+                    <td  style="height: 30px" class="td1_1">
+                        外呼
+                    </td>
+                </tr>
+                <tr><td>
+                     <div style="border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;
+                         line-height: 22px; padding: 10px 10px;">
+                        <asp:Label ID="labStation" runat="server" Text="分机号："></asp:Label><asp:TextBox ID="txtStation" runat="server"></asp:TextBox>
+                        <asp:Label ID="labCalledNO" runat="server" Text="被叫号码："></asp:Label><asp:TextBox ID="txtCalledNO" runat="server"></asp:TextBox>
+                        <asp:Button ID="btnDoCall" runat="server" Text="拨打" />
+                    </div>
+            </td></tr>
+            </table>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+    <br />
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">
