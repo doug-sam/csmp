@@ -54,6 +54,7 @@
         <li><input type="checkbox" name="CbItem" value="二线处理人" />二线处理人</li>
         <li><input type="checkbox" name="CbItem" value="处理记录" />处理记录</li>
         <li><input type="checkbox" name="CbItem" value="报修信息" />报修信息</li>
+        <li><input type="checkbox" name="CbItem" value="报修人" />报修人</li>
     
     </ul>
     <asp:Button ID="BtnSubmit" runat="server" Text=" 提交 " OnClick="BtnSubmit_Click" />
