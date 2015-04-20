@@ -13,6 +13,13 @@
                         外呼
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                    请在被叫号码输入框内输入要拨打的号码。待拨打的号码必须全部是数字，不得包含其它非数字内容。<br />
+                    如被叫号码框内的内容是多个号码，请将其调整成一个合法号码后再点击拨打。<br /><br />
+                    分机号输入框是您当前登录的呼叫中心分机号。
+                    </td>                
+                </tr>                
                 <tr><td>
                      <div style="border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;
                          line-height: 22px; padding: 10px 10px;">
