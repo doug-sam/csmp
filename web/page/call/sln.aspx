@@ -5,6 +5,33 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <uc1:CallState ID="CallState1" runat="server" FocusItemIndex="2" />
+    <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+        <ContentTemplate>
+            <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">
+                <tr>
+                    <td  style="height: 30px" class="td1_1">
+                        外呼
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    请在被叫号码输入框内输入要拨打的号码。待拨打的号码必须全部是数字，不得包含其它非数字内容。<br />
+                    如被叫号码框内的内容是多个号码，请将其调整成一个合法号码后再点击拨打。<br /><br />
+                    分机号输入框是您当前登录的呼叫中心分机号。
+                    </td>                
+                </tr>                
+                <tr><td>
+                     <div style="border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;
+                         line-height: 22px; padding: 10px 10px;">
+                        <asp:Label ID="labStation" runat="server" Text="分机号："></asp:Label><asp:TextBox ID="txtStation" runat="server"></asp:TextBox>
+                        <asp:Label ID="labCalledNO" runat="server" Text="被叫号码："></asp:Label><asp:TextBox ID="txtCalledNO" runat="server"></asp:TextBox>
+                        <input type="button" onclick="OutboundCall();" Text="拨打" class="BigButton"/><input type="text" name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
+                    </div>
+            </td></tr>
+            </table>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+    <br />
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">
@@ -34,4 +61,21 @@
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>
+    <script type="text/javascript">        
+        function OutboundCall() {
+            var dnis = $("#<%=labCalledNO.ClientID %>").val();
+            if ( !dnis || dnis == "" )
+                {alert("请输入被叫号码，否则无法执行外呼!");return;}
+            var ani = $("#<%=labStation.ClientID %>").val();
+            if ( !ani || ani == "" )
+                {alert("请输入您登录的分机号，否则无法执行外呼!");return;}
+            var urlStr = encodeURIComponent("http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=" + dnis + "&<%= CTIWSObAniName %>=" + ani);
+            $.ajax({
+                url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
+                success: function(data) {
+                    $("#callbackrecid").val(data);
+                }
+            });
+        }
+    </script>    
 </asp:Content>

@@ -7,15 +7,21 @@
     <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1" id="TableCall" runat="server">
         <tr>
             <td class="td1_2">
-                拨打电话<br />
-                only IE support
+                拨打电话
             </td>
             <td class="td1_3">
                 <asp:TextBox ID="TxbTel" CssClass="myTel" runat="server" 
-                    Width="360px"></asp:TextBox>
+                    Width="200px"></asp:TextBox>
             </td>
             <td class="td1_2">
-                <input type="button" onclick="OutboundCall();" value=" 拨打电话回访 " class="BigButton" /><input type="text" name="callbackrecordid" id="callbackrecid" value=""/>
+                分机号码
+            </td>
+            <td class="td1_3">
+                <asp:TextBox ID="TxbExt" CssClass="myExtensionID" runat="server" 
+                    Width="120px"></asp:TextBox>
+            </td>            
+            <td class="td1_2">
+                <input type="button" onclick="OutboundCall();" value=" 拨打电话回访 " class="BigButton" /><input type="text" name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
             </td>
         </tr>
     </table>
@@ -92,14 +98,20 @@
         }
         
         function OutboundCall() {
-            var urlStr = encodeURIComponent("http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=6002&<%= CTIWSObAniName %>=6001");
+            var dnis = $(".myTel").val();
+            if ( !dnis || dnis == "" )
+                {alert("请输入被叫号码，否则无法执行外呼!");return;}
+            var ani = $(".myExtensionID").val();
+            if ( !ani || ani == "" )
+                {alert("请输入您登录的分机号，否则无法执行外呼!");return;}
+            var urlStr = encodeURIComponent("http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=" + dnis + "&<%= CTIWSObAniName %>=" + ani);
             $.ajax({
                 url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
                 success: function(data) {
                     $("#callbackrecid").val(data);
                 }
             });
-        }        
+        }
     </script>
 
 </asp:Content>

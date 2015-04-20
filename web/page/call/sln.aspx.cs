@@ -4,12 +4,29 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Configuration;
 using CSMP.BLL;
 using CSMP.Model;
 using Tool;
 
 public partial class page_call_sln : _Call_Step
 {
+    public string CTIWSIP
+    {
+        get { return ConfigurationManager.AppSettings["CTIWSIP"].ToString(); }
+    }
+    public string CTIWSPort
+    {
+        get { return ConfigurationManager.AppSettings["CTIWSPort"].ToString(); }
+    }
+    public string CTIWSObAniName
+    {
+        get { return ConfigurationManager.AppSettings["CTIWSObAniName"].ToString(); }
+    }
+    public string CTIWSObDnisName
+    {
+        get { return ConfigurationManager.AppSettings["CTIWSObDnisName"].ToString(); }
+    }
     private CallInfo GetInfo()
     {
         if (ViewState["info"] != null)
@@ -40,9 +57,9 @@ public partial class page_call_sln : _Call_Step
                 Function.AlertBack("数据有误。");
             }
             CallState1.CallID = info.ID;
-
-
             CheckStatus(info);
+            //绑定呼叫信息 ZQL
+            BlindCallInfo(info.StoreID);
 
         }
     }
@@ -149,7 +166,23 @@ public partial class page_call_sln : _Call_Step
     /// </summary>
     protected void BtnDeal_Click(object sender, EventArgs e)
     {
+        string callbackrecordid = Request["callbackrecordid"];
+        int POS1 = callbackrecordid.IndexOf("#");
+        if ((POS1 + 1) >= callbackrecordid.Length)
+            POS1 = -1;
+        int POS2 = callbackrecordid.IndexOf("#", POS1 + 1);
 
+        if (POS1 != -1 && POS2 != -1 && POS2 > POS1)
+        {
+            callbackrecordid = callbackrecordid.Substring(POS1 + 1, POS2 - POS1 - 1);
+            POS1 = callbackrecordid.IndexOf("=");
+            if (POS1 != -1)
+                callbackrecordid = callbackrecordid.Substring(POS1 + 1);
+            else
+                callbackrecordid = "";
+        }
+        else
+            callbackrecordid = "";
 
         CallInfo cinfo = GetInfo();
         CheckStatus(cinfo);
@@ -162,7 +195,10 @@ public partial class page_call_sln : _Call_Step
         sinfo.CallID = cinfo.ID;
         sinfo.DateBegin = DateTime.Now;
         sinfo.DateEnd = sinfo.DateBegin;
-        sinfo.Details = TxbDetail.Text;
+        if (string.IsNullOrEmpty(callbackrecordid))
+            sinfo.Details = TxbDetail.Text;
+        else
+            sinfo.Details = TxbDetail.Text + "  A$B$C" + callbackrecordid + "D$E$F";
         sinfo.StepIndex = CallStepBLL.GetMaxStepIndex(cinfo.ID) + 1;
         sinfo.IsSolved = false;
         sinfo.StepName = "由" + CurrentUserName + "进行负责处理";
@@ -186,6 +222,28 @@ public partial class page_call_sln : _Call_Step
             Function.AlertMsg("提交失败，重试不行的话联系管理员");
             return;
         }
+    }
+
+    /// <summary>
+    /// ZQL 2015.4.19
+    /// 获取呼叫信息
+    /// </summary>
+    /// <param name="StoreID"></param>
+    protected void BlindCallInfo(int StoreID)
+    {
+        //绑定店铺号码
+        StoreInfo sinfo = StoresBLL.Get(StoreID);
+        if (null == sinfo)
+        {
+            return;
+        }
+        txtCalledNO.Text = sinfo.Tel;
+        //绑定坐席分机
+        if (HttpContext.Current.Request.Cookies != null && HttpContext.Current.Request.Cookies["Station"] != null)
+        {
+            txtStation.Text = HttpContext.Current.Request.Cookies["Station"].Value.ToString();
+        }
+        
     }
 }
 

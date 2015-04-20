@@ -39,13 +39,13 @@ public partial class Controls_RecordPlay : System.Web.UI.UserControl
 
         //LtlSrc1.Text = LtlSrc2.Text = DownLoad(info);
         if (UseOldRecordDB)
-            LtlSrc2.Text = DownLoad(info);
+            hdsrc.Value = DownLoad(info);
         else
         {
             if ( IsIncommingRecord )
-                LtlSrc2.Text = GetRecordURL(info);
-            else
-                LtlSrc2.Text = GetCallbackRecordURL(stepinfo);
+                hdsrc.Value = "http:" + GetRecordURL(info);
+            else if ( stepinfo != null )
+                hdsrc.Value = "http:" + GetCallbackRecordURL(stepinfo);
         }
         StoreInfo sinfo = StoresBLL.Get(info.StoreID);
         if (null == sinfo)
