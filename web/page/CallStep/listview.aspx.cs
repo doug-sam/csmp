@@ -173,4 +173,24 @@ public partial class page_CallStep_listview : BasePage
         return recordid;
     }
 
+    public string GenerateATagPrefix(string index, string details)
+    {
+        CallInfo info = GetInfo();
+        if (null == info)
+            return "";
+        string recID = ProcessDetails(details);
+        if (index == "0")
+            return "<a href='/page/Record/Play.aspx?ID=" + info.ID + "&RecID=" + recID + "'>";
+        return "";
+    }
+
+    public string GenerateATagSufix(string index)
+    {
+        CallInfo info = GetInfo();
+        if (null == info)
+            return "";
+        if (index == "0")
+            return "</a>";
+        return "";
+    }
 }

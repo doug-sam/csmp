@@ -25,8 +25,9 @@
         <Columns>
             <asp:TemplateField HeaderText="步骤">
                 <ItemTemplate>
+                    <%#GenerateATagPrefix(Container.DataItemIndex.ToString(), Eval("Details").ToString())%>
                     步骤
-                    <%#Container.DataItemIndex+1%></ItemTemplate>
+                    <%#Container.DataItemIndex+1%><%#GenerateATagSufix(Container.DataItemIndex.ToString()) %></ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
             <asp:TemplateField HeaderText="所进行操作">
