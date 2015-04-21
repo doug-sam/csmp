@@ -6,15 +6,22 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1" id="TableCall" runat="server">
         <tr>
+            <td colspan="5" class="td1_2">
+            请在被叫号码输入框内输入要拨打的号码。待拨打的号码必须全部是数字，不得包含其它非数字内容。<br />
+            如被叫号码框内的内容是多个号码，请将其调整成一个合法号码后再点击拨打。<br /><br />
+            分机号输入框是您当前登录的呼叫中心分机号。
+            </td>                
+        </tr>    
+        <tr>
             <td class="td1_2">
-                拨打电话
+                被叫号码
             </td>
             <td class="td1_3">
                 <asp:TextBox ID="TxbTel" CssClass="myTel" runat="server" 
                     Width="200px"></asp:TextBox>
             </td>
             <td class="td1_2">
-                分机号码
+                分机号
             </td>
             <td class="td1_3">
                 <asp:TextBox ID="TxbExt" CssClass="myExtensionID" runat="server" 

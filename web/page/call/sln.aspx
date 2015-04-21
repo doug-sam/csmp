@@ -23,8 +23,8 @@
                 <tr><td>
                      <div style="border-left: 1px solid #ccc; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;
                          line-height: 22px; padding: 10px 10px;">
-                        <asp:Label ID="labStation" runat="server" Text="分机号："></asp:Label><asp:TextBox ID="txtStation" runat="server"></asp:TextBox>
-                        <asp:Label ID="labCalledNO" runat="server" Text="被叫号码："></asp:Label><asp:TextBox ID="txtCalledNO" runat="server"></asp:TextBox>
+                        <asp:Label ID="labStation" runat="server" Text="分机号"></asp:Label><asp:TextBox ID="txtStation" runat="server"></asp:TextBox>
+                        <asp:Label ID="labCalledNO" runat="server" Text="被叫号码"></asp:Label><asp:TextBox ID="txtCalledNO" runat="server"></asp:TextBox>
                         <input type="button" onclick="OutboundCall();" Text="拨打" class="BigButton"/><input type="text" name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
                     </div>
             </td></tr>

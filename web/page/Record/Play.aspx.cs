@@ -49,11 +49,4 @@ public partial class page_Attachment_View : _Sys_Attachment
                 RecordPlay1.stepinfo = null;
         }
     }
-
-
-    protected void ImgBtnDownLoad_Click(object sender, ImageClickEventArgs e)
-    {
-        int ID = Function.ConverToInt(((ImageButton)sender).CommandArgument);
-        Response.Redirect("/page/sys/DownLoadFile.ashx?ID="+ID);
-    }
 }
