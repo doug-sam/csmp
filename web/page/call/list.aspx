@@ -294,6 +294,13 @@
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
+            <asp:TemplateField HeaderText="更换上门人" Visible="true">
+                <ItemTemplate>
+                    <a href="javascript:tb_show('更换上门人', '/page/Assign/ReassignOnsiteEngineer.aspx?ID=<%#Eval("ID") %>&TB_iframe=true&height=450&width=730', false);">
+                        更换上门人</a>
+                </ItemTemplate>
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:TemplateField>
             <asp:TemplateField HeaderText="后续处理" Visible="true">
                 <ItemTemplate>
                     <a href="javascript:tb_show('后续处理', '/page/callStep/StepSwitchAfterFinish.aspx?ID=<%#Eval("ID") %>&TB_iframe=true&height=450&width=730', false);">

@@ -88,6 +88,10 @@ public partial class page_call_list : _Call_list
             {
                 HideHead.Add("转派");
             }
+            if (!GroupBLL.PowerCheck((int)PowerInfo.P1_Call.更换上门人))
+            {
+                HideHead.Add("更换上门人");
+            }
             if (!GroupBLL.PowerCheck((int)PowerInfo.P1_Call.回访))
             {
                 HideHead.Add("回访");
