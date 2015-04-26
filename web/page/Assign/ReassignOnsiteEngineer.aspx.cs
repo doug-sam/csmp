@@ -118,10 +118,12 @@ public partial class page_Assign_ReassignOnsiteEngineer : _Call_Assign
         {
             
             Function.AlertRefresh("现场工程师更换成功", "main");
+            WriteLog("成功", csinfo.CallID);
         }
         else
         {
             Function.AlertMsg("更换失败，请联系管理员");
+            WriteLog("失败", csinfo.CallID);
         }
     }
 
@@ -148,5 +150,18 @@ public partial class page_Assign_ReassignOnsiteEngineer : _Call_Assign
             }
         }
 
+    }
+    protected void WriteLog(string status, int callID)
+    {
+        LogInfo linfo = new LogInfo();
+        linfo.AddDate = DateTime.Now;
+        linfo.Category = SysEnum.LogType.报修数据修改.ToString();
+        linfo.Content = string.Format("更换现场工程师{0};报修信息：CallID={1}", status,callID);
+        linfo.ErrorDate = DateTime.Now;
+        linfo.SendEmail = false;
+        linfo.Serious = 1;
+        linfo.UserName = CurrentUserName;
+        LogBLL.Add(linfo);
+    
     }
 }
