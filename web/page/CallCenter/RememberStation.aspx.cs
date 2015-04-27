@@ -24,7 +24,7 @@ public partial class RememberStation : System.Web.UI.Page
         string Station = UserState.GetCookie("Station");
         if (station == Station || station.Equals(Station))
         {
-            Info += "<h3>登陆成功！</h3>";
+            Info += "<h3>登录成功！</h3>";
             Info += "<h3>分机：" + Station+"</h3>";
             Info += "<h3>工号：" + agent + "</h3>"; 
         }

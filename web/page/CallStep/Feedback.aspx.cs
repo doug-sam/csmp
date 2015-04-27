@@ -101,6 +101,10 @@ public partial class page_callStep_Feedback : _Call_Feedback
                 //这里听说放进剪切板就可以打出电话了。神奇
                 // ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "make a call", string.Format(JS, stinfo.Tel), true);
             }
+            if (HttpContext.Current.Request.Cookies != null && HttpContext.Current.Request.Cookies["Station"] != null)
+            {
+                TxbExt.Text = HttpContext.Current.Request.Cookies["Station"].Value.ToString();
+            }
         }
     }
 
@@ -271,6 +275,7 @@ public partial class page_callStep_Feedback : _Call_Feedback
         }
         if (CallStepBLL.AddCallStep_UpdateCall(cinfo, info))
         {
+            WriteSysLog(info.CallID, callbackrecordid);
             int FlagFailed = 0;
 
             foreach (FeedbackAnswerInfo item in listradio)
@@ -336,6 +341,16 @@ public partial class page_callStep_Feedback : _Call_Feedback
         return recordid;
     }
 
-
-
+    protected void WriteSysLog(int callID, string recID)
+    {
+        LogInfo linfo = new LogInfo();
+        linfo.AddDate = DateTime.Now;
+        linfo.Category = SysEnum.LogType.普通日志.ToString();
+        linfo.Content = string.Format("回访 报修ID：{0}，录音标识：{1}。", callID, recID);
+        linfo.ErrorDate = DateTime.Now;
+        linfo.SendEmail = false;
+        linfo.Serious = 1;
+        linfo.UserName = CurrentUserName;
+        LogBLL.Add(linfo);
+    }
 }

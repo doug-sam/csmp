@@ -115,7 +115,12 @@
             $.ajax({
                 url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
                 success: function(data) {
-                    $("#callbackrecid").val(data);
+                    var receivedstr = data;
+                    var pos = receivedstr.indexOf("error#");
+                    if ( pos != 0 )
+                        $("#callbackrecid").val(data);
+                    else
+                        alert("外呼失败，请确认主被叫号码正确无误，或请稍后再试。");
                 }
             });
         }

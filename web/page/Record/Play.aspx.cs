@@ -24,7 +24,7 @@ public partial class page_Attachment_View : _Sys_Attachment
                 Function.AlertBack("参数有误");
                 return;
             }
-            info = CallBLL.Get(ID);
+            info = CallBLL.Get(CallID);
             if (null == info)
             {
                 Function.AlertBack("数据有误 null in db");

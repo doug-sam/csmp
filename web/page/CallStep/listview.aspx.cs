@@ -173,12 +173,22 @@ public partial class page_CallStep_listview : BasePage
         return recordid;
     }
 
+    protected string GetRecordIDFromDetails(string Details)
+    {
+        string recordid = "";
+        int POS1 = Details.IndexOf("A$B$C");
+        int POS2 = Details.IndexOf("D$E$F");
+        if (POS1 != -1 && POS2 != -1 && POS2 > POS1)
+            recordid = Details.Substring(POS1 + 5, POS2 - POS1 - 5);
+        return recordid;
+    }
+
     public string GenerateATagPrefix(string index, string details)
     {
         CallInfo info = GetInfo();
         if (null == info)
             return "";
-        string recID = ProcessDetails(details);
+        string recID = GetRecordIDFromDetails(details);
         if (index == "0")
             return "<a href='/page/Record/Play.aspx?ID=" + info.ID + "&RecID=" + recID + "'>";
         return "";
