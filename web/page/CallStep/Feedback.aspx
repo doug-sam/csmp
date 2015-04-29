@@ -108,9 +108,8 @@
                 type: 'post',
                 url: '/Services/Log/WriteToSysLogHandler.ashx',
                 data: { "category": "回访外呼", "msg":msg },
-                async: false,
-                success: function (data) {}
-            });        
+                async: false
+            });
         }
         function OutboundCall() {
             var dnis = $(".myTel").val();
