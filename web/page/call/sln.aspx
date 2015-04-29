@@ -84,7 +84,7 @@
             $.ajax({
                 url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
                 success: function(data) {
-                                        var receivedstr = data;
+                    var receivedstr = data;
                     var pos = receivedstr.indexOf("error#");
                     if ( pos != 0 ){
                         pos = receivedstr.indexOf("#");

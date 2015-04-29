@@ -29,7 +29,7 @@ public partial class page_call_sln : _Call_Step
     }
     public string CallID
     {
-        get { return Function.GetRequestInt("id").ToString(); }
+        get { return Function.GetRequestInt("id").ToString() + " " + GetInfo().No; }
     }
     private CallInfo GetInfo()
     {

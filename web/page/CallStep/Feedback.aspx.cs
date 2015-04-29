@@ -30,7 +30,8 @@ public partial class page_callStep_Feedback : _Call_Feedback
     }
     public string CallID
     {
-        get { return Function.GetRequestInt("id").ToString(); }
+        //get { return Function.GetRequestInt("id").ToString(); }
+        get { return GetInfo().ID.ToString() + " " + GetInfo().No; }
     }
     private CallInfo GetInfo()
     {
