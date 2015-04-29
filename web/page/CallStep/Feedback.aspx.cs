@@ -28,6 +28,10 @@ public partial class page_callStep_Feedback : _Call_Feedback
     {
         get { return ConfigurationManager.AppSettings["CTIWSObDnisName"].ToString(); }
     }
+    public string CallID
+    {
+        get { return Function.GetRequestInt("id").ToString(); }
+    }
     private CallInfo GetInfo()
     {
         if (ViewState["info"] != null)

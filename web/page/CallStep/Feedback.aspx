@@ -103,7 +103,15 @@
             var Tel = $(".myTel").val();
             window.clipboardData.setData('Text', "'AAAA$$$$BBBB$$$$CCCC::" + Tel + "'");
         }
-        
+        function WriteToSysLog(msg){
+            $.ajax({
+                type: 'post',
+                url: '/Services/Log/WriteToSysLogHandler.ashx',
+                data: { "category": "回访外呼", "msg":msg },
+                async: false,
+                success: function (data) {}
+            });        
+        }
         function OutboundCall() {
             var dnis = $(".myTel").val();
             if ( !dnis || dnis == "" )
@@ -111,16 +119,34 @@
             var ani = $(".myExtensionID").val();
             if ( !ani || ani == "" )
                 {alert("请输入您登录的分机号，否则无法执行外呼!");return;}
-            var urlStr = encodeURIComponent("http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=" + dnis + "&<%= CTIWSObAniName %>=" + ani);
+            var callIDStr = "  CallID:<%= CallID %>";
+            var originalUrlStr = "http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=" + dnis + "&<%= CTIWSObAniName %>=" + ani;
+            var urlStr = encodeURIComponent(originalUrlStr);
             $.ajax({
                 url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
                 success: function(data) {
                     var receivedstr = data;
                     var pos = receivedstr.indexOf("error#");
-                    if ( pos != 0 )
-                        $("#callbackrecid").val(data);
-                    else
+                    if ( pos != 0 ){
+                        pos = receivedstr.indexOf("#");
+                        if ( pos != -1 )  {
+                            $("#callbackrecid").val(data);
+                            WriteToSysLog("回访外呼成功：" + data + "  url:" + originalUrlStr + callIDStr);
+                            alert("回访外呼成功。");
+                        }
+                        else{
+                            WriteToSysLog("回访外呼失败：" + data + "  url:" + originalUrlStr + callIDStr)
+                            alert("回访外呼失败。" + data + "。");
+                        }
+                    }
+                    else{
+                        WriteToSysLog("回访外呼失败：" + data + "  url:" + originalUrlStr + callIDStr);
                         alert("外呼失败，请确认主被叫号码正确无误，或请稍后再试。");
+                    }
+                },
+                error:function(xhr, errormsg, e) {
+                        WriteToSysLog("回访外呼失败无响应。"+errormsg?"":errormsg + "  url:" + originalUrlStr + callIDStr);
+                        alert("外呼请求无响应，请稍后再试。");
                 }
             });
         }

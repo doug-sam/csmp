@@ -27,6 +27,10 @@ public partial class page_call_sln : _Call_Step
     {
         get { return ConfigurationManager.AppSettings["CTIWSObDnisName"].ToString(); }
     }
+    public string CallID
+    {
+        get { return Function.GetRequestInt("id").ToString(); }
+    }
     private CallInfo GetInfo()
     {
         if (ViewState["info"] != null)
