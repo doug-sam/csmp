@@ -2,8 +2,12 @@
 
 <%@ Register Src="../../Controls/CallState.ascx" TagName="CallState" TagPrefix="uc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+<link href="/css/ajaxloader.css" rel="stylesheet" type="text/css" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div id="AjaxLoaderTipBackground" class="ajaxLoaderTipBackground">
+        <div id="AjaxLoaderTip" class="ajaxLoaderTipDiv">通讯中,请稍候...</div>
+    </div>
     <uc1:CallState ID="CallState1" runat="server" FocusItemIndex="2" />
     <asp:UpdatePanel ID="UpdatePanel2" runat="server">
         <ContentTemplate>
@@ -69,8 +73,17 @@
                 data: { "category": "开始处理外呼", "msg":msg },
                 async: false
             });        
-        }            
+        }
+        function ShowLoader(){
+            var divMarginLeft = 0 - (document.all.AjaxLoaderTip.offsetWidth);
+		    $('#AjaxLoaderTip').css('margin-left', divMarginLeft / 2);
+            AjaxLoaderTipBackground.style.visibility="visible";
+        }
+        function CloseLoader(){
+            AjaxLoaderTipBackground.style.visibility="hidden";
+        }
         function OutboundCall() {
+            ShowLoader();
             var dnis = $("#<%=txtCalledNO.ClientID %>").val();
             if ( !dnis || dnis == "" )
                 {alert("请输入被叫号码，否则无法执行外呼!");return;}
@@ -83,6 +96,7 @@
             $.ajax({
                 url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
                 success: function(data) {
+                    CloseLoader();
                     var receivedstr = data;
                     var pos = receivedstr.indexOf("error#");
                     if ( pos != 0 ){
@@ -103,6 +117,7 @@
                     }
                 },
                 error:function(xhr, errormsg, e) {
+                    CloseLoader();
                         WriteToSysLog("开始处理外呼失败无响应。"+errormsg?"":errormsg + "  url:" + originalUrlStr + callIDStr);
                         alert("外呼请求无响应，请稍后再试。");
                 }
