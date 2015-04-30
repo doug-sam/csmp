@@ -5,9 +5,7 @@
 <link href="/css/ajaxloader.css" rel="stylesheet" type="text/css" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <div id="AjaxLoaderTipBackground" class="ajaxLoaderTipBackground">
-        <div id="AjaxLoaderTip" class="ajaxLoaderTipDiv">通讯中,请稍候...</div>
-    </div>
+    <div id="AjaxLoaderTipBackground" class="ajaxLoaderTipBackground"><div id="AjaxLoaderTip" class="ajaxLoaderTipDiv">通讯中,请稍候...</div></div>
     <uc1:CallState ID="CallState1" runat="server" FocusItemIndex="2" />
     <asp:UpdatePanel ID="UpdatePanel2" runat="server">
         <ContentTemplate>

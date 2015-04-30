@@ -2,8 +2,10 @@
     CodeFile="Feedback.aspx.cs" Inherits="page_callStep_Feedback" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+<link href="/css/ajaxloader.css" rel="stylesheet" type="text/css" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div id="AjaxLoaderTipBackground" class="ajaxLoaderTipBackground"><div id="AjaxLoaderTip" class="ajaxLoaderTipDiv">通讯中,请稍候...</div></div>
     <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1" id="TableCall" runat="server">
         <tr>
             <td colspan="5" class="td1_2">
@@ -111,7 +113,16 @@
                 async: false
             });
         }
+        function ShowLoader(){
+            var divMarginLeft = 0 - (document.all.AjaxLoaderTip.offsetWidth);
+		    $('#AjaxLoaderTip').css('margin-left', divMarginLeft / 2);
+            AjaxLoaderTipBackground.style.visibility="visible";
+        }
+        function CloseLoader(){
+            AjaxLoaderTipBackground.style.visibility="hidden";
+        }        
         function OutboundCall() {
+            ShowLoader();
             var dnis = $(".myTel").val();
             if ( !dnis || dnis == "" )
                 {alert("请输入被叫号码，否则无法执行外呼!");return;}
@@ -124,6 +135,7 @@
             $.ajax({
                 url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
                 success: function(data) {
+                    CloseLoader();
                     var receivedstr = data;
                     var pos = receivedstr.indexOf("error#");
                     if ( pos != 0 ){
@@ -144,6 +156,7 @@
                     }
                 },
                 error:function(xhr, errormsg, e) {
+                        CloseLoader();
                         WriteToSysLog("回访外呼失败无响应。"+errormsg?"":errormsg + "  url:" + originalUrlStr + callIDStr);
                         alert("外呼请求无响应，请稍后再试。");
                 }
