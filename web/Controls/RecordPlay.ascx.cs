@@ -42,10 +42,12 @@ public partial class Controls_RecordPlay : System.Web.UI.UserControl
             hdsrc.Value = DownLoad(info);
         else
         {
-            if ( IsIncommingRecord )
-                hdsrc.Value = "http:" + GetRecordURL(info);
-            else if ( stepinfo != null )
-                hdsrc.Value = "http:" + GetCallbackRecordURL(stepinfo);
+            if (IsIncommingRecord)
+                //hdsrc.Value = "http:" + GetRecordURL(info);
+                hdsrc.Value = DownLoadEx("http:" + GetRecordURL(info), "01");
+            else if (stepinfo != null)
+                //hdsrc.Value = "http:" + GetCallbackRecordURL(stepinfo);
+                hdsrc.Value = DownLoadEx("http:" + GetCallbackRecordURL(stepinfo), "03");
         }
         StoreInfo sinfo = StoresBLL.Get(info.StoreID);
         if (null == sinfo)
@@ -117,6 +119,45 @@ public partial class Controls_RecordPlay : System.Web.UI.UserControl
 
         return SavePath + SaveName;
     }
+    /// <summary>
+    /// 与2015年5月份新的呼叫中心系统匹配。连接新的录音服务器。
+    /// recfiletype。每个call将对应三个录音文件。所以下载到网站目录下不能再以一个单一的call的标识为文件名，必须再加点其他内容。
+    ///             01:呼入;    02:开始处理外呼门店;    03:回访。
+    /// </summary>
+    public string DownLoadEx(string recfilepath, string recfiletype)
+    {
+        string SavePath = DeadPath + DateTime.Now.ToString("yyyy-MM-dd") + "/";
+        string SaveMapPath = Server.MapPath("~" + SavePath);
+        if (!Directory.Exists(SaveMapPath))
+        {
+            Directory.CreateDirectory(SaveMapPath);
+        }
+        string SaveName = ".wav";
+        if (ViewState["info"] != null)
+        {
+            SaveName = ((CallInfo)ViewState["info"]).ID + recfiletype + SaveName;
+        }
+        else if (Function.GetRequestInt("CallID") > 0)
+        {
+            SaveName = Function.GetRequestInt("CallID") + recfiletype + SaveName;
+        }
+        else
+        {
+            SaveName = Function.GetRand() + SaveName;
+        }
+        WebClient myWebClient = new WebClient();
+        try
+        {
+            myWebClient.DownloadFile(recfilepath.Replace("\\", "/"), SaveMapPath + SaveName);
+        }
+        catch (Exception e)
+        {
+            WriteLog(recfilepath, SaveMapPath + SaveName, e.Message);
+            return string.Empty;
+        }
+
+        return SavePath + SaveName;
+    }
     public string GetRecordURL(CallInfo info)
     {
         RecordInfo recinfo = null;
@@ -178,6 +219,20 @@ public partial class Controls_RecordPlay : System.Web.UI.UserControl
         //    Function.AlertMsg("系统繁忙，请重试 。");
         //}
         
+    }
+
+    protected void WriteLog(string originalurl, string localpath, string cause)
+    {
+        LogInfo linfo = new LogInfo();
+        linfo.AddDate = DateTime.Now;
+        linfo.Category = SysEnum.LogType.普通日志.ToString();
+        linfo.Content = string.Format("下载录音文件失败  网络路径：{0}  本地路径：{1}  原因：{2}", originalurl, localpath, cause);
+        linfo.ErrorDate = DateTime.Now;
+        linfo.SendEmail = false;
+        linfo.Serious = 1;
+        linfo.UserName = "admin";
+        LogBLL.Add(linfo);
+
     }
 
 
