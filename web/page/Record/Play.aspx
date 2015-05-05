@@ -38,6 +38,4 @@
             </td>        
         </tr>
     </table>
-              
-    <div class="NoData">木有录音</div>
 </asp:Content>

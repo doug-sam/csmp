@@ -42,12 +42,27 @@ public partial class Controls_RecordPlay : System.Web.UI.UserControl
             hdsrc.Value = DownLoad(info);
         else
         {
+            string recordFileUrl = "";
             if (IsIncommingRecord)
-                //hdsrc.Value = "http:" + GetRecordURL(info);
-                hdsrc.Value = DownLoadEx("http:" + GetRecordURL(info), "01");
+            {
+                recordFileUrl = GetRecordURL(info);
+                if (String.IsNullOrEmpty(recordFileUrl))
+                {
+                    Panel1.Visible = false;
+                    Panel2.Visible = true;
+                }
+                hdsrc.Value = DownLoadEx("http:" + recordFileUrl, "01");
+            }
             else if (stepinfo != null)
-                //hdsrc.Value = "http:" + GetCallbackRecordURL(stepinfo);
-                hdsrc.Value = DownLoadEx("http:" + GetCallbackRecordURL(stepinfo), "03");
+            {
+                recordFileUrl = GetCallbackRecordURL(stepinfo);
+                hdsrc.Value = DownLoadEx("http:" + recordFileUrl, "03");
+            }
+            if (String.IsNullOrEmpty(recordFileUrl))
+            {
+                Panel1.Visible = false;
+                Panel2.Visible = true;
+            }
         }
         StoreInfo sinfo = StoresBLL.Get(info.StoreID);
         if (null == sinfo)
