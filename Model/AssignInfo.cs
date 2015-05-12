@@ -61,5 +61,12 @@ namespace CSMP.Model
         public string CreatorName { get; set; }
 
         public bool CrossWorkGroup { get; set; }
+        /// <summary>
+        ///判断是插入的转派，还是更换现场工程师记录
+        ///0为转派，1为更换现场工程师
+        ///2015.5.11ZQL添加
+        /// </summary>
+        public int AssignType { get; set; }
+
     }
 }

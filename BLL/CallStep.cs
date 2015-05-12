@@ -122,14 +122,23 @@ namespace CSMP.BLL
                 info.AddDate = item.AddDate;
                 info.CallID = item.CallID;
                 info.DateBegin = info.DateEnd = item.AddDate;
-                info.Details = item.OldName + "把call转给了" + item.UserName;
+                if(item.AssignType==0)
+                { 
+                    info.Details = item.OldName + "把call转给了" + item.UserName;
+                    info.StepName = "转派";
+                }
+                else if (item.AssignType == 1)
+                {
+                    info.Details = "将"+item.OldName + "更换为" + item.UserName;
+                    info.StepName = "更换现场工程师";
+                }
+                
                 info.IsSolved = false;
                 info.MajorUserID = item.OldID;
                 info.MajorUserName = item.OldName;
                 info.SolutionID = 0;
                 info.SolutionName = string.Empty;
                 info.StepIndex = 0;
-                info.StepName = "转派";
                 info.StepType = 0;
                 info.UserID = item.CreatorID;
                 info.UserName = item.CreatorName;

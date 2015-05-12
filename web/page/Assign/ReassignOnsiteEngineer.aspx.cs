@@ -108,15 +108,46 @@ public partial class page_Assign_ReassignOnsiteEngineer : _Call_Assign
         }
         int callStepID = Function.ConverToInt(this.CallStepID.Value);
         CallStepInfo csinfo = CallStepBLL.Get(callStepID);
+               
+
+        AssignInfo asinfo = new AssignInfo();
+        AssignInfo asold = AssignBLL.GetMax(csinfo.CallID);
+        asinfo.AddDate = DateTime.Now;
+        asinfo.CallID = csinfo.CallID;
+        asinfo.UseID = UserID;
+        asinfo.UserName = TargetUserInfo.Name;
+        asinfo.CreatorID = CurrentUser.ID;
+        asinfo.CreatorName = CurrentUser.Name;
+        asinfo.WorkGroupID = TargetUserInfo.WorkGroupID;
+        asinfo.CrossWorkGroup = false;
+        asinfo.AssignType = 1;
+
+        if (null == asold || asold.ID == 0)
+        {
+            asinfo.OldID = csinfo.MajorUserID;
+            asinfo.OldName = csinfo.MajorUserName;
+            asinfo.Step = 1;
+        }
+        else
+        {
+            asinfo.OldID = csinfo.MajorUserID;
+            asinfo.OldName = csinfo.MajorUserName;
+            asinfo.Step = asold.Step + 1;
+        }
+
+        if (asinfo.UseID == asinfo.OldID)
+        {
+            Function.AlertMsg("你是不是重复点击了？"); return;
+        }
         csinfo.MajorUserID = UserID;
         csinfo.MajorUserName = TargetUserInfo.Name;
-        csinfo.AddDate = DateTime.Now;
+        csinfo.AddDate = DateTime.Now.AddSeconds(1);
         csinfo.DateBegin = Function.ConverToDateTime(TxbDate.Text.Trim());
         csinfo.DateEnd = Function.ConverToDateTime(TxbDate.Text.Trim());
-
+               
         if (CallStepBLL.Edit(csinfo))
         {
-            
+            AssignBLL.Add(asinfo);
             Function.AlertRefresh("现场工程师更换成功", "main");
             WriteLog("成功", csinfo.CallID);
         }

@@ -10,11 +10,11 @@ namespace CSMP.DAL
 {
     public class AssignDAL
     {
-        private const string ALL_PARM = "  ID,f_CallID,f_Step,f_UseID,f_UserName,f_AddDate,f_OldName,f_OldID,f_WorkGroupID,f_CreatorID,f_CreatorName,f_CrossWorkGroup ";
+        private const string ALL_PARM = "  ID,f_CallID,f_Step,f_UseID,f_UserName,f_AddDate,f_OldName,f_OldID,f_WorkGroupID,f_CreatorID,f_CreatorName,f_CrossWorkGroup,f_AssignType ";
         private const string FROM_TABLE = " from [sys_Assign] ";
         private const string TABLE = " sys_Assign ";
-        private const string INSET = " (f_CallID,f_Step,f_UseID,f_UserName,f_AddDate,f_OldName,f_OldID,f_WorkGroupID,f_CreatorID,f_CreatorName,f_CrossWorkGroup) values(@CallID,@Step,@UseID,@UserName,@AddDate,@OldName,@OldID,@WorkGroupID,@CreatorID,@CreatorName,@CrossWorkGroup)  ";
-        private const string UPDATE = " f_CallID=@CallID,f_Step=@Step,f_UseID=@UseID,f_UserName=@UserName,f_AddDate=@AddDate,f_OldName=@OldName,f_OldID=@OldID,f_WorkGroupID=@WorkGroupID,f_CreatorID=@CreatorID,f_CreatorName=@CreatorName,,f_CrossWorkGroup=@CrossWorkGroup ";
+        private const string INSET = " (f_CallID,f_Step,f_UseID,f_UserName,f_AddDate,f_OldName,f_OldID,f_WorkGroupID,f_CreatorID,f_CreatorName,f_CrossWorkGroup,f_AssignType) values(@CallID,@Step,@UseID,@UserName,@AddDate,@OldName,@OldID,@WorkGroupID,@CreatorID,@CreatorName,@CrossWorkGroup,@AssignType)  ";
+        private const string UPDATE = " f_CallID=@CallID,f_Step=@Step,f_UseID=@UseID,f_UserName=@UserName,f_AddDate=@AddDate,f_OldName=@OldName,f_OldID=@OldID,f_WorkGroupID=@WorkGroupID,f_CreatorID=@CreatorID,f_CreatorName=@CreatorName,f_CrossWorkGroup=@CrossWorkGroup,f_AssignType=@AssignType ";
 
         #region ReadyData
         private AssignInfo GetByDataReader(SqlDataReader rdr)
@@ -32,6 +32,7 @@ namespace CSMP.DAL
             info.CreatorID = Convert.ToInt32(rdr["f_CreatorID"]);
             info.CreatorName = rdr["f_CreatorName"].ToString();
             info.CrossWorkGroup = Convert.ToBoolean(rdr["f_CrossWorkGroup"]);
+            info.AssignType = Convert.ToInt32(rdr["f_AssignType"]);
             return info;
         }
 
@@ -49,6 +50,7 @@ namespace CSMP.DAL
             new SqlParameter("@CreatorID", info.CreatorID),
             new SqlParameter("@CreatorName", info.CreatorName),
             new SqlParameter("@CrossWorkGroup", info.CrossWorkGroup),
+            new SqlParameter("@AssignType", info.AssignType),
             
             };
 
