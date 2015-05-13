@@ -45,19 +45,19 @@ public partial class page_call_view : _Call_list
 
             string UrlDead = ProfileBLL.GetValue(ProfileInfo.UserKey.电话服务器录音根地址);
 
-            DateTime useNewCCDate = new DateTime(2015, 4, 8);
-            if (info.CreateDate >= useNewCCDate)
-                RecordPlay1.UseOldRecordDB = false;
-            else
-                RecordPlay1.UseOldRecordDB = true;
             RecordPlay2.UseOldRecordDB = false;
             if (!string.IsNullOrEmpty(info.VideoID))
             {
+                if ( info.VideoID.Contains(".") )
+                    RecordPlay1.UseOldRecordDB = true;
+                else
+                    RecordPlay1.UseOldRecordDB = false;
                 RecordPlay1.info = info;
                 RecordPlay1.IsIncommingRecord = true;
             }
             else
             {
+                RecordPlay1.UseOldRecordDB = true;
                 RecordPlay1.info = null;
                 RecordPlay1.stepinfo = null;
             }

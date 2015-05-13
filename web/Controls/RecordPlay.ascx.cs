@@ -93,10 +93,12 @@ public partial class Controls_RecordPlay : System.Web.UI.UserControl
         catch (Exception ex)
         {
            // throw ex;
+            WriteLog("", "", String.Format("{0}    VideoID is:{1}.", ex.Message, info.VideoID));
             recinfo = null;
         }
         if (null == recinfo)
         {
+            WriteLog("", "", String.Format("Cannot find record in db.    VideoID is:{0}.", info.VideoID));
             return string.Empty;
             //Response.End();
         }
@@ -125,9 +127,10 @@ public partial class Controls_RecordPlay : System.Web.UI.UserControl
         {
             myWebClient.DownloadFile(Url, SaveMapPath + SaveName);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             //Function.AlertMsg("系统目前无法找到录音文件。");
+            WriteLog(Url, SaveMapPath + SaveName, String.Format("{0}    VideoID is:{1}.", ex.Message, info.VideoID));
             return string.Empty;
             // throw;
         }
