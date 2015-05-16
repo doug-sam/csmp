@@ -53,7 +53,7 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="操作备注">
                 <ItemTemplate>
-                    <%#ProcessDetails(Eval("Details").ToString())%>
+                    <%#ProcessDetails(Eval("Details").ToString(), Eval("StepName").ToString())%>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Left" />
             </asp:TemplateField>

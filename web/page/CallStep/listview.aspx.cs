@@ -172,6 +172,19 @@ public partial class page_CallStep_listview : BasePage
             recordid = recordid.Remove(POS1);
         return recordid;
     }
+    protected string ProcessDetails(string Details,string CallStep)
+    {
+        string recordid = Details;
+        int POS1 = recordid.IndexOf("A$B$C");
+        int POS2 = recordid.IndexOf("D$E$F");
+        if (POS1 != -1 && POS2 != -1 && POS2 > POS1)
+            recordid = recordid.Remove(POS1);
+        if (CallStep.Contains("等待第三方响应")&&CurrentUser.Rule[0]=="客户")
+        {
+            recordid = "";
+        }
+        return recordid;
+    }
 
     protected string GetRecordIDFromDetails(string Details)
     {
