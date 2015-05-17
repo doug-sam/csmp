@@ -110,6 +110,20 @@ namespace CSMP.BLL
             }
             return dal.Get(Tel);
         }
+        /// <summary>
+        /// 获取Info
+        /// ZQL 2015.5.16
+        /// </summary>
+        /// <param name="id">id</param>
+        public static StoreInfo GetByCallNO(string Tel)
+        {
+            Tel = Tel.Trim();
+            if (string.IsNullOrEmpty(Tel) || Tel.Length < 3)
+            {
+                return null;
+            }
+            return dal.GetByCallNO(Tel);
+        }
 
         /// <summary>
         /// 根据店铺号查找

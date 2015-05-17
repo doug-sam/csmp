@@ -81,7 +81,8 @@ public partial class page_call_add : _Call_Add
         {
             CallNo = CallNo.Trim().TrimStart('0').Trim();
 
-            StoreInfo sinfo = StoresBLL.Get(CallNo);
+            //StoreInfo sinfo = StoresBLL.Get(CallNo);
+            StoreInfo sinfo = StoresBLL.GetByCallNO(CallNo);
             if (null == sinfo)
             {
                 sinfo = StoresBLL.Get(CallNo);

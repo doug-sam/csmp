@@ -190,6 +190,23 @@ namespace CSMP.DAL
                 return GetByDataReader(rdr);
             }
         }
+       /// <summary>
+        /// 获取Info
+       /// </summary>
+       /// <param name="Tel">电话号码</param>
+       /// <returns></returns>
+        public StoreInfo GetByCallNO(string Tel)
+        {
+            StringBuilder strSQL = new StringBuilder();
+            strSQL.Append("select top 1 ").Append(ALL_PARM).Append(FROM_TABLE).Append(" where f_Tel like '%").Append(Tel).Append("%' AND f_IsClose=0");
+
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null))
+            {
+                if (!rdr.Read()) return null;
+
+                return GetByDataReader(rdr);
+            }
+        }
 
         /// <summary>
         /// 根据店铺号查找
