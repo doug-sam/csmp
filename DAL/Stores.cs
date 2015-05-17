@@ -198,7 +198,7 @@ namespace CSMP.DAL
         public StoreInfo GetByCallNO(string Tel)
         {
             StringBuilder strSQL = new StringBuilder();
-            strSQL.Append("select top 1 ").Append(ALL_PARM).Append(FROM_TABLE).Append(" where f_Tel like '%").Append(Tel).Append("%' AND f_IsClose=0");
+            strSQL.Append("select top 1 ").Append(ALL_PARM).Append(FROM_TABLE).Append(" where f_Tel like '%").Append(Tel).Append("%' AND f_IsClosed=0");
 
             using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null))
             {
