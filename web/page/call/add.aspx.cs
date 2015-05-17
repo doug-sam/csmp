@@ -85,7 +85,8 @@ public partial class page_call_add : _Call_Add
             StoreInfo sinfo = StoresBLL.GetByCallNO(CallNo);
             if (null == sinfo)
             {
-                sinfo = StoresBLL.Get(CallNo);
+                //sinfo = StoresBLL.Get(CallNo);
+                sinfo = StoresBLL.GetByCallNO(CallNo);
             }
             return sinfo;
         }
