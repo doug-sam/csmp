@@ -79,7 +79,7 @@
                 <tr>
                     <td colspan="8" style="height: 30px" class="td1_1">
                         <div class="querytable_title_name">
-                            新建报修
+                            新建报修&nbsp&nbsp&nbsp&nbsp<asp:Label ID="labCalled" runat="server" Text=""></asp:Label>
                         </div>
                         <div style="margin: 0 10px 0 0; line-height: 24px;" align="right">
                             (店铺信息)

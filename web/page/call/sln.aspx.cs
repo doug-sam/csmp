@@ -198,10 +198,18 @@ public partial class page_call_sln : _Call_Step
         sinfo.CallID = cinfo.ID;
         sinfo.DateBegin = DateTime.Now;
         sinfo.DateEnd = sinfo.DateBegin;
-        if (string.IsNullOrEmpty(callbackrecordid))
-            sinfo.Details = TxbDetail.Text;
-        else
-            sinfo.Details = TxbDetail.Text + "  A$B$C" + callbackrecordid + "D$E$F";
+        if (string.IsNullOrEmpty(TxbDetail.Text.Trim()))
+        {
+            Function.AlertMsg("请填写处理报修详情");
+            return;
+        }
+        else {
+            if (string.IsNullOrEmpty(callbackrecordid))
+                sinfo.Details = TxbDetail.Text;
+            else
+                sinfo.Details = TxbDetail.Text + "  A$B$C" + callbackrecordid + "D$E$F";
+        }
+        
         sinfo.StepIndex = CallStepBLL.GetMaxStepIndex(cinfo.ID) + 1;
         sinfo.IsSolved = false;
         sinfo.StepName = "由" + CurrentUserName + "进行负责处理";

@@ -29,6 +29,13 @@ public partial class page_call_add : _Call_Add
             ddlReportSource.DataSource = ReportSourceBLL.GetList();
             ddlReportSource.DataBind();
             TxtErrorDate.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+            #region 2015.5.25ZQL添加 获取called
+            string Called = Function.GetRequestSrtring("called");
+            if (!string.IsNullOrEmpty(Called))
+            {
+                labCalled.Text = "被叫："+Called;
+            }
+            #endregion
 
             StoreInfo sinfo = GetStoreInfo();
             if (null != sinfo)

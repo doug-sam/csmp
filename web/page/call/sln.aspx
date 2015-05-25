@@ -48,7 +48,7 @@
                     </td>
                     <td class="td1_3">
                         <div>
-                            <asp:TextBox ID="TxbDetail" Enabled="false" Text="开始处理报修" TextMode="MultiLine" runat="server" Height="67px" Width="271px"></asp:TextBox>
+                            <asp:TextBox ID="TxbDetail" Enabled="false" Text="" TextMode="MultiLine" runat="server" Height="67px" Width="271px"></asp:TextBox>
                         </div>
                         <asp:Button ID="BtnDeal"  Visible="false" runat="server" CssClass="BigButton" Text=" 开始处理 " OnClick="BtnDeal_Click" OnClientClick="this.hide();return true;" />
                         <asp:DropDownList ID="DdlSln" runat="server" AutoPostBack="True" OnSelectedIndexChanged="DdlSln_SelectedIndexChanged">
