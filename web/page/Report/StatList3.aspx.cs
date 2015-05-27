@@ -602,7 +602,7 @@ public partial class page_call_StatList3 : _Report_ReportF
             dr["品牌"] = item.BrandName;
             dr["省份"] = item.ProvinceName;
             dr["城市"] = item.CityName;
-            dr["店铺号"] = item.StoreName.Trim();
+            dr["店铺号"] = null == info ? "" : info.No.Trim();
             dr["店铺名"] = null == info ? "" : info.Name.Trim();
 
             dr["报修源"] = item.ReportSourceName;
@@ -738,9 +738,10 @@ public partial class page_call_StatList3 : _Report_ReportF
                 dr["jobCode"] = "";
             }
             dr["jobCode"] = dr["jobCode"].ToString().Trim('+');
+
+            List<CallStepInfo> listStepConbime = Combine(item, listStep);
             if (NeedStep)
             {
-                List<CallStepInfo> listStepConbime = Combine(item, listStep);
                 StringBuilder sb = new StringBuilder();
                 foreach (CallStepInfo Stepitem in listStepConbime)
                 {
@@ -751,6 +752,24 @@ public partial class page_call_StatList3 : _Report_ReportF
                     sb.Append("\r\n");
                 }
                 dr["处理步骤"] = sb;
+                
+            }
+            //判断是否有录音
+            if (listStepConbime.Count > 0)
+            {
+                string step1Details = listStepConbime[0].Details;
+                if (GetRecordIDFromDetails(step1Details))
+                {
+                    dr["录音"] = "有";
+                }
+                else
+                {
+                    dr["录音"] = "无";
+                }
+            }
+            else
+            {
+                dr["录音"] = "无";
             }
 
             dt.Rows.Add(dr);
@@ -813,6 +832,7 @@ public partial class page_call_StatList3 : _Report_ReportF
         {
             dt.Columns.Add("处理步骤");
         }
+        dt.Columns.Add("录音");
         //dt.Columns.Add("stepNo");
         for (int i = 1; i <= 15; i++)
         {
@@ -914,6 +934,22 @@ public partial class page_call_StatList3 : _Report_ReportF
         }
         return 0;
     }
-
+    /// <summary>
+    /// 判断stepindex 1是否有录音
+    /// </summary>
+    /// <param name="Details"></param>
+    /// <returns></returns>
+    protected bool GetRecordIDFromDetails(string Details)
+    {
+        string recordid = "";
+        int POS1 = Details.IndexOf("A$B$C");
+        int POS2 = Details.IndexOf("D$E$F");
+        if (POS1 != -1 && POS2 != -1 && POS2 > POS1)
+            recordid = Details.Substring(POS1 + 5, POS2 - POS1 - 5);
+        if (string.IsNullOrEmpty(recordid))
+            return false;
+        else
+            return true;
+    }
 
 }
