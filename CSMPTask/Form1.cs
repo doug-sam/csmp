@@ -34,6 +34,17 @@ namespace CSMPTask
             List<CallInfo> listcall = GetListCall();
             List<BrandInfo> listbrand = BrandBLL.GetList();
             TxbSetValueLine(string.Format("总共有 {0} 个call需要判断是否需要发警报滴", listcall.Count));
+
+            LogInfo info = new LogInfo();
+            info.AddDate = DateTime.Now;
+            info.Category = Enum.GetName(typeof(SysEnum.LogType), SysEnum.LogType.系统任务执行监视);
+            info.Content = "CSMPTask执行" + string.Format("{0}总共有 {1} 个call需要判断是否需要发警报滴", DateTime.Now, listcall.Count);
+            info.ErrorDate = DateTime.Now;
+            info.SendEmail = false;
+            info.UserName = DicInfo.Admin;
+            info.Serious = 1;
+            LogBLL.Add(info);
+
             foreach (CallInfo item in listcall)
             {
                 if (item.SLADateEnd == DicInfo.DateZone)

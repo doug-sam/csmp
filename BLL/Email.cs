@@ -114,7 +114,7 @@ namespace CSMP.BLL
                 LogInfo info = new LogInfo();
                 info.AddDate = DateTime.Now;
                 info.Category = Enum.GetName(typeof(SysEnum.LogType), SysEnum.LogType.YUM邮件接口发送失败);
-                info.Content = "邮件发送失败，具体信息：" + ex.Message;
+                info.Content = "邮件发送失败，具体信息：" + ex.Message + mm.Subject;
                 info.ErrorDate = Tool.Function.ErrorDate;
                 info.SendEmail = true;
                 info.UserName = DicInfo.Admin;
