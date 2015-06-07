@@ -102,6 +102,7 @@
     <Compile Include="Stat.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="ThirdParty.cs" />
+    <Compile Include="TrunkNO.cs" />
     <Compile Include="WeixinNews.cs" />
     <Compile Include="WorkGroupBrand.cs" />
     <Compile Include="Priorities.cs" />

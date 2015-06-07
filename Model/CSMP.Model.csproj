@@ -95,6 +95,7 @@
     <Compile Include="StatInfo.cs" />
     <Compile Include="TaskInfo.cs" />
     <Compile Include="ThirdPartyInfo.cs" />
+    <Compile Include="TrunkNOInfo.cs" />
     <Compile Include="WeChatXMLInfo.cs" />
     <Compile Include="WeixinNewsInfo.cs" />
     <Compile Include="WorkGroupBrandInfo.cs" />

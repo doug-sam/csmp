@@ -47,6 +47,7 @@ public partial class menu : BasePage
                 LAttachment.Visible = GroupBLL.PowerCheck((int)PowerInfo.P3_BaseData.文件管理);
                 LSLAModel.Visible = GroupBLL.PowerCheck((int)PowerInfo.P3_BaseData.工作周期管理);
                 LCallCategory.Visible = GroupBLL.PowerCheck((int)PowerInfo.P3_BaseData.服务类型管理);
+                LiteralTrunkNO.Visible = GroupBLL.PowerCheck((int)PowerInfo.P3_BaseData.中继号码管理);
             }
             else PBasedata.Visible = false;
             if (GroupBLL.PowerCheck((int)PowerInfo.PMain.操作人员管理))

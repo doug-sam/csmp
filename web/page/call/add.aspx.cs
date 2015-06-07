@@ -33,7 +33,14 @@ public partial class page_call_add : _Call_Add
             string Called = Function.GetRequestSrtring("called");
             if (!string.IsNullOrEmpty(Called))
             {
-                labCalled.Text = "被叫："+Called;
+                TrunkNOInfo trunkNOInfo = TrunkNO.Get(Called);
+                if (null != trunkNOInfo)
+                {
+                    labCalled.Text = "客户：" + trunkNOInfo.VirtualNo.Trim() + "(" + trunkNOInfo.Description + ")";
+                }
+                else {
+                    labCalled.Text = "客户：" + Called;
+                }
             }
             #endregion
 

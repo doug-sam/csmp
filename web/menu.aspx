@@ -188,6 +188,10 @@
                             <li><a href="/page/CallCategory/List.aspx" target="main">服务类型管理</a> </li>
                             <%--<li><a href="/page/SlaModeDetail/List.aspx" target="main">SLA工作时间详细</a> </li>--%>
                     </asp:Literal>
+                    <asp:Literal ID="LiteralTrunkNO" runat="server">
+                            <li><a href="/page/TrunkNO/TrunkNOList.aspx" target="main">中继号码管理</a> </li>
+                            
+                    </asp:Literal>
                     </ul>
                 </h6>
             </div>

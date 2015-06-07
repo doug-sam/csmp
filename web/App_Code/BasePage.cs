@@ -574,6 +574,17 @@ public class _BaseData_ProvinceCity : BasePage
         GroupBLL.EnterCheck((int)PowerInfo.P3_BaseData.地区管理);
     }
 }
+/// <summary>
+/// 中继号码管理ZQL 2015 6 1
+/// </summary>
+public class _BaseData_TrunkNO : BasePage
+{
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+        GroupBLL.EnterCheck((int)PowerInfo.P3_BaseData.中继号码管理);
+    }
+}
+
 public class _BaseData_Priorities : BasePage
 {
     protected void Page_PreRender(object sender, EventArgs e)
