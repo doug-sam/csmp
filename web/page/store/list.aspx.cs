@@ -24,6 +24,7 @@ public partial class page_Store_list : _BaseData_Store
             DdlProvince.DataSource = ProvincesBLL.GetList();
             DdlProvince.DataBind();
             DdlProvince.Items.Insert(0, new ListItem("不限", "0"));
+            StoreTypeBind();
 
 
 
@@ -46,7 +47,7 @@ public partial class page_Store_list : _BaseData_Store
                 GridViewHide(HideHead);
                 BtnDelete.Visible = false;
             }
-
+            
         }
     }
 
@@ -57,6 +58,8 @@ public partial class page_Store_list : _BaseData_Store
         SchCustomerBrand(ref url, ref strWhere);
 
         SchProvinceCity(ref url, ref strWhere);
+
+        SchStoreType(ref url, ref strWhere);
 
         SchIsClosed(ref url, ref strWhere);
         SchDate(ref url, ref strWhere);
@@ -156,6 +159,21 @@ public partial class page_Store_list : _BaseData_Store
             DdlIsClosed.SelectedValue = IsClosed.ToString();
         }
     }
+    /// <summary>
+    /// StoreType查询过滤
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="strWhere"></param>
+    private void SchStoreType(ref string url, ref string strWhere)
+    {
+        int storeType = Function.GetRequestInt("StoreType");
+        if (storeType > 0)
+        {
+            DdlStoreType.SelectedValue = storeType.ToString();
+            url += "&StoreType=" + storeType;
+            strWhere += string.Format(" and f_StoreType={0} ", storeType);
+        }
+    }
 
     private void GridViewHide(List<string> header)
     {
@@ -205,6 +223,7 @@ public partial class page_Store_list : _BaseData_Store
         Url += "&IsClosed=" + DdlIsClosed.SelectedValue;
         Url += "&DateBegin=" + TxbDateBegin.Text;
         Url += "&DateEnd=" + TxbDateEnd.Text;
+        Url += "&StoreType=" + DdlStoreType.SelectedValue;
         Response.Redirect(Url);
     }
     protected void DdlProvince_SelectedIndexChanged(object sender, EventArgs e)
@@ -291,6 +310,7 @@ public partial class page_Store_list : _BaseData_Store
         dt.Columns.Add("地址");
         dt.Columns.Add("电话");
         dt.Columns.Add("邮箱");
+        dt.Columns.Add("店铺类型");
         dt.Columns.Add("是否可用");
 
         DataRow dr = dt.NewRow();
@@ -307,11 +327,25 @@ public partial class page_Store_list : _BaseData_Store
             dr["地址"] = item.Address;
             dr["电话"] = item.Tel;
             dr["邮箱"] = item.Email;
+            dr["店铺类型"] = Enum.GetName(typeof(CSMP.Model.SysEnum.StoreType),item.StoreType);
             dr["是否可用"] = item.IsClosed ? "禁用" : "可用";
             dt.Rows.Add(dr);
         }
 
         return dt;
     }
-
+    /// <summary>
+    /// 绑定店铺类型下拉列表
+    /// </summary>
+    protected void StoreTypeBind()
+    {
+        var ss = Enum.GetNames(typeof(SysEnum.StoreType));
+        foreach (var t in ss)
+        {
+            var j = (int)Enum.Parse(typeof(SysEnum.StoreType), t);
+            DdlStoreType.Items.Add(new ListItem(t, j.ToString()));
+        }
+        DdlStoreType.Items.Insert(0, new ListItem("不确定", "0"));
+    }
+    
 }

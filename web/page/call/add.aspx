@@ -151,17 +151,20 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="td1_2" colspan="2" style="text-align: right; padding: 0px;">
-                        店铺联系信息
+                    <td class="td1_2">
+                        店铺类型：
+                    </td>
+                    <td class="td1_3">
+                        <asp:Label ID="LtlStoreType" runat="server" Text=""></asp:Label>
                     </td>
                     <td class="td1_2">
-                        电话：
+                        店铺电话：
                     </td>
                     <td class="td1_3">
                         <asp:Label ID="LtlTel" runat="server" Text=""></asp:Label>
                     </td>
                     <td class="td1_2">
-                        地址：
+                        店铺地址：
                     </td>
                     <td colspan="3" class="td1_3">
                         <div style="width: 333px;">

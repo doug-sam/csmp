@@ -87,12 +87,20 @@
                     <td class="td1_2">
                         是否可用
                     </td>
-                    <td class="td1_3" colspan="3">
+                    <td class="td1_3">
                         <asp:DropDownList ID="DdlIsClosed" runat="server">
                             <asp:ListItem Text="不限" Value="-1"></asp:ListItem>
                             <asp:ListItem Text="可用" Value="0"></asp:ListItem>
                             <asp:ListItem Text="不可用" Value="1"></asp:ListItem>
                         </asp:DropDownList>
+                    </td>
+                    <td class="td1_2">
+                        店铺类型：
+                    </td>
+                    <td class="td1_3">
+                        <asp:DropDownList ID="DdlStoreType" runat="server" AutoPostBack="True">
+                        </asp:DropDownList>
+                        
                     </td>                    
                 </tr>
             </table>
@@ -128,6 +136,12 @@
             <asp:TemplateField HeaderText="店铺名称">
                 <ItemTemplate>
                     <%# Eval("Name")%>
+                </ItemTemplate>
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="类型">
+                <ItemTemplate>
+                    <%#Enum.GetName(typeof(CSMP.Model.SysEnum.StoreType), Eval("StoreType"))%>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>

@@ -10,11 +10,11 @@ namespace CSMP.DAL
 {
     public class StoresDAL
     {
-        private const string ALL_PARM = "  ID,f_No,f_Name,f_BrandID,f_ProvinceID,f_CityID,f_Address,f_Tel,f_IsClosed,f_BrandName,f_ProvinceName,f_CityName,f_CustomerID,f_CustomerName,f_Email,f_AddDate ";
+        private const string ALL_PARM = "  ID,f_No,f_Name,f_BrandID,f_ProvinceID,f_CityID,f_Address,f_Tel,f_IsClosed,f_BrandName,f_ProvinceName,f_CityName,f_CustomerID,f_CustomerName,f_Email,f_AddDate,f_StoreType ";
         public const string FROM_TABLE = " from [sys_Stores] ";
         public const string TABLE = " sys_Stores ";
-        private const string INSET = " (f_No,f_Name,f_BrandID,f_ProvinceID,f_CityID,f_Address,f_Tel,f_IsClosed,f_BrandName,f_ProvinceName,f_CityName,f_CustomerID,f_CustomerName,f_Email,f_AddDate) values(@No,@Name,@BrandID,@ProvinceID,@CityID,@Address,@Tel,@IsClosed,@BrandName,@ProvinceName,@CityName,@CustomerID,@CustomerName,@Email,@AddDate)  ";
-        private const string UPDATE = " f_No=@No,f_Name=@Name,f_BrandID=@BrandID,f_ProvinceID=@ProvinceID,f_CityID=@CityID,f_Address=@Address,f_Tel=@Tel,f_IsClosed=@IsClosed,f_BrandName=@BrandName,f_ProvinceName=@ProvinceName,f_CityName=@CityName,f_CustomerID=@CustomerID,f_CustomerName=@CustomerName,f_Email=@Email,f_AddDate=@AddDate ";
+        private const string INSET = " (f_No,f_Name,f_BrandID,f_ProvinceID,f_CityID,f_Address,f_Tel,f_IsClosed,f_BrandName,f_ProvinceName,f_CityName,f_CustomerID,f_CustomerName,f_Email,f_AddDate,f_StoreType) values(@No,@Name,@BrandID,@ProvinceID,@CityID,@Address,@Tel,@IsClosed,@BrandName,@ProvinceName,@CityName,@CustomerID,@CustomerName,@Email,@AddDate,@StoreType)  ";
+        private const string UPDATE = " f_No=@No,f_Name=@Name,f_BrandID=@BrandID,f_ProvinceID=@ProvinceID,f_CityID=@CityID,f_Address=@Address,f_Tel=@Tel,f_IsClosed=@IsClosed,f_BrandName=@BrandName,f_ProvinceName=@ProvinceName,f_CityName=@CityName,f_CustomerID=@CustomerID,f_CustomerName=@CustomerName,f_Email=@Email,f_AddDate=@AddDate,f_StoreType=@StoreType ";
 
         #region ReadyData
         private StoreInfo GetByDataReader(SqlDataReader rdr)
@@ -36,6 +36,7 @@ namespace CSMP.DAL
             info.CustomerName = rdr["f_CustomerName"].ToString();
             info.Email = rdr["f_Email"].ToString();
             info.AddDate = Convert.ToDateTime(rdr["f_AddDate"]);
+            info.StoreType = Convert.ToInt32(rdr["f_StoreType"]);
 
             return info;
         }
@@ -58,6 +59,7 @@ namespace CSMP.DAL
             new SqlParameter("@CustomerName", info.CustomerName),
             new SqlParameter("@Email", info.Email),
             new SqlParameter("@AddDate", info.AddDate),
+            new SqlParameter("@StoreType", info.StoreType),
             
             };
 

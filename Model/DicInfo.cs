@@ -65,6 +65,11 @@ namespace CSMP.Model
         /// 问卷问题类型
         /// </summary>
         public enum QuestionType { Radio = 1, Check,Essay }
+        /// <summary>
+        /// 店铺类型枚举
+        /// </summary>
+        public enum StoreType { 加盟店 = 1, 直营店,自营店 }
+
 
         /// <summary>
         /// CallStep中，Soluction小于零所代表意思
@@ -175,4 +180,5 @@ namespace CSMP.Model
 
 
     }
+    
 }

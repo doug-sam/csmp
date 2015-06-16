@@ -99,6 +99,16 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="td1_2">
+                        店铺类型：
+                    </td>
+                    <td class="td1_3">
+                        <asp:DropDownList ID="DdlStoreType" runat="server" AutoPostBack="True">
+                        </asp:DropDownList>
+                        
+                    </td>
+                </tr>
+                <tr>
                     <td class="td1_2" colspan="2">
                          <asp:Button ID="BtnSubmit" runat="server" Text="提交" CssClass="BigButton"
                             OnClick="BtnSubmit_Click" />
