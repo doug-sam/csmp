@@ -107,13 +107,13 @@ public partial class page_Assign_ReassignOnsiteEngineer : _Call_Assign
             Function.AlertMsg("工程师不存在。请不要作弊"); return;
         }
         int callStepID = Function.ConverToInt(this.CallStepID.Value);
-        CallStepInfo csinfo = CallStepBLL.Get(callStepID);
-               
+        CallStepInfo oldcsinfo = CallStepBLL.Get(callStepID);
+           
 
         AssignInfo asinfo = new AssignInfo();
-        AssignInfo asold = AssignBLL.GetMax(csinfo.CallID);
+        AssignInfo asold = AssignBLL.GetMax(oldcsinfo.CallID);
         asinfo.AddDate = DateTime.Now;
-        asinfo.CallID = csinfo.CallID;
+        asinfo.CallID = oldcsinfo.CallID;
         asinfo.UseID = UserID;
         asinfo.UserName = TargetUserInfo.Name;
         asinfo.CreatorID = CurrentUser.ID;
@@ -124,14 +124,14 @@ public partial class page_Assign_ReassignOnsiteEngineer : _Call_Assign
 
         if (null == asold || asold.ID == 0)
         {
-            asinfo.OldID = csinfo.MajorUserID;
-            asinfo.OldName = csinfo.MajorUserName;
+            asinfo.OldID = oldcsinfo.MajorUserID;
+            asinfo.OldName = oldcsinfo.MajorUserName;
             asinfo.Step = 1;
         }
         else
         {
-            asinfo.OldID = csinfo.MajorUserID;
-            asinfo.OldName = csinfo.MajorUserName;
+            asinfo.OldID = oldcsinfo.MajorUserID;
+            asinfo.OldName = oldcsinfo.MajorUserName;
             asinfo.Step = asold.Step + 1;
         }
 
@@ -139,22 +139,35 @@ public partial class page_Assign_ReassignOnsiteEngineer : _Call_Assign
         {
             Function.AlertMsg("你是不是重复点击了？"); return;
         }
-        csinfo.MajorUserID = UserID;
-        csinfo.MajorUserName = TargetUserInfo.Name;
-        csinfo.AddDate = DateTime.Now.AddSeconds(1);
-        csinfo.DateBegin = Function.ConverToDateTime(TxbDate.Text.Trim());
-        csinfo.DateEnd = Function.ConverToDateTime(TxbDate.Text.Trim());
-               
-        if (CallStepBLL.Edit(csinfo))
+        CallStepInfo newcsinfo = new CallStepInfo();
+        int newcsIndex = CallStepBLL.GetMaxStepIndex(oldcsinfo.CallID);
+        newcsinfo.CallID = oldcsinfo.CallID;
+        newcsinfo.MajorUserID = UserID;
+        newcsinfo.MajorUserName = TargetUserInfo.Name;
+        newcsinfo.StepIndex = newcsIndex+1;
+        newcsinfo.UserID = CurrentUserID;
+        newcsinfo.UserName = CurrentUserName;
+        newcsinfo.AddDate = DateTime.Now.AddSeconds(1);
+        newcsinfo.DateBegin = Function.ConverToDateTime(TxbDate.Text.Trim());
+        newcsinfo.DateEnd = Function.ConverToDateTime(TxbDate.Text.Trim());
+        newcsinfo.StepName = SysEnum.CallStateDetails.等待工程师上门.ToString();
+        newcsinfo.StepType = (int)SysEnum.StepType.上门安排;
+        newcsinfo.IsSolved = false;
+        newcsinfo.SolutionID = 0;
+        newcsinfo.SolutionName = "";
+        newcsinfo.Details = "";
+        
+
+        if (CallStepBLL.Add(newcsinfo)>0)
         {
             AssignBLL.Add(asinfo);
             Function.AlertRefresh("现场工程师更换成功", "main");
-            WriteLog("成功", csinfo.CallID);
+            WriteLog("成功", newcsinfo.CallID);
         }
         else
         {
             Function.AlertMsg("更换失败，请联系管理员");
-            WriteLog("失败", csinfo.CallID);
+            WriteLog("失败", newcsinfo.CallID);
         }
     }
 
@@ -168,6 +181,8 @@ public partial class page_Assign_ReassignOnsiteEngineer : _Call_Assign
             return;
         }
         List<UserInfo> list = UserBLL.GetList(uinfo.WorkGroupID, SysEnum.Rule.现场工程师.ToString());
+        //List<UserInfo> list = UserBLL.GetList(72, SysEnum.Rule.现场工程师.ToString());
+
 
         DdlMajorUserID.DataSource = list;
 
