@@ -68,7 +68,7 @@ namespace CSMP.Model
         /// <summary>
         /// 店铺类型枚举
         /// </summary>
-        public enum StoreType { 加盟店 = 1, 直营店,自营店 }
+        //public enum StoreType { 加盟店 = 1, 直营店,自营店 }
 
 
         /// <summary>

@@ -86,7 +86,7 @@ namespace CSMP.Model
         /// <summary>
         /// 店铺类型
         /// </summary>
-        public int StoreType { get; set; }
+        public string StoreType { get; set; }
         
         /// <summary>
         /// 上次编辑时间

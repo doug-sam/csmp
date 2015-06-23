@@ -233,7 +233,7 @@ public partial class page_call_add : _Call_Add
                 TxtStoreNo.Text = info.No;
                 LtlTel.Text = string.IsNullOrEmpty(info.Tel) ? "暂无数据" : info.Tel;
                 LtlAddress.Text = string.IsNullOrEmpty(info.Address) ? "暂无数据" : info.Address;
-                LtlStoreType.Text = Enum.GetName(typeof(CSMP.Model.SysEnum.StoreType), info.StoreType);
+                LtlStoreType.Text =info.StoreType;
                 BindHistoryCall(info.ID);
             }
         }

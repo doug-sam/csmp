@@ -36,7 +36,7 @@ namespace CSMP.DAL
             info.CustomerName = rdr["f_CustomerName"].ToString();
             info.Email = rdr["f_Email"].ToString();
             info.AddDate = Convert.ToDateTime(rdr["f_AddDate"]);
-            info.StoreType = Convert.ToInt32(rdr["f_StoreType"]);
+            info.StoreType = rdr["f_StoreType"].ToString();
 
             return info;
         }

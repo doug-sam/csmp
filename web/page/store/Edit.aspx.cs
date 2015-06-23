@@ -22,7 +22,7 @@ public partial class page_Store_Edit : _BaseData_Store_Edit
             DdlCustomer.DataSource = CustomersBLL.GetList();
             DdlCustomer.DataBind();
             DdlCustomer.Items.Insert(0, new ListItem("请选择", "0"));
-            StoreTypeBind();           
+            //StoreTypeBind();           
             StoreInfo info = GetInfo();
             if (null == info)
             {
@@ -45,7 +45,7 @@ public partial class page_Store_Edit : _BaseData_Store_Edit
                 TxbEmail.Text = info.Email;
                 RblIsClose.SelectedIndex = info.IsClosed ? 1 : 0;
                 DdlCustomer.Enabled = DdlBrand.Enabled = false;
-                DdlStoreType.SelectedValue = info.StoreType.ToString();
+                TxbStoreType.Text = info.StoreType;
             }
         }
     }
@@ -118,7 +118,7 @@ public partial class page_Store_Edit : _BaseData_Store_Edit
         info.CustomerID = cinfo.ID;
         info.CustomerName = cinfo.Name;
         info.Email = TxbEmail.Text.Trim();
-        info.StoreType = Function.ConverToInt(DdlStoreType.SelectedValue);
+        info.StoreType = TxbStoreType.Text;
         
         if (info.No.Length > 50)
         {
@@ -198,14 +198,14 @@ public partial class page_Store_Edit : _BaseData_Store_Edit
     /// <summary>
     /// 绑定店铺类型下拉列表
     /// </summary>
-    protected void StoreTypeBind()
-    {
-        var ss = Enum.GetNames(typeof(SysEnum.StoreType));
-        foreach (var t in ss)
-        {
-            var j = (int)Enum.Parse(typeof(SysEnum.StoreType), t);
-            DdlStoreType.Items.Add(new ListItem(t, j.ToString()));
-        }
-        DdlStoreType.Items.Insert(0, new ListItem("不确定", "0"));
-    }
+    //protected void StoreTypeBind()
+    //{
+    //    var ss = Enum.GetNames(typeof(SysEnum.StoreType));
+    //    foreach (var t in ss)
+    //    {
+    //        var j = (int)Enum.Parse(typeof(SysEnum.StoreType), t);
+    //        DdlStoreType.Items.Add(new ListItem(t, j.ToString()));
+    //    }
+    //    DdlStoreType.Items.Insert(0, new ListItem("不确定", "0"));
+    //}
 }

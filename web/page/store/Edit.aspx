@@ -103,9 +103,7 @@
                         店铺类型：
                     </td>
                     <td class="td1_3">
-                        <asp:DropDownList ID="DdlStoreType" runat="server" AutoPostBack="True">
-                        </asp:DropDownList>
-                        
+                        <asp:TextBox ID="TxbStoreType" runat="server"></asp:TextBox>
                     </td>
                 </tr>
                 <tr>

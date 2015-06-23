@@ -78,6 +78,10 @@ public partial class page_Inport_Store : _Sys_Inport
         {
             Function.AlertBack("格式错误，表中第10列应为《是否可用》"); return;
         }
+        if (dt.Columns[10].ColumnName.Trim() != "店铺类型")
+        {
+            Function.AlertBack("格式错误，表中第11列应为《店铺类型》"); return;
+        }
         #endregion
 
 
@@ -154,6 +158,10 @@ public partial class page_Inport_Store : _Sys_Inport
             {
                 Function.AlertBack(string.Format("第{0}行中《邮箱》过长！", (i + 1))); return;
             }
+            if (dt.Rows[i]["店铺类型"].ToString().Trim().Length > 100)
+            {
+                Function.AlertBack(string.Format("第{0}行中《店铺类型》过长！", (i + 1))); return;
+            }
             info = new StoreInfo();
             info.No = dt.Rows[i]["店铺号"].ToString();
             info.Name = dt.Rows[i]["店铺名称"].ToString();
@@ -169,6 +177,7 @@ public partial class page_Inport_Store : _Sys_Inport
             info.CustomerID = binfo.CustomerID;
             info.CustomerName = CustomersBLL.Get(binfo.CustomerID).Name;
             info.Email = dt.Rows[i]["邮箱"].ToString();
+            info.StoreType = dt.Rows[i]["店铺类型"].ToString();
             list.Add(info);
         }
         //         

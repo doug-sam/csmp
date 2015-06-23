@@ -98,9 +98,7 @@
                         店铺类型：
                     </td>
                     <td class="td1_3">
-                        <asp:DropDownList ID="DdlStoreType" runat="server" AutoPostBack="True">
-                        </asp:DropDownList>
-                        
+                        <asp:TextBox ID="TxbStoreType" runat="server"></asp:TextBox>
                     </td>                    
                 </tr>
             </table>
@@ -141,7 +139,7 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="类型">
                 <ItemTemplate>
-                    <%#Enum.GetName(typeof(CSMP.Model.SysEnum.StoreType), Eval("StoreType"))%>
+                    <%#Eval("StoreType")%>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
