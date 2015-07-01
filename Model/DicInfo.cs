@@ -92,7 +92,8 @@ namespace CSMP.Model
             第三方预约取消,
             第三方上门备注,
             第三方处理离场,
-            回收服务单
+            回收服务单,
+            开单
         }
 
         public enum ReplacementStatus { 没有备件跟进 = 0, 备件跟进中, 处理完成 }
@@ -152,6 +153,8 @@ namespace CSMP.Model
                     return (int)SysEnum.CallStateDetails.第三方处理离场;
                 case SysEnum.StepType.回收服务单:
                     return (int)SysEnum.CallStateDetails.已回收服务单;
+                case SysEnum.StepType.开单:
+                    return (int)SysEnum.CallStateDetails.系统接单_未处理;
                 default:
                     break;
 

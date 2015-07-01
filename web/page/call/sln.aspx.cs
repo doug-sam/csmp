@@ -244,7 +244,7 @@ public partial class page_call_sln : _Call_Step
         StoreInfo sinfo = StoresBLL.Get(StoreID);
         if (null == sinfo)
             return;
-        txtCalledNO.Text = sinfo.Tel;
+        txtCalledNO.Text = "9"+sinfo.Tel;
         if (HttpContext.Current.Request.Cookies != null && HttpContext.Current.Request.Cookies["Station"] != null)
         {
             txtStation.Text = HttpContext.Current.Request.Cookies["Station"].Value.ToString();

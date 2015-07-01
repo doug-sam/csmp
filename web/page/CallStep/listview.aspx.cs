@@ -10,6 +10,9 @@ using Tool;
 
 public partial class page_CallStep_listview : BasePage
 {
+    public DateTime callCreateTimeOld = new DateTime();
+    public DateTime callSLAEndTime = new DateTime();
+    public string brandSlaMode = string.Empty;
 
     private const string SlnTxt = "最后在{0}解决，共经过{1}次处理，解决方案是：{2}";
     protected void Page_Load(object sender, EventArgs e)
@@ -22,6 +25,18 @@ public partial class page_CallStep_listview : BasePage
             {
                 return;
             }
+            callCreateTimeOld = info.CreateDate;
+            callSLAEndTime = info.SLADateEnd;
+            if (info.BrandID > 0)
+            {
+                BrandInfo brandInfo = BrandBLL.Get(info.BrandID);
+                if (brandInfo.SlaModeID > 0)
+                {
+                    SlaModeInfo slaModeInfo = SlaModeBLL.Get(brandInfo.SlaModeID);
+                    brandSlaMode = slaModeInfo.Name;
+                }
+            }
+            
             if (info.StateMain == (int)SysEnum.CallStateMain.未处理)
             {
                 Response.Write("此报修未有任何处理记录！");
@@ -215,5 +230,106 @@ public partial class page_CallStep_listview : BasePage
         if (index == "0")
             return "</a>";
         return "";
+    }
+    /// <summary>
+    /// 计算处理步骤距离开单时间的分钟数
+    /// </summary>
+    /// <param name="addTime"></param>
+    /// <returns></returns>
+    public string CountOpenTime(DateTime addTime)
+    {
+        DateTime callCreateTime = callCreateTimeOld;
+        string tsMin=string.Empty;
+        if (string.IsNullOrEmpty(brandSlaMode))
+        {
+            TimeSpan ts1 = addTime - callCreateTime;
+            tsMin = ts1.Minutes.ToString();
+        }
+        else {
+            string dateStartTime = brandSlaMode.Substring(brandSlaMode.IndexOf("(")+1,brandSlaMode.IndexOf("-")-brandSlaMode.IndexOf("(")-1);
+            string dateEndTime = brandSlaMode.Substring(brandSlaMode.IndexOf("-")+1,brandSlaMode.IndexOf(")")-brandSlaMode.IndexOf("-")-1);
+            if (dateEndTime.Contains("24:00"))
+            {
+                dateEndTime = "23:59:59";
+            }
+            //计算5天制的品牌
+            if (brandSlaMode.Contains("5*"))
+            {
+                double sumMinute = 0;
+                TimeSpan ts5 = new TimeSpan();
+                //计算出第一天的分钟数
+                if (callCreateTime.Date == addTime.Date)
+                {
+                    ts5 = addTime - callCreateTime;
+                    sumMinute += ts5.TotalMinutes;
+                }
+                else { 
+                    ts5 =Convert.ToDateTime(dateEndTime).TimeOfDay-callCreateTime.TimeOfDay;
+                    sumMinute += ts5.TotalMinutes;
+                }
+                //计算出为整天的分钟数
+                for (callCreateTime = callCreateTime.AddDays(1); callCreateTime.Date < addTime.Date; callCreateTime = callCreateTime.AddDays(1))
+                {
+                    if(callCreateTime.DayOfWeek!=DayOfWeek.Saturday&&callCreateTime.DayOfWeek!=DayOfWeek.Sunday)
+                    {
+                        ts5=Convert.ToDateTime(dateEndTime)-Convert.ToDateTime(dateStartTime);
+                        sumMinute += ts5.TotalMinutes;
+                    }
+                }
+                if (callCreateTime < addTime)
+                {
+                    ts5 = addTime.TimeOfDay- Convert.ToDateTime(dateStartTime).TimeOfDay;
+                    sumMinute += ts5.TotalMinutes;
+                }
+                tsMin = sumMinute.ToString().Remove(sumMinute.ToString().IndexOf("."));
+            }
+            //计算7天制的品牌
+            if (brandSlaMode.Contains("7*"))
+            {
+                double sumMinute = 0;
+                TimeSpan ts7 = new TimeSpan();
+                //计算出第一天的分钟数
+                if (callCreateTime.Date == addTime.Date)
+                {
+                    ts7 = addTime - callCreateTime;
+                    sumMinute += ts7.TotalMinutes;
+                }
+                else
+                {
+                    ts7 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
+                    sumMinute += ts7.TotalMinutes;
+                }
+                //计算出为整天的分钟数
+                for (callCreateTime = callCreateTime.AddDays(1); callCreateTime.Date < addTime.Date; callCreateTime = callCreateTime.AddDays(1))
+                {
+                    ts7 = Convert.ToDateTime(dateEndTime) - Convert.ToDateTime(dateStartTime);
+                    sumMinute += ts7.TotalMinutes;
+                }
+                if (callCreateTime < addTime)
+                {
+                    ts7 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                    sumMinute += ts7.TotalMinutes;
+                }
+                tsMin = sumMinute.ToString().Remove(sumMinute.ToString().IndexOf("."));
+            }
+        }
+        
+        return tsMin;
+    }
+    /// <summary>
+    /// 判断是否超时
+    /// </summary>
+    /// <param name="addTime"></param>
+    /// <returns></returns>
+    public string CheckClore(DateTime addTime)
+    {
+        if (callSLAEndTime >= addTime)
+        {
+            return "color:black";
+        }
+        else {
+            return "color:red";
+        }
+
     }
 }

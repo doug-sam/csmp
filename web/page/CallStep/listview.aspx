@@ -62,13 +62,19 @@
                     <%#Eval("UserName") %><br />
                     <%#Tool.Function.ConverToDateTime(Eval("AddDate")).ToString("yyyy-MM-dd HH:mm")%>
                 </ItemTemplate>
-                <ItemStyle HorizontalAlign="Left" />
+                <ItemStyle HorizontalAlign="Left"  />
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="已开单(分钟)">
+                <ItemTemplate>
+                    <span style=<%#CheckClore(Tool.Function.ConverToDateTime(Eval("AddDate"))) %> ><%#CountOpenTime(Tool.Function.ConverToDateTime(Eval("AddDate")))%></span>
+                </ItemTemplate>
+                <ItemStyle HorizontalAlign="Center" ForeColor=/>
             </asp:TemplateField>
             <asp:TemplateField HeaderText="是否解决">
                 <ItemTemplate>
                     <%#IsSloved(Eval("IsSolved").ToString(),Eval("StepType").ToString()) %>
                 </ItemTemplate>
-                <ItemStyle HorizontalAlign="Center" />
+                <ItemStyle HorizontalAlign="Center"/>
             </asp:TemplateField>
         </Columns>
     </asp:GridView>

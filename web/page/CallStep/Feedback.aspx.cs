@@ -102,7 +102,7 @@ public partial class page_callStep_Feedback : _Call_Feedback
             StoreInfo stinfo = StoresBLL.Get(info.StoreID);
             if (null != stinfo)
             {
-                TxbTel.Text = stinfo.Tel;
+                TxbTel.Text = "9"+stinfo.Tel;
                 //这里听说放进剪切板就可以打出电话了。神奇
                 // ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "make a call", string.Format(JS, stinfo.Tel), true);
             }

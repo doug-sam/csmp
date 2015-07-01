@@ -419,6 +419,7 @@ public partial class page_call_add : _Call_Add
         info.AssignUserName = "";
         info.IsClosed = false;
         info.Category = Function.ConverToInt(DdlCategory.SelectedValue, 0);
+        
 
         #region 扩展信息
         string VideoID = Function.GetRequestSrtring("CallID");//这是一个录音id
@@ -455,6 +456,30 @@ public partial class page_call_add : _Call_Add
 
         string js = "";
         info.ID = CallBLL.Add(info);
+        #region ZQL新增插入callstep一条记录
+        if (info.ID > 0)
+        {
+            CallStepInfo callStepInfo = new CallStepInfo();
+            callStepInfo.StepType = (int)SysEnum.StepType.开单;
+            callStepInfo.AddDate = DateTime.Now;
+            callStepInfo.CallID = info.ID;
+            callStepInfo.DateBegin = DateTime.Now;
+            callStepInfo.DateEnd = DateTime.Now;
+            callStepInfo.Details = "";
+            callStepInfo.IsSolved = false;
+            callStepInfo.MajorUserID = uinfo.ID;
+            callStepInfo.MajorUserName = uinfo.Name;
+            callStepInfo.SolutionID = 0;
+            callStepInfo.SolutionName = "";
+            callStepInfo.StepIndex = CallStepBLL.GetMaxStepIndex(info.ID) + 1;
+            callStepInfo.UserID = CurrentUserID;
+            callStepInfo.UserName = CurrentUserName; 
+            callStepInfo.IsSolved = false;
+            callStepInfo.StepName = SysEnum.CallStateDetails.系统接单_未处理.ToString();
+            CallStepBLL.Add(callStepInfo);
+        }
+
+        #endregion
         if (info.ID > 0)
         {
 
