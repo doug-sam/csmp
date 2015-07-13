@@ -214,7 +214,7 @@ public partial class page_call_slnRemote : _Call_Step
             }
 
             #region 汉堡王升级到客户处理完成时
-            if (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王")
+            if ((int)SysEnum.CallStateMain.已完成 == cinfo.StateMain&&(cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王"))
             {
                 string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
                 //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
