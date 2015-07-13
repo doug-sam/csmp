@@ -11,6 +11,7 @@ using System.Collections;
 using System.Net.Mail;
 using EMPPLib;
 using System.Threading;
+using Newtonsoft.Json.Linq;
 
 
 public partial class page_CallStep_ThirdParty : _Call_Sln1
@@ -115,7 +116,47 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
         {
             string APImsg = string.Empty;
 
-            string js = "top.ReloadLeft();alert('成功记录');location.href='/page/Call/sln.aspx?id=" + cinfo.ID + "';";
+            #region 汉堡王升级到客户处理完成时
+            if (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王")
+            {
+                string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
+                //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
+                KeyValueDictionary paramDic = new KeyValueDictionary();
+                paramDic.Add("Action", "转呈");
+                paramDic.Add("cNumber", cinfo.No);
+
+                paramDic.Add("Supplier", "MVS");
+                paramDic.Add("Agent", CurrentUserName);
+                paramDic.Add("TSI", "");
+                paramDic.Add("stCode", cinfo.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+                paramDic.Add("stMgr", cinfo.ReporterName);
+                paramDic.Add("Time1", DateTime.Now);
+                paramDic.Add("Issue", cinfo.Details);
+                //paramDic.Add("stTel", sinfo.Tel);
+                //paramDic.Add("Priority", info.PriorityName);
+                paramDic.Add("Priority", cinfo.PriorityName);
+                paramDic.Add("Category1", cinfo.ClassName1);
+                paramDic.Add("Category2", cinfo.ClassName2);
+                paramDic.Add("Category3", cinfo.ClassName3);
+                paramDic.Add("Solution", "");
+                paramDic.Add("Attachment", "");
+                WebUtil webtool = new WebUtil();
+                string result = webtool.DoPost(url, paramDic);
+                JObject obj = JObject.Parse(result);
+                string errNo = obj["errNo"].ToString();
+
+                if (errNo == "0")
+                {
+                    APImsg = " 接口调用成功";
+                }
+                else
+                {
+                    APImsg = " 接口调用失败" + obj["Desc"].ToString();
+                }
+            }
+            #endregion
+
+            string js = "top.ReloadLeft();alert('成功记录 " + APImsg + "');location.href='/page/Call/sln.aspx?id=" + cinfo.ID + "';";
             ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "", js, true);
         }
         else

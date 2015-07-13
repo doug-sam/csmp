@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using CSMP.BLL;
 using CSMP.Model;
 using Tool;
+using Newtonsoft.Json.Linq;
 
 public partial class page_call_slnRemote : _Call_Step
 {
@@ -212,6 +213,33 @@ public partial class page_call_slnRemote : _Call_Step
                 }
             }
 
+            #region 汉堡王升级到客户处理完成时
+            if (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王")
+            {
+                string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
+                //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
+                KeyValueDictionary paramDic = new KeyValueDictionary();
+                paramDic.Add("Action", "HD完成");
+                paramDic.Add("cNumber", cinfo.No);
+                paramDic.Add("Supplier", "MVS");
+                paramDic.Add("Agent", sinfo.MajorUserName);
+                paramDic.Add("stMgr", cinfo.ReporterName);
+                paramDic.Add("Solution", "");
+                paramDic.Add("Attachment", "");
+                WebUtil webtool = new WebUtil();
+                string result = webtool.DoPost(url, paramDic);
+                JObject obj = JObject.Parse(result);
+                string errNo = obj["errNo"].ToString();
+                if (errNo == "0")
+                {
+                    APImsg = "接口调用成功";
+                }
+                else
+                {
+                    APImsg = "接口调用失败" + obj["Desc"].ToString();
+                }
+            }
+            #endregion
 
             string js = "top.ReloadLeft();alert('成功记录" + APImsg + "');location.href='";
             switch (cinfo.StateMain)

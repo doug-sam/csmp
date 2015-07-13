@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using CSMP.BLL;
 using CSMP.Model;
 using Tool;
+using Newtonsoft.Json.Linq;
 
 
 public partial class page_call_slnCustomer : _Call_Step
@@ -115,6 +116,7 @@ public partial class page_call_slnCustomer : _Call_Step
             sinfo.SolutionName = "";
             cinfo.StateMain = (int)SysEnum.CallStateMain.处理中;
             cinfo.StateDetail = (int)SysEnum.CallStateDetails.升级到客户;
+            
         }
         sinfo.StepName = SysEnum.CallStateDetails.升级到客户.ToString();
         sinfo.UserID = CurrentUser.ID;
@@ -153,7 +155,76 @@ public partial class page_call_slnCustomer : _Call_Step
                     }
                     APImsg = APImsg.Replace("\"", " ").Replace("'", " ");
                 }
+
+                #region 汉堡王升级到客户处理完成时
+                if (cinfo.BrandName=="汉堡王"||cinfo.CustomerName=="汉堡王")
+                {
+                    string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
+                    //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    paramDic.Add("Action", "HD完成");
+                    paramDic.Add("cNumber", cinfo.No);
+                    paramDic.Add("Supplier", "MVS");
+                    paramDic.Add("Agent", sinfo.MajorUserName);
+                    paramDic.Add("stMgr", cinfo.ReporterName);
+                    paramDic.Add("Solution", "");
+                    paramDic.Add("Attachment", "");
+                    WebUtil webtool = new WebUtil();
+                    string result = webtool.DoPost(url, paramDic);
+                    JObject obj = JObject.Parse(result);
+                    string errNo = obj["errNo"].ToString();
+                    if (errNo == "0")
+                    {
+                        APImsg = " 接口调用成功";
+                    }
+                    else
+                    {
+                        APImsg = " 接口调用失败" + obj["Desc"].ToString();
+                    }
+                }
+                #endregion
             }
+
+            #region RblSolved.SelectedValue为0，判断是汉堡王时调用接口
+            //if (info.BrandID ==1)
+            if (RblSolved.SelectedValue == "0" && (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王"))
+            {
+                string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
+                //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
+                KeyValueDictionary paramDic = new KeyValueDictionary();
+                paramDic.Add("Action", "转呈");
+                paramDic.Add("cNumber", cinfo.No);
+
+                paramDic.Add("Supplier", "MVS");
+                paramDic.Add("Agent", CurrentUserName);
+                paramDic.Add("TSI", "");
+                paramDic.Add("stCode", cinfo.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+                paramDic.Add("stMgr", cinfo.ReporterName);
+                paramDic.Add("Time1",DateTime.Now);
+                paramDic.Add("Issue", cinfo.Details);
+                //paramDic.Add("stTel", sinfo.Tel);
+                //paramDic.Add("Priority", info.PriorityName);
+                paramDic.Add("Priority", cinfo.PriorityName);
+                paramDic.Add("Category1", cinfo.ClassName1);
+                paramDic.Add("Category2", cinfo.ClassName2);
+                paramDic.Add("Category3", cinfo.ClassName3);
+                paramDic.Add("Solution", "");
+                paramDic.Add("Attachment", "");
+                WebUtil webtool = new WebUtil();
+                string result = webtool.DoPost(url, paramDic);
+                JObject obj = JObject.Parse(result);
+                string errNo = obj["errNo"].ToString();
+
+                if (errNo == "0")
+                {
+                    APImsg = "接口调用成功";
+                }
+                else
+                {
+                    APImsg = "接口调用失败" + obj["Desc"].ToString();
+                }
+            }
+            #endregion
 
             string js = "top.ReloadLeft();alert('成功记录" + APImsg + "');location.href='";
             switch (cinfo.StateMain)

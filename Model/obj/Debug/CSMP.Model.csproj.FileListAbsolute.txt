@@ -57,6 +57,11 @@ C:\sam\CSMP\Model\bin\Debug\CSMP.Model.pdb
 C:\sam\CSMP\Model\obj\Debug\ResolveAssemblyReference.cache
 C:\sam\CSMP\Model\obj\Debug\CSMP.Model.dll
 C:\sam\CSMP\Model\obj\Debug\CSMP.Model.pdb
+C:\VS2008Project\GitCSMP备份\csmp\Model\bin\Debug\CSMP.Model.dll
+C:\VS2008Project\GitCSMP备份\csmp\Model\bin\Debug\CSMP.Model.pdb
+C:\VS2008Project\GitCSMP备份\csmp\Model\obj\Debug\ResolveAssemblyReference.cache
+C:\VS2008Project\GitCSMP备份\csmp\Model\obj\Debug\CSMP.Model.dll
+C:\VS2008Project\GitCSMP备份\csmp\Model\obj\Debug\CSMP.Model.pdb
 C:\VS2008Project\GitCSMP\csmp\Model\bin\Debug\CSMP.Model.dll
 C:\VS2008Project\GitCSMP\csmp\Model\bin\Debug\CSMP.Model.pdb
 C:\VS2008Project\GitCSMP\csmp\Model\obj\Debug\ResolveAssemblyReference.cache

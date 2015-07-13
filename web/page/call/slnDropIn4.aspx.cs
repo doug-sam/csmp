@@ -8,6 +8,7 @@ using CSMP.BLL;
 using CSMP.Model;
 using Tool;
 using System.Collections;
+using Newtonsoft.Json.Linq;
 
 
 public partial class page_call_slnDropIn4 : _Call_Step
@@ -193,6 +194,7 @@ public partial class page_call_slnDropIn4 : _Call_Step
             cinfo.StateDetail = (int)SysEnum.CallStateDetails.处理完成;
             cinfo.SloveBy = SysEnum.SolvedBy.上门.ToString();
             cinfo.FinishDate = sinfo.DateBegin;
+            
         }
         else
         {
@@ -227,6 +229,33 @@ public partial class page_call_slnDropIn4 : _Call_Step
                 APImsg = APImsg.Replace("\"", " ").Replace("'", " ");
 
             }
+            #region 汉堡王升级到客户处理完成时
+            if ((int)SysEnum.CallStateMain.已完成 == cinfo.StateMain&&(cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王"))
+            {
+                string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
+                //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
+                KeyValueDictionary paramDic = new KeyValueDictionary();
+                paramDic.Add("Action", "HD完成");
+                paramDic.Add("cNumber", cinfo.No);
+                paramDic.Add("Supplier", "MVS");
+                paramDic.Add("Agent", sinfo.MajorUserName);
+                paramDic.Add("stMgr", cinfo.ReporterName);
+                paramDic.Add("Solution", "");
+                paramDic.Add("Attachment", "");
+                WebUtil webtool = new WebUtil();
+                string result = webtool.DoPost(url, paramDic);
+                JObject obj = JObject.Parse(result);
+                string errNo = obj["errNo"].ToString();
+                if (errNo == "0")
+                {
+                    APImsg = "接口调用成功";
+                }
+                else
+                {
+                    APImsg = "接口调用失败" + obj["Desc"].ToString();
+                }
+            }
+            #endregion
 
             if (CbSendZara.Visible &&(CbSendZara.Checked || (int)SysEnum.CallStateMain.已完成 == cinfo.StateMain))
             {

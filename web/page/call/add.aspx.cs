@@ -8,6 +8,7 @@ using CSMP.BLL;
 using CSMP.Model;
 using Tool;
 using System.Threading;
+using Newtonsoft.Json.Linq;
 
 public partial class page_call_add : _Call_Add
 {
@@ -387,8 +388,8 @@ public partial class page_call_add : _Call_Add
         info.CityID = sinfo.CityID;
         info.CityName = sinfo.CityName;
         info.StoreID = sinfo.ID;
-        info.StoreName = sinfo.No;
-        info.StoreNo = sinfo.Name;
+        info.StoreName = sinfo.No;//赋值赋反了？？？？？？？？？？？？？
+        info.StoreNo = sinfo.Name;//赋值赋反了？？？？？？？？？？？？？
         info.ReportSourceID = Function.ConverToInt(ddlReportSource.SelectedValue);
         info.ReportSourceName = ddlReportSource.SelectedItem.Text;
         info.ReportSourceNo = txtSourceNo.Text.Trim();
@@ -497,6 +498,67 @@ public partial class page_call_add : _Call_Add
             }
             js += EditCustomerRequestInfo(info.ID);
             js = string.Format("alert('{0}');location.href=this.location.href;", "成功交给了技术中心！" + APImsg);
+
+            #region 判断是汉堡王时调用接口
+            //if (info.BrandID ==1)
+            if (info.BrandName.Trim() == "汉堡王" || info.CustomerName.Trim() == "汉堡王")
+            {
+                string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
+                //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
+                KeyValueDictionary paramDic = new KeyValueDictionary();
+                paramDic.Add("Action", "新建");
+                paramDic.Add("cNumber",info.No);
+                paramDic.Add("Supplier","MVS");
+                paramDic.Add("Agent", info.CreatorName);
+                paramDic.Add("stCode", info.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+                paramDic.Add("stMgr", info.ReporterName);
+                paramDic.Add("Time1", info.ErrorDate);
+                paramDic.Add("Issue", info.Details);
+                //paramDic.Add("stTel", sinfo.Tel);
+                //paramDic.Add("Priority", info.PriorityName);
+                paramDic.Add("Priority", info.PriorityName);
+                paramDic.Add("Category1", info.ClassName1);
+                paramDic.Add("Category2", info.ClassName2);
+                paramDic.Add("Category3", info.ClassName3);
+                paramDic.Add("Solution","开案");
+                paramDic.Add("Attachment", "");
+                WebUtil webtool = new WebUtil();
+                string result = webtool.DoPost(url, paramDic);
+                JObject obj = JObject.Parse(result);
+                string errNo = obj["errNo"].ToString();
+                string Description = string.Empty;
+                if (errNo == "0")
+                {
+                    Description = "接口调用成功";
+                    //记日志
+                    LogInfo logInfo = new LogInfo();
+                    logInfo.AddDate = DateTime.Now;
+                    logInfo.Category = Enum.GetName(typeof(SysEnum.LogType), SysEnum.LogType.普通日志);
+                    logInfo.Content = "汉堡王开案接口调用成功C_NO=" + info.No;
+                    logInfo.ErrorDate = Tool.Function.ErrorDate;
+                    logInfo.SendEmail = true;
+                    logInfo.UserName = DicInfo.Admin;
+                    logInfo.Serious = 1;
+                    LogBLL.Add(logInfo);
+
+                }
+                else {
+                    Description = "接口调用失败"+obj["Desc"].ToString();
+                    //记日志
+                    LogInfo logInfo = new LogInfo();
+                    logInfo.AddDate = DateTime.Now;
+                    logInfo.Category = Enum.GetName(typeof(SysEnum.LogType), SysEnum.LogType.普通日志);
+                    logInfo.Content = "汉堡王开案接口调用失败C_NO=" + info.No + Description;
+                    logInfo.ErrorDate = Tool.Function.ErrorDate;
+                    logInfo.SendEmail = true;
+                    logInfo.UserName = DicInfo.Admin;
+                    logInfo.Serious = 1;
+                    LogBLL.Add(logInfo);
+                }
+
+                js = string.Format("alert('{0}');location.href=this.location.href;", "成功交给了技术中心！" + Description);
+            }
+            #endregion
         }
         else
         {
