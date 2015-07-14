@@ -19,8 +19,19 @@ public partial class menu : BasePage
             if (GroupBLL.PowerCheck((int)PowerInfo.PMain.报修管理))
             {
                 LCallSln1.Visible = GroupBLL.PowerCheck((int)PowerInfo.P1_Call.跟进处理)||GroupBLL.PowerCheck((int)PowerInfo.P1_Call.安排上门);
+                //20150714修改判断戴姆勒这个用户不显示 等待安排上门
+                if (CurrentUserID == 948 || CurrentUserName == "戴姆勒")
+                {
+                    LCallSln1.Visible = false;
+                }
                 LCallAdd.Visible = GroupBLL.PowerCheck((int)PowerInfo.P1_Call.新建报修);
                 LCallSch.Visible= GroupBLL.PowerCheck((int)PowerInfo.PMain.报修管理);
+                //20150714修改判断戴姆勒这个用户不显示 报修查询
+                if (CurrentUserID == 948 || CurrentUserName == "戴姆勒")
+                {
+                    LCallSch.Visible = false;
+                }
+
                 LCallList.Visible = GroupBLL.PowerCheck((int)PowerInfo.P1_Call.查询不同状态报修)&&!CurrentUser.Rule.Contains(SysEnum.Rule.客户.ToString());
                 LAddMany.Visible = GroupBLL.PowerCheck((int)PowerInfo.P1_Call.批量报修);
                 LCustomerRequest.Visible = GroupBLL.PowerCheck((int)PowerInfo.PMain.客户请求管理);
