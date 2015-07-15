@@ -211,16 +211,29 @@ public partial class page_CallStep_listview : BasePage
         return recordid;
     }
 
-    public string GenerateATagPrefix(string index, string details)
+    //public string GenerateATagPrefix(string index, string details)
+    //{
+    //    CallInfo info = GetInfo();
+    //    if (null == info)
+    //        return "";
+    //    string recID = GetRecordIDFromDetails(details);
+    //    if (index == "0")
+    //        return "<a href='/page/Record/Play.aspx?ID=" + info.ID + "&RecID=" + recID + "'>";
+    //    return "";
+    //}
+
+    public string GenerateATagPrefix(int index, string details)
     {
         CallInfo info = GetInfo();
         if (null == info)
             return "";
         string recID = GetRecordIDFromDetails(details);
-        if (index == "0")
-            return "<a href='/page/Record/Play.aspx?ID=" + info.ID + "&RecID=" + recID + "'>";
-        return "";
+        if ((index == 0 && details.Contains("A$B$C") && details.Contains("D$E$F")) || (index == 1 && details.Contains("A$B$C") && details.Contains("D$E$F")))
+            return "<a href='/page/Record/Play.aspx?ID=" + info.ID + "&RecID=" + recID + "'>" + "步骤" + (index + 1).ToString() + "</a>";
+        return "步骤" + (index + 1).ToString();
+
     }
+
 
     public string GenerateATagSufix(string index)
     {

@@ -34,10 +34,27 @@ public partial class page_Attachment_View : _Sys_Attachment
             List<CallStepInfo> stepInfoList = CallStepBLL.GetListJoin(info);
             foreach (CallStepInfo stepInfo in stepInfoList)
             {
-                if (stepInfo.StepIndex == 1)
+                //if (stepInfo.StepIndex == 1)
+                //{
+                //    callbackStepInfo = stepInfo;
+                //    break;
+                //}
+                if (stepInfo.StepIndex == 1 && stepInfo.Details.Contains("A$B$C") && stepInfo.Details.Contains("D$E$F"))
                 {
-                    callbackStepInfo = stepInfo;
-                    break;
+                    if (RecordID.ToString() == GetRecordIDFromDetails(stepInfo.Details))
+                    {
+                        callbackStepInfo = stepInfo;
+                        break;
+                    }
+                    
+                }
+                if (stepInfo.StepIndex == 2 && stepInfo.Details.Contains("A$B$C") && stepInfo.Details.Contains("D$E$F"))
+                {
+                    if (RecordID.ToString() == GetRecordIDFromDetails(stepInfo.Details))
+                    {
+                        callbackStepInfo = stepInfo;
+                        break;
+                    }
                 }
             }
             RecordPlay1.UseOldRecordDB = false;
@@ -48,5 +65,14 @@ public partial class page_Attachment_View : _Sys_Attachment
             else                
                 RecordPlay1.stepinfo = null;
         }
+    }
+    protected string GetRecordIDFromDetails(string Details)
+    {
+        string recordid = "";
+        int POS1 = Details.IndexOf("A$B$C");
+        int POS2 = Details.IndexOf("D$E$F");
+        if (POS1 != -1 && POS2 != -1 && POS2 > POS1)
+            recordid = Details.Substring(POS1 + 5, POS2 - POS1 - 5);
+        return recordid;
     }
 }
