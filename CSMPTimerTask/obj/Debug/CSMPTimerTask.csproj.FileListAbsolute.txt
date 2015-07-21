@@ -1,0 +1,13 @@
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\bin\Debug\CSMPTimerTask.exe.config
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\bin\Debug\CSMPTimerTask.exe
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\bin\Debug\CSMPTimerTask.pdb
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\bin\Debug\DBUtility.dll
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\bin\Debug\Newtonsoft.Json.dll
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\bin\Debug\Mono.Security.dll
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\bin\Debug\Npgsql.dll
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\bin\Debug\DBUtility.pdb
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\obj\Debug\ResolveAssemblyReference.cache
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\obj\Debug\CSMPTimerTask.ProjectInstaller.resources
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\obj\Debug\CSMPTimerTask.csproj.GenerateResource.Cache
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\obj\Debug\CSMPTimerTask.exe
+C:\VS2008Project\GitCSMP\csmp\CSMPTimerTask\obj\Debug\CSMPTimerTask.pdb
