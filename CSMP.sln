@@ -51,6 +51,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "web\", "{1505D345-FE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMPTask", "CSMPTask\CSMPTask.csproj", "{495A78C8-FED2-420A-9C4C-3AEB61751FD2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSMPTimerTask", "CSMPTimerTask\CSMPTimerTask.csproj", "{DABB65E2-5367-40FF-BB2A-1D0A157D7ABA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{495A78C8-FED2-420A-9C4C-3AEB61751FD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{495A78C8-FED2-420A-9C4C-3AEB61751FD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{495A78C8-FED2-420A-9C4C-3AEB61751FD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DABB65E2-5367-40FF-BB2A-1D0A157D7ABA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DABB65E2-5367-40FF-BB2A-1D0A157D7ABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DABB65E2-5367-40FF-BB2A-1D0A157D7ABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DABB65E2-5367-40FF-BB2A-1D0A157D7ABA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

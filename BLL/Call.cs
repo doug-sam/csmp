@@ -430,6 +430,14 @@ namespace CSMP.BLL
         {
             return CurrentUser.WorkGroupID == info.AssignID;
         }
-
+        /// <summary>
+        /// 插入汉堡王Task
+        /// </summary>
+        /// <param name="sqlStr">sql语句</param>
+        /// <returns></returns>
+        public static int AddBurgerKingTask(string sqlStr)
+        {
+            return dal.AddBurgerKingTask(sqlStr);
+        }
     }
 }

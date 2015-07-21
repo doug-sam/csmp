@@ -119,40 +119,41 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
             #region 汉堡王升级到客户处理完成时
             if (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王")
             {
-                string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
-                //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
+                //string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
                 KeyValueDictionary paramDic = new KeyValueDictionary();
                 paramDic.Add("Action", "转呈");
                 paramDic.Add("cNumber", cinfo.No);
-
                 paramDic.Add("Supplier", "MVS");
                 paramDic.Add("Agent", CurrentUserName);
-                paramDic.Add("TSI", "");
+                paramDic.Add("TSI", DdlThirdParty.SelectedItem.Text);
                 paramDic.Add("stCode", cinfo.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
                 paramDic.Add("stMgr", cinfo.ReporterName);
                 paramDic.Add("Time1", DateTime.Now);
                 paramDic.Add("Issue", cinfo.Details);
-                //paramDic.Add("stTel", sinfo.Tel);
-                //paramDic.Add("Priority", info.PriorityName);
                 paramDic.Add("Priority", cinfo.PriorityName);
                 paramDic.Add("Category1", cinfo.ClassName1);
                 paramDic.Add("Category2", cinfo.ClassName2);
                 paramDic.Add("Category3", cinfo.ClassName3);
                 paramDic.Add("Solution", "");
                 paramDic.Add("Attachment", "");
-                WebUtil webtool = new WebUtil();
-                string result = webtool.DoPost(url, paramDic);
-                JObject obj = JObject.Parse(result);
-                string errNo = obj["errNo"].ToString();
+                //WebUtil webtool = new WebUtil();
+                //string result = webtool.DoPost(url, paramDic);
+                //JObject obj = JObject.Parse(result);
+                //string errNo = obj["errNo"].ToString();
 
-                if (errNo == "0")
-                {
-                    APImsg = " 接口调用成功";
-                }
-                else
-                {
-                    APImsg = " 接口调用失败" + obj["Desc"].ToString();
-                }
+                //if (errNo == "0")
+                //{
+                //    APImsg = " 接口调用成功";
+                //}
+                //else
+                //{
+                //    APImsg = " 接口调用失败" + obj["Desc"].ToString();
+                //}
+                string paramStr = WebUtil.BuildQueryJson(paramDic);
+                string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
+                int records = CallBLL.AddBurgerKingTask(sqlStrHK);
+                if (records <= 0)
+                    APImsg = " 汉堡王任务记录失败，请联系管理员";
             }
             #endregion
 

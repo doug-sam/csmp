@@ -374,6 +374,16 @@ namespace CSMP.DAL
             strSQL.Append("delete ").Append(FROM_TABLE).Append(" where id in (").Append(sb_CallIDs.ToString()).Append(" ) ");
             return strSQL;
         }
+        /// <summary>
+        /// 插入汉堡王Task
+        /// </summary>
+        /// <param name="sqlStr">sql语句</param>
+        /// <returns></returns>
+        public int AddBurgerKingTask(string sqlStr)
+        { 
+            int  records = Convert.ToInt32(SqlHelper.ExecuteNonQuery(CommandType.Text, sqlStr, null));
+            return records;
+        }
 
     }
 }

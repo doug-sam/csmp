@@ -216,8 +216,7 @@ public partial class page_call_slnRemote : _Call_Step
             #region 汉堡王升级到客户处理完成时
             if ((int)SysEnum.CallStateMain.已完成 == cinfo.StateMain&&(cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王"))
             {
-                string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
-                //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
+                //string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
                 KeyValueDictionary paramDic = new KeyValueDictionary();
                 paramDic.Add("Action", "HD完成");
                 paramDic.Add("cNumber", cinfo.No);
@@ -226,18 +225,23 @@ public partial class page_call_slnRemote : _Call_Step
                 paramDic.Add("stMgr", cinfo.ReporterName);
                 paramDic.Add("Solution", "");
                 paramDic.Add("Attachment", "");
-                WebUtil webtool = new WebUtil();
-                string result = webtool.DoPost(url, paramDic);
-                JObject obj = JObject.Parse(result);
-                string errNo = obj["errNo"].ToString();
-                if (errNo == "0")
-                {
-                    APImsg = "接口调用成功";
-                }
-                else
-                {
-                    APImsg = "接口调用失败" + obj["Desc"].ToString();
-                }
+                //WebUtil webtool = new WebUtil();
+                //string result = webtool.DoPost(url, paramDic);
+                //JObject obj = JObject.Parse(result);
+                //string errNo = obj["errNo"].ToString();
+                //if (errNo == "0")
+                //{
+                //    APImsg = "接口调用成功";
+                //}
+                //else
+                //{
+                //    APImsg = "接口调用失败" + obj["Desc"].ToString();
+                //}
+                string paramStr = WebUtil.BuildQueryJson(paramDic);
+                string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
+                int records = CallBLL.AddBurgerKingTask(sqlStrHK);
+                if (records <= 0)
+                    APImsg = " 汉堡王任务记录失败，请联系管理员";
             }
             #endregion
 
