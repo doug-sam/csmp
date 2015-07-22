@@ -111,6 +111,16 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
             Function.AlertBack("请选择第三方");
             return;            
         }
+        //如果是汉堡王品牌选择的第三方需要是指定的第三方
+        if (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王")
+        {
+            if (!DdlThirdParty.SelectedItem.Text.Contains("&$&")) 
+            {
+                Function.AlertBack("请选择汉堡王对应的第三方");
+                return;
+            }
+        
+        }
 
         if (CallStepBLL.AddCallStep_UpdateCall(cinfo, sinfo))
         {
@@ -125,7 +135,11 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
                 paramDic.Add("cNumber", cinfo.No);
                 paramDic.Add("Supplier", "MVS");
                 paramDic.Add("Agent", CurrentUserName);
-                paramDic.Add("TSI", DdlThirdParty.SelectedItem.Text);
+                //汉堡王的TSI取"&$&"后的字段
+                string tsi = DdlThirdParty.SelectedItem.Text;
+                int startIndex = tsi.IndexOf("&$&");
+                tsi = tsi.Substring(startIndex + 3);
+                paramDic.Add("TSI", tsi);
                 paramDic.Add("stCode", cinfo.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
                 paramDic.Add("stMgr", cinfo.ReporterName);
                 paramDic.Add("Time1", DateTime.Now);

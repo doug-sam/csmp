@@ -52,6 +52,11 @@
                             OnClick="BtnSubmit_Click" />
                     </td>
                 </tr>
+                <tr>
+                    <td class="td1_2" colspan="2">
+                        <p style="color:Red">如果配置汉堡王对应的第三方，名称请按照此格式:二级支持名称&$&系统名称，示例：三星银众&$&SUMSUNG</p>
+                    </td>
+                </tr>
             </table>
         </ContentTemplate>
     </asp:UpdatePanel>
