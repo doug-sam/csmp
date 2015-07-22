@@ -120,7 +120,7 @@
                 <h6 class="ItemContainer">
                     <ul class="LeftMeunUl">
                         <asp:Literal ID="LLog" runat="server">
-                            <li><a href="/page/log/list.aspx" target="main">系统日志</a></li>
+                            <li><a href="/page/log/list.aspx?fromMenu=true" target="main">系统日志</a></li>
                             <li><a href="/page/OperationRec/list.aspx" target="main">报修回滚日志</a></li>
                         </asp:Literal>
                         <asp:Literal ID="LInport" runat="server">

@@ -18,7 +18,7 @@
                         名称：
                     </td>
                     <td class="td1_3">
-                        <asp:TextBox ID="TxbName" runat="server"></asp:TextBox>
+                        <asp:TextBox ID="TxbName" runat="server" ></asp:TextBox>
                     </td>
                 </tr>
                 <tr>

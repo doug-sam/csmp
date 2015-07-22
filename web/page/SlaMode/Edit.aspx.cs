@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using CSMP.BLL;
 using CSMP.Model;
 using Tool;
+using System.Text;
 
 public partial class page_SlaMode_Edit : _BaseData_SLAModel
 {
@@ -59,7 +60,14 @@ public partial class page_SlaMode_Edit : _BaseData_SLAModel
             
             info = new SlaModeInfo();
         }
-        
+        string modeName = TxbName.Text.Trim();
+
+        if (modeName.Length != Encoding.Default.GetByteCount(modeName))
+        {
+            Function.AlertMsg("输入的符号必须为*-:(),即输入的符号为非中文符号");
+            return;
+        }
+
         info.Name = TxbName.Text.Trim();
         if (info.Name.Length > 50)
         {
