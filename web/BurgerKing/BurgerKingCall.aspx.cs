@@ -22,12 +22,14 @@ public partial class BurgerKing_BurgerKingCall : System.Web.UI.Page
 
     protected string DoComplete(string result) 
     {
-        if (result.Contains("cNumber") && result.Contains("solutionDetails"))
+        if (result.Contains("cNumber") && result.Contains("solutionDetails") && result.Contains("TSI"))
         {
             JObject obj = JObject.Parse(result);
             string cNumber = obj["cNumber"].ToString();
             cNumber = cNumber.Trim('"');
             string solutionDetails = obj["solutionDetails"].ToString();
+            string TSI = obj["TSI"].ToString();
+            int TSIid = 0;
             if (string.IsNullOrEmpty(cNumber))
             {
                 result = "{\"status\":true,\"errNo\":103,\"Desc\":\"执行失败，cNumber值不能为空\"}";
@@ -38,6 +40,20 @@ public partial class BurgerKing_BurgerKingCall : System.Web.UI.Page
                 result = "{\"status\":true,\"errNo\":104,\"Desc\":\"执行失败，solutionDetails处理过程备注不能超过500字\"}";
                 return result;
             }
+            if (string.IsNullOrEmpty(TSI))
+            {
+                TSI = "汉堡王";
+            }
+            else { 
+                string tpWhere = "f_Name like '%&$&"+TSI+"'";
+                List<ThirdPartyInfo> tpList = ThirdPartyBLL.GetList(tpWhere);
+                if (tpList.Count > 0)
+                {
+                    TSI = tpList[0].Name;
+                    TSIid = tpList[0].ID;
+                }
+            }
+
             CallInfo cinfo = CallBLL.Get(cNumber);
             if (cinfo == null)
             {
@@ -47,25 +63,45 @@ public partial class BurgerKing_BurgerKingCall : System.Web.UI.Page
             else
             {
                 CallStepInfo sinfo = new CallStepInfo();
-                sinfo.StepType = (int)SysEnum.StepType.升级到客户;
-                //sinfo.MajorUserID = CurrentUserID;
-                sinfo.MajorUserName = "汉堡王推送";
+                sinfo.StepType = (int)SysEnum.StepType.第三方处理离场;
+                sinfo.MajorUserID = TSIid;
+                sinfo.MajorUserName = TSI;
                 sinfo.AddDate = DateTime.Now;
                 sinfo.CallID = cinfo.ID;
-                sinfo.DateBegin = DateTime.Now;
+                sinfo.DateBegin = DateTime.Now; 
                 sinfo.DateEnd = sinfo.DateBegin;
                 sinfo.Details = solutionDetails;
                 sinfo.StepIndex = CallStepBLL.GetMaxStepIndex(cinfo.ID) + 1;
                 sinfo.IsSolved = true;
-                sinfo.SolutionID = -1;
-                sinfo.SolutionName = "客户自行解决";
+                sinfo.SolutionID = -2;
+                sinfo.SolutionName = "第三方解决";
                 cinfo.StateMain = (int)SysEnum.CallStateMain.已完成;
                 cinfo.StateDetail = (int)SysEnum.CallStateDetails.处理完成;
-                cinfo.SloveBy = SysEnum.SolvedBy.客户解决.ToString();
+                cinfo.SloveBy = SysEnum.SolvedBy.第三方.ToString();
                 cinfo.FinishDate = sinfo.DateBegin;
-                sinfo.StepName = SysEnum.CallStateDetails.升级到客户.ToString();
+                sinfo.StepName = SysEnum.CallStateDetails.第三方处理离场.ToString();
                 //sinfo.UserID = CurrentUser.ID;
                 sinfo.UserName = "汉堡王推送";
+
+                //sinfo.StepType = (int)SysEnum.StepType.升级到客户;
+                ////sinfo.MajorUserID = CurrentUserID;
+                //sinfo.MajorUserName = "汉堡王推送";
+                //sinfo.AddDate = DateTime.Now;
+                //sinfo.CallID = cinfo.ID;
+                //sinfo.DateBegin = DateTime.Now;
+                //sinfo.DateEnd = sinfo.DateBegin;
+                //sinfo.Details = solutionDetails;
+                //sinfo.StepIndex = CallStepBLL.GetMaxStepIndex(cinfo.ID) + 1;
+                //sinfo.IsSolved = true;
+                //sinfo.SolutionID = -1;
+                //sinfo.SolutionName = "客户自行解决";
+                //cinfo.StateMain = (int)SysEnum.CallStateMain.已完成;
+                //cinfo.StateDetail = (int)SysEnum.CallStateDetails.处理完成;
+                //cinfo.SloveBy = SysEnum.SolvedBy.客户解决.ToString();
+                //cinfo.FinishDate = sinfo.DateBegin;
+                //sinfo.StepName = SysEnum.CallStateDetails.升级到客户.ToString();
+                ////sinfo.UserID = CurrentUser.ID;
+                //sinfo.UserName = "汉堡王推送";
 
                 if (CallStepBLL.AddCallStep_UpdateCall(cinfo, sinfo))
                 {
