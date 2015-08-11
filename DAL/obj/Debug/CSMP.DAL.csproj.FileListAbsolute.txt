@@ -209,6 +209,7 @@ C:\VS2008Project\GitCSMP\csmp\DAL\bin\Debug\Npgsql.dll
 C:\VS2008Project\GitCSMP\csmp\DAL\bin\Debug\Tool.dll
 C:\VS2008Project\GitCSMP\csmp\DAL\bin\Debug\Microsoft.Office.Interop.Word.dll
 C:\VS2008Project\GitCSMP\csmp\DAL\bin\Debug\Microsoft.Office.Interop.Excel.dll
+C:\VS2008Project\GitCSMP\csmp\DAL\bin\Debug\log4net.dll
 C:\VS2008Project\GitCSMP\csmp\DAL\bin\Debug\office.dll
 C:\VS2008Project\GitCSMP\csmp\DAL\bin\Debug\CSMP.Model.pdb
 C:\VS2008Project\GitCSMP\csmp\DAL\bin\Debug\DBUtility.pdb

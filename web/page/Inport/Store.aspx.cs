@@ -9,6 +9,7 @@ using CSMP.Model;
 using Tool;
 using System.IO;
 using System.Data;
+using System.Collections;
 
 public partial class page_Inport_Store : _Sys_Inport
 {
@@ -84,13 +85,114 @@ public partial class page_Inport_Store : _Sys_Inport
         }
         #endregion
 
+        #region 旧代码
 
+        
+        //List<StoreInfo> list = new List<StoreInfo>();
+        //StoreInfo info = new StoreInfo();
+        //BrandInfo binfo = new BrandInfo();
+        //CityInfo cinfo = new CityInfo();
+        //CustomersInfo cusinfo = new CustomersInfo();
+        //int CityErrorFlag = 0;
+        //for (int i = 0; i < dt.Rows.Count; i++)
+        //{
+        //    if (string.IsNullOrEmpty(dt.Rows[i][0].ToString()))
+        //    {
+        //        continue;// Function.AlertMsg(i.ToString());
+        //    }
+        //    if (dt.Rows[i][0].ToString().Trim().Length > 50)
+        //    {
+        //        Function.AlertBack(string.Format("第{0}行中《店铺号》过长！", (i + 1))); return;
+        //    }
+        //    if (!CbUpdate.Checked)
+        //    {
+        //        if (null != StoresBLL.GetByStoreNo(dt.Rows[i][0].ToString().Trim()))
+        //        {
+        //            Function.AlertBack(string.Format("第{0}行中《店铺号》已存在！", (i + 1))); return;
+        //        }
+        //    }
+        //    if (!string.IsNullOrEmpty(dt.Rows[i][6].ToString().Trim()) && StoresBLL.TelExit(dt.Rows[i][6].ToString().Trim()))
+        //    {
+        //        Function.AlertBack(string.Format("第{0}行中《电话》已存在！", (i + 1))); return;
+        //    }
+        //    if (dt.Rows[i][1].ToString().Trim().Length > 50)
+        //    {
+        //        Function.AlertBack(string.Format("第{0}行中《店铺名称》过长！", (i + 1))); return;
+        //    }
+        //    cusinfo = CustomersBLL.Get(dt.Rows[i][3].ToString());
+        //    if (null == cusinfo || cusinfo.ID == 0)
+        //    {
+        //        Function.AlertMsg(string.Format("第{0}行中《对应客户》在系统中不存在！", (i + 1))); return;
+        //    }
+
+        //    binfo = BrandBLL.Get(dt.Rows[i][2].ToString().Trim(), cusinfo.ID);
+        //    if (null == binfo || binfo.ID == 0)
+        //    {
+        //        Function.AlertBack(string.Format("第{0}行中《对应品牌》在系统中不存在！", (i + 1))); return;
+        //    }
+        //    if (string.IsNullOrEmpty(dt.Rows[i]["所属城市"].ToString()))
+        //    {
+        //        continue;
+        //    }
+        //    try
+        //    {
+        //        cinfo = CityBLL.Get(dt.Rows[i]["所属城市"].ToString().Trim());
+        //        if (null == cinfo || cinfo.ID == 0)
+        //        {
+        //            Function.AlertBack(string.Format("第{0}行中《所属城市》在系统中不存在！", (i + 1))); return;
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        CityErrorFlag++;
+        //        continue;
+
+        //    }
+
+        //    if (dt.Rows[i]["地址"].ToString().Trim().Length > 200)
+        //    {
+        //        Function.AlertBack(string.Format("第{0}行中《地址》过长！", (i + 1))); return;
+        //    }
+        //    if (dt.Rows[i]["电话"].ToString().Trim().Length > 50)
+        //    {
+        //        Function.AlertBack(string.Format("第{0}行中《电话》过长！", (i + 1))); return;
+        //    }
+        //    if (dt.Rows[i]["邮箱"].ToString().Trim().Length > 50)
+        //    {
+        //        Function.AlertBack(string.Format("第{0}行中《邮箱》过长！", (i + 1))); return;
+        //    }
+        //    if (dt.Rows[i]["店铺类型"].ToString().Trim().Length > 100)
+        //    {
+        //        Function.AlertBack(string.Format("第{0}行中《店铺类型》过长！", (i + 1))); return;
+        //    }
+        //    info = new StoreInfo();
+        //    info.No = dt.Rows[i]["店铺号"].ToString();
+        //    info.Name = dt.Rows[i]["店铺名称"].ToString();
+        //    info.BrandID = binfo.ID;
+        //    info.BrandName = binfo.Name;
+        //    info.ProvinceID = cinfo.ProvinceID;
+        //    info.ProvinceName = ProvincesBLL.Get(cinfo.ProvinceID).Name;
+        //    info.CityID = cinfo.ID;
+        //    info.CityName = cinfo.Name;
+        //    info.Address = dt.Rows[i]["地址"].ToString();
+        //    info.Tel = dt.Rows[i]["电话"].ToString();
+        //    info.IsClosed = dt.Rows[i]["是否可用"].ToString().Trim() == "可用" ? false : true;
+        //    info.CustomerID = binfo.CustomerID;
+        //    info.CustomerName = CustomersBLL.Get(binfo.CustomerID).Name;
+        //    info.Email = dt.Rows[i]["邮箱"].ToString();
+        //    info.StoreType = dt.Rows[i]["店铺类型"].ToString();
+        //    list.Add(info);
+        //}
+        #endregion
         List<StoreInfo> list = new List<StoreInfo>();
         StoreInfo info = new StoreInfo();
         BrandInfo binfo = new BrandInfo();
         CityInfo cinfo = new CityInfo();
         CustomersInfo cusinfo = new CustomersInfo();
         int CityErrorFlag = 0;
+
+        Hashtable hshTable = new Hashtable(); //  创建哈希表
+
         for (int i = 0; i < dt.Rows.Count; i++)
         {
             if (string.IsNullOrEmpty(dt.Rows[i][0].ToString()))
@@ -105,9 +207,17 @@ public partial class page_Inport_Store : _Sys_Inport
             {
                 if (null != StoresBLL.GetByStoreNo(dt.Rows[i][0].ToString().Trim()))
                 {
-                    Function.AlertBack(string.Format("第{0}行中《店铺号》已存在！", (i + 1))); return;
+                    Function.AlertBack(string.Format("第{0}行中《店铺号》数据库中已存在！是否忘记勾选将已存在的更新为Excel中的数据", (i + 1))); return;
                 }
             }
+
+            if (hshTable.Contains(dt.Rows[i][0].ToString().Trim()))
+            {
+                string moreIndex = (string)hshTable[dt.Rows[i][0].ToString().Trim()].ToString(); //取哈希表里指定键的值
+                Function.AlertBack(string.Format("Excel第{0}行中《店铺号》"+dt.Rows[i][0].ToString().Trim()+"与第{1}行重复！", (i + 1), moreIndex)); return;
+            }
+
+
             if (!string.IsNullOrEmpty(dt.Rows[i][6].ToString().Trim()) && StoresBLL.TelExit(dt.Rows[i][6].ToString().Trim()))
             {
                 Function.AlertBack(string.Format("第{0}行中《电话》已存在！", (i + 1))); return;
@@ -179,6 +289,8 @@ public partial class page_Inport_Store : _Sys_Inport
             info.Email = dt.Rows[i]["邮箱"].ToString();
             info.StoreType = dt.Rows[i]["店铺类型"].ToString();
             list.Add(info);
+
+            hshTable.Add(dt.Rows[i]["店铺号"].ToString(), i+1);  //  往哈希表里添加键值对
         }
         //         
         if (list.Count > 0)
@@ -195,10 +307,46 @@ public partial class page_Inport_Store : _Sys_Inport
             Function.AlertBack("表中没有任何数据。");
         }
     }
+    #region 旧代码
+    
+    //protected void BtnSubmit_Click(object sender, EventArgs e)
+    //{
+    //    if (null == ViewState["list"]) return;
+    //    List<StoreInfo> list = (List<StoreInfo>)ViewState["list"];
+    //    int FlagAdd = 0;
+    //    int FlagEdit = 0;
+
+    //    StoreInfo InfoExist = null;
+    //    foreach (StoreInfo item in list)
+    //    {
+    //        if (CbUpdate.Checked)
+    //        {
+    //            InfoExist = StoresBLL.GetByStoreNo(item.No);
+    //            if (null != InfoExist)
+    //            {
+    //                item.ID = InfoExist.ID;
+    //                item.AddDate = InfoExist.AddDate;
+    //                if (StoresBLL.Edit(item))
+    //                {
+    //                    FlagEdit++;
+    //                    continue;
+    //                }
+    //            }
+    //        }
+    //        item.AddDate = DateTime.Now;
+    //        if (StoresBLL.Add(item) > 0)
+    //        {
+    //            FlagAdd++;
+    //        }
+    //    }
+    //    Function.AlertRefresh(FlagAdd + "条数据成功导入");
+    //}
+    #endregion
     protected void BtnSubmit_Click(object sender, EventArgs e)
     {
         if (null == ViewState["list"]) return;
         List<StoreInfo> list = (List<StoreInfo>)ViewState["list"];
+        int FlagSum = list.Count;
         int FlagAdd = 0;
         int FlagEdit = 0;
 
@@ -225,8 +373,9 @@ public partial class page_Inport_Store : _Sys_Inport
                 FlagAdd++;
             }
         }
-        Function.AlertRefresh(FlagAdd + "条数据成功导入");
+        Function.AlertRefresh("共" + FlagSum + "条数据，" + FlagAdd + "条导入成功，" + FlagEdit + "条覆盖成功！");
     }
+
     private string Upload()
     {
         if (!FileUpload1.HasFile)

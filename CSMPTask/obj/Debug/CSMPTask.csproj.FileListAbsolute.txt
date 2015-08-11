@@ -176,6 +176,7 @@ C:\VS2008Project\GitCSMP\csmp\CSMPTask\bin\Debug\Tool.dll
 C:\VS2008Project\GitCSMP\csmp\CSMPTask\bin\Debug\Microsoft.Office.Interop.Word.dll
 C:\VS2008Project\GitCSMP\csmp\CSMPTask\bin\Debug\Mono.Security.dll
 C:\VS2008Project\GitCSMP\csmp\CSMPTask\bin\Debug\Microsoft.Office.Interop.Excel.dll
+C:\VS2008Project\GitCSMP\csmp\CSMPTask\bin\Debug\log4net.dll
 C:\VS2008Project\GitCSMP\csmp\CSMPTask\bin\Debug\Npgsql.dll
 C:\VS2008Project\GitCSMP\csmp\CSMPTask\bin\Debug\office.dll
 C:\VS2008Project\GitCSMP\csmp\CSMPTask\bin\Debug\CSMP.DAL.dll

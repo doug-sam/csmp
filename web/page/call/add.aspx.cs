@@ -461,6 +461,7 @@ public partial class page_call_add : _Call_Add
         #region ZQL新增插入callstep一条记录
         if (info.ID > 0)
         {
+            Logger.GetLogger(this.GetType()).Info("开单，新建callid=" + info.ID + "，操作人：" + info.CreatorName, null);
             CallStepInfo callStepInfo = new CallStepInfo();
             callStepInfo.StepType = (int)SysEnum.StepType.开单;
             callStepInfo.AddDate = DateTime.Now;
@@ -478,7 +479,11 @@ public partial class page_call_add : _Call_Add
             callStepInfo.UserName = CurrentUserName; 
             callStepInfo.IsSolved = false;
             callStepInfo.StepName = SysEnum.CallStateDetails.系统接单_未处理.ToString();
-            CallStepBLL.Add(callStepInfo);
+            if (CallStepBLL.Add(callStepInfo) > 0) {
+                Logger.GetLogger(this.GetType()).Info("开单插入step1系统接单_未处理 成功，callid=" + info.ID  + "，操作人：" + info.CreatorName, null);
+            } else {
+                Logger.GetLogger(this.GetType()).Info("开单插入step1系统接单_未处理 失败，callid=" + info.ID + "，操作人：" + info.CreatorName, null);
+            }
         }
 
         #endregion

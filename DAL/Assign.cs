@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using DBUtility;
 using CSMP.Model;
+using Tool;
 
 namespace CSMP.DAL
 {
@@ -154,10 +155,12 @@ namespace CSMP.DAL
 
             if (SqlHelper.ExecuteNonQueryByTran(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), parms))
             {
+                Logger.GetLogger(this.GetType()).Info("转派成功，callid=" + info.CallID+"，操作人："+info.CreatorName, null);
                 return Convert.ToInt32(SqlHelper.ExecuteScalar(SqlHelper.SqlconnString, CommandType.Text, "select max(id) from " + TABLE, null).ToString());
             }
             else
             {
+                Logger.GetLogger(this.GetType()).Info("转派失败，callid=" + info.CallID + "，操作人：" + info.CreatorName, null);
                 return 0;
             }
         }

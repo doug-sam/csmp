@@ -36,6 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.9.0, Culture=neutral, PublicKeyToken=b32731d11ce58905">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" />
     <Reference Include="Microsoft.Office.Interop.Word, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
@@ -70,6 +74,8 @@
     <Compile Include="ImgHelper.cs" />
     <Compile Include="JSONHelper.cs" />
     <Compile Include="KeyValueDictionary.cs" />
+    <Compile Include="Log\Logger.cs" />
+    <Compile Include="Log\LogLevel.cs" />
     <Compile Include="Md5Helper.cs" />
     <Compile Include="ModelHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,6 +12,7 @@ using System.IO;
 using System.Data.SqlClient;
 using DBUtility;
 using Newtonsoft.Json.Linq;
+using Tool;
 
 namespace CSMPTimerTask
 {
@@ -40,62 +41,78 @@ namespace CSMPTimerTask
 
         private void taskTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            string strTime = "定时器开始" + DateTime.Now.ToString();
-            StreamWriter swtime = new StreamWriter("D:\\1.txt", false);
-            swtime.WriteLine(strTime);
-            swtime.Close();//写入
-
+            
             //执行SQL语句或其他操作
-
-            string sqlListStr = "select * from sys_WebServiceTask where f_IsDone = 0;";
+            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务开始。", null);
+            string sqlListStr = "select * from sys_WebServiceTask where f_IsDone = 0 order by id asc;";
             using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, sqlListStr, null))
             {
+                
                 while (rdr.Read())
                 {
                     int id = Convert.ToInt32(rdr["ID"]);
+                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务,任务ID：" + id, null);
                     string paramStr = rdr["f_TaskUrl"].ToString();
-
-                    string strTime1 = paramStr;
-                    StreamWriter swtime1 = new StreamWriter("D:\\2.txt", false);
-                    swtime1.WriteLine(strTime1);
-                    swtime1.Close();//写入
 
                     System.Text.Encoding encode = System.Text.Encoding.GetEncoding("GB2312");
                     string content = HttpUtility.UrlEncode(paramStr, encode);
                     string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
                     url = url + "para={" + content + "}";
 
-                    string strTime2 = url;
-                    StreamWriter swtime2 = new StreamWriter("D:\\3.txt", false);
-                    swtime2.WriteLine(strTime2);
-                    swtime2.Close();//写入
-
                     string targeturl = url.Trim().ToString();
-                    HttpWebRequest hr = (HttpWebRequest)WebRequest.Create(targeturl);
+                    HttpWebRequest hr = null;
+                    try {
+                        //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，httpcreate开始", null);
+                        hr = (HttpWebRequest)WebRequest.Create(targeturl);
+                        //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，httpcreate成功", null);
+                    }catch(Exception ex){
+                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：" + ex.Message, null);
+                        continue;
+                    }
+                    
                     hr.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
                     hr.Method = "GET";
                     hr.Timeout = 30 * 60 * 1000;
-                    WebResponse hs = hr.GetResponse();
-                    Stream sr = hs.GetResponseStream();
-                    StreamReader ser = new StreamReader(sr, System.Text.Encoding.UTF8);
+                    StreamReader ser =null;
+                    //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：开始stream", null);
+                    try
+                    {
+                        WebResponse hs = hr.GetResponse();
+                        Stream sr = hs.GetResponseStream();
+                        ser = new StreamReader(sr, System.Text.Encoding.UTF8);
+                    }
+                    catch (Exception ex) {
+                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id+"，错误原因："+ex.Message, null);
+                        continue;
+                    }
+                    
                     string sendResult = ser.ReadToEnd();
-                    JObject obj = JObject.Parse(sendResult);
-                    string errNo = obj["errNo"].ToString();
+                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务,任务ID：" + id + "，接口返回结果：" + sendResult, null);
 
-                    string str3 = errNo;
-                    StreamWriter sw3 = new StreamWriter("D:\\4.txt", false);
-                    sw3.WriteLine(str3);
-                    sw3.Close();//写入
+                    JObject obj = null;
+                    try
+                    {
+                        obj = JObject.Parse(sendResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：" + ex.Message, null);
+                        continue;
+                    }
+                    string errNo = obj["errNo"].ToString();
 
                     if (errNo == "0")
                     {
+                        
                         string updateStr = "UPDATE sys_WebServiceTask SET f_IsDone = 1 WHERE ID=" + id;
-                        SqlHelper.ExecuteNonQuery(CommandType.Text, updateStr, null);
+                        try {
+                            SqlHelper.ExecuteNonQuery(CommandType.Text, updateStr, null);
+                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行成功，任务ID=" + id, null);
+                        }catch(Exception ex){
+                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行成功，任务ID=" + id + "，但更新本地数据库任务状态失败，错误原因：" + ex.Message, null);
+                        }
+                        
                     }
-                    string str = sendResult + DateTime.Now.ToString();
-                    StreamWriter sw = new StreamWriter("D:\\5.txt", false);
-                    sw.WriteLine(str);
-                    sw.Close();//写入
 
                 }
             }

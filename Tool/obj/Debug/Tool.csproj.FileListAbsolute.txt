@@ -145,6 +145,7 @@ C:\VS2008Project\GitCSMP备份\csmp\Tool\obj\Debug\Tool.dll
 C:\VS2008Project\GitCSMP备份\csmp\Tool\obj\Debug\Tool.pdb
 C:\VS2008Project\GitCSMP\csmp\Tool\bin\Debug\Tool.dll
 C:\VS2008Project\GitCSMP\csmp\Tool\bin\Debug\Tool.pdb
+C:\VS2008Project\GitCSMP\csmp\Tool\bin\Debug\log4net.dll
 C:\VS2008Project\GitCSMP\csmp\Tool\bin\Debug\Microsoft.Office.Interop.Excel.dll
 C:\VS2008Project\GitCSMP\csmp\Tool\bin\Debug\Microsoft.Office.Interop.Word.dll
 C:\VS2008Project\GitCSMP\csmp\Tool\bin\Debug\office.dll

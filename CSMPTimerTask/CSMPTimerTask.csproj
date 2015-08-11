@@ -70,12 +70,17 @@
       <Project>{75BE1B89-B5F8-4042-9A90-37BA93316A25}</Project>
       <Name>DBUtility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tool\Tool.csproj">
+      <Project>{A67AC06D-ED23-468F-A646-95BCB86901D0}</Project>
+      <Name>Tool</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Newtonsoft.Json.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="log4net.config" />
     <None Include="Newtonsoft.Json.dll.refresh" />
   </ItemGroup>
   <ItemGroup>

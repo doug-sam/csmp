@@ -30,16 +30,27 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
     {
         if (!IsPostBack)
         {
-            DdlThirdParty.DataSource = ThirdPartyBLL.GetList(CurrentUser.WorkGroupID);
-            DdlThirdParty.DataBind();
-            DdlThirdParty.Items.Insert(0, new ListItem("请选择", "0"));
-
+            
             CallInfo info = GetInfo();
             if (null == info)
             {
                 Function.AlertBack("数据有误。");
             }
             CallState1.CallID = info.ID;
+            //2015.7.27修改，判断如果是汉堡王的只加载汉堡王的带&$&特殊符号的第三方
+            if (info.CustomerName.Trim() == "汉堡王" || info.BrandName.Trim() == "汉堡王")
+            { 
+                string tpWhere = "f_Name like '%&$&%'";
+                DdlThirdParty.DataSource = ThirdPartyBLL.GetList(tpWhere);
+            }
+            else {
+                DdlThirdParty.DataSource = ThirdPartyBLL.GetList(CurrentUser.WorkGroupID);
+            }
+            
+            DdlThirdParty.DataBind();
+            DdlThirdParty.Items.Insert(0, new ListItem("请选择", "0"));
+
+
             if (info.StateMain == (int)SysEnum.CallStateMain.已完成)
             {
                 Function.AlertBack("数据有误，无法处理已完成的call");

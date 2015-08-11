@@ -219,6 +219,7 @@ C:\VS2008Project\GitCSMP\csmp\BLL\bin\Debug\Microsoft.Office.Interop.Excel.dll
 C:\VS2008Project\GitCSMP\csmp\BLL\bin\Debug\Tool.dll
 C:\VS2008Project\GitCSMP\csmp\BLL\bin\Debug\Microsoft.Office.Interop.Word.dll
 C:\VS2008Project\GitCSMP\csmp\BLL\bin\Debug\Mono.Security.dll
+C:\VS2008Project\GitCSMP\csmp\BLL\bin\Debug\log4net.dll
 C:\VS2008Project\GitCSMP\csmp\BLL\bin\Debug\office.dll
 C:\VS2008Project\GitCSMP\csmp\BLL\bin\Debug\Npgsql.dll
 C:\VS2008Project\GitCSMP\csmp\BLL\bin\Debug\DBUtility.dll

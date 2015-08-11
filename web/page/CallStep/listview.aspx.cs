@@ -265,198 +265,316 @@ public partial class page_CallStep_listview : BasePage
             {
                 dateEndTime = "23:59:59";
             }
-            //计算5天制的品牌
-            if (brandSlaMode.Contains("5*"))
+            //跨天的情况
+            if (Convert.ToDateTime(dateStartTime).TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
             {
-                double sumMinute = 0;
-                TimeSpan ts5 = new TimeSpan();
-                //计算出第一天的分钟数
-                if (callCreateTime.Date == addTime.Date)
+                #region 跨天7天制计算
+                if (brandSlaMode.Contains("7*"))
                 {
-                    //callCreateTime<dateStartTime时的三种情况
-                    if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                    double sumMinute = 0;
+                    TimeSpan ts5 = new TimeSpan();
+                    //计算出第一天的分钟数
+                    if (callCreateTime.Date == addTime.Date)
                     {
-                        sumMinute += 0;
-                    }
-                    else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    //dateStartTime<callCreateTime<dateEndTime时的两种情况
-                    else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        ts5 = addTime.TimeOfDay - callCreateTime.TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    //callCreateTime>dateEndTime
-                    else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        sumMinute += 0;
-                    }
+                        //callCreateTime<dateEndTime时的三种情况
+                        if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                            ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        //dateEndTime<callCreateTime<dateStartTime时的两种情况
+                        else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+                        else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        //callCreateTime>dateStartTime
+                        else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay >= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
 
-                }
-                else
-                {
-                    if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
-                    {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
                     }
-                    else if (callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
+                    else
                     {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        sumMinute += 0;
-                    }
+                        if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                            ts5 = Convert.ToDateTime("23:59:59").TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay < Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
 
-                }
-                //计算出为整天的分钟数
-                for (callCreateTime = callCreateTime.AddDays(1); callCreateTime.Date < addTime.Date; callCreateTime = callCreateTime.AddDays(1))
-                {
-                    if (callCreateTime.DayOfWeek != DayOfWeek.Saturday && callCreateTime.DayOfWeek != DayOfWeek.Sunday)
+                        }
+                        else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime("23:59:59").TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+
+                    }
+                    //计算出为整天的分钟数
+                    for (callCreateTime = callCreateTime.AddDays(1); callCreateTime.Date < addTime.Date; callCreateTime = callCreateTime.AddDays(1))
                     {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
+                        ts5 = Convert.ToDateTime(dateStartTime).TimeOfDay - Convert.ToDateTime(dateEndTime).TimeOfDay;
+                        sumMinute += (24 * 60 - ts5.TotalMinutes);
+
+                    }
+                    //如果有就计算最后一天的分钟数
+                    if (callCreateTime.Date == addTime.Date)
+                    {
+                        if (addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - Convert.ToDateTime("00:00:00").TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (addTime.TimeOfDay < Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime("00:00:00").TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (addTime.TimeOfDay >= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime("00:00:00").TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                            ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                    }
+                    //结果去小数部分
+                    if (sumMinute.ToString().Contains("."))
+                    {
+                        tsMin = sumMinute.ToString().Remove(sumMinute.ToString().IndexOf("."));
+                    }
+                    else
+                    {
+                        tsMin = sumMinute.ToString();
                     }
                 }
-                //如果有就计算最后一天的分钟数
-                if (callCreateTime.Date == addTime.Date)
-                {
-                    if (addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
-                    {
-                        sumMinute += 0;
-                    }
-                    else if (addTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
-                    {
-                        ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    else if (addTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                }
-                //结果去小数部分
-                if (sumMinute.ToString().Contains("."))
-                {
-                    tsMin = sumMinute.ToString().Remove(sumMinute.ToString().IndexOf("."));
-                }
-                else
-                {
-                    tsMin = sumMinute.ToString();
-                }
+
+                #endregion
+
             }
-            //计算7天制的品牌
-            if (brandSlaMode.Contains("7*"))
-            {
-                double sumMinute = 0;
-                TimeSpan ts5 = new TimeSpan();
-                //计算出第一天的分钟数
-                if (callCreateTime.Date == addTime.Date)
+            //非跨天情况
+            else {
+                #region 计算非跨天5天制的品牌
+                if (brandSlaMode.Contains("5*"))
                 {
-                    //callCreateTime<dateStartTime时的三种情况
-                    if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                    double sumMinute = 0;
+                    TimeSpan ts5 = new TimeSpan();
+                    //计算出第一天的分钟数
+                    if (callCreateTime.Date == addTime.Date)
                     {
-                        sumMinute += 0;
+                        //callCreateTime<dateStartTime时的三种情况
+                        if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+                        else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        //dateStartTime<callCreateTime<dateEndTime时的两种情况
+                        else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        //callCreateTime>dateEndTime
+                        else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+
                     }
-                    else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                    else
                     {
-                        ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
+                        if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+
                     }
-                    else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
+                    //计算出为整天的分钟数
+                    for (callCreateTime = callCreateTime.AddDays(1); callCreateTime.Date < addTime.Date; callCreateTime = callCreateTime.AddDays(1))
                     {
+                        if (callCreateTime.DayOfWeek != DayOfWeek.Saturday && callCreateTime.DayOfWeek != DayOfWeek.Sunday)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                    }
+                    //如果有就计算最后一天的分钟数
+                    if (callCreateTime.Date == addTime.Date)
+                    {
+                        if (addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+                        else if (addTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (addTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                    }
+                    //结果去小数部分
+                    if (sumMinute.ToString().Contains("."))
+                    {
+                        tsMin = sumMinute.ToString().Remove(sumMinute.ToString().IndexOf("."));
+                    }
+                    else
+                    {
+                        tsMin = sumMinute.ToString();
+                    }
+                }
+                #endregion
+
+                #region  计算非跨天7天制的品牌
+                if (brandSlaMode.Contains("7*"))
+                {
+                    double sumMinute = 0;
+                    TimeSpan ts5 = new TimeSpan();
+                    //计算出第一天的分钟数
+                    if (callCreateTime.Date == addTime.Date)
+                    {
+                        //callCreateTime<dateStartTime时的三种情况
+                        if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+                        else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        //dateStartTime<callCreateTime<dateEndTime时的两种情况
+                        else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        //callCreateTime>dateEndTime
+                        else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+
+                    }
+                    else
+                    {
+                        if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+
+                    }
+                    //计算出为整天的分钟数
+                    for (callCreateTime = callCreateTime.AddDays(1); callCreateTime.Date < addTime.Date; callCreateTime = callCreateTime.AddDays(1))
+                    {
+
+
                         ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
                         sumMinute += ts5.TotalMinutes;
-                    }
-                    //dateStartTime<callCreateTime<dateEndTime时的两种情况
-                    else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay <= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        ts5 = addTime.TimeOfDay - callCreateTime.TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    else if (callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay && callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    //callCreateTime>dateEndTime
-                    else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        sumMinute += 0;
-                    }
 
+                    }
+                    //如果有就计算最后一天的分钟数
+                    if (callCreateTime.Date == addTime.Date)
+                    {
+                        if (addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            sumMinute += 0;
+                        }
+                        else if (addTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
+                        {
+                            ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                        else if (addTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
+                        {
+                            ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
+                            sumMinute += ts5.TotalMinutes;
+                        }
+                    }
+                    //结果去小数部分
+                    if (sumMinute.ToString().Contains("."))
+                    {
+                        tsMin = sumMinute.ToString().Remove(sumMinute.ToString().IndexOf("."));
+                    }
+                    else
+                    {
+                        tsMin = sumMinute.ToString();
+                    }
                 }
-                else
-                {
-                    if (callCreateTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
-                    {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    else if (callCreateTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && callCreateTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
-                    {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - callCreateTime.TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    else if (callCreateTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        sumMinute += 0;
-                    }
 
-                }
-                //计算出为整天的分钟数
-                for (callCreateTime = callCreateTime.AddDays(1); callCreateTime.Date < addTime.Date; callCreateTime = callCreateTime.AddDays(1))
-                {
-
-
-                    ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                    sumMinute += ts5.TotalMinutes;
-
-                }
-                //如果有就计算最后一天的分钟数
-                if (callCreateTime.Date == addTime.Date)
-                {
-                    if (addTime.TimeOfDay <= Convert.ToDateTime(dateStartTime).TimeOfDay)
-                    {
-                        sumMinute += 0;
-                    }
-                    else if (addTime.TimeOfDay < Convert.ToDateTime(dateEndTime).TimeOfDay && addTime.TimeOfDay > Convert.ToDateTime(dateStartTime).TimeOfDay)
-                    {
-                        ts5 = addTime.TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                    else if (addTime.TimeOfDay >= Convert.ToDateTime(dateEndTime).TimeOfDay)
-                    {
-                        ts5 = Convert.ToDateTime(dateEndTime).TimeOfDay - Convert.ToDateTime(dateStartTime).TimeOfDay;
-                        sumMinute += ts5.TotalMinutes;
-                    }
-                }
-                //结果去小数部分
-                if (sumMinute.ToString().Contains("."))
-                {
-                    tsMin = sumMinute.ToString().Remove(sumMinute.ToString().IndexOf("."));
-                }
-                else
-                {
-                    tsMin = sumMinute.ToString();
-                }
+                #endregion
             }
+            
         }
         
         return tsMin;

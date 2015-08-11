@@ -114,6 +114,7 @@ public partial class page_Assign_AssignWorkGroup : _Call_Assign
 
         if (CallBLL.Edit(info))
         {
+            Logger.GetLogger(this.GetType()).Info("跨组转派修改主表状态成功，callid=" + asinfo.CallID + "，操作人：" + info.CreatorName, null);
             AssignBLL.Add(asinfo);
             Function.AlertRefresh("转派成功", "main");
         }
