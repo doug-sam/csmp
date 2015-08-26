@@ -46,6 +46,7 @@
     <Reference Include="System.Web.Extensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -70,12 +71,14 @@
     <Compile Include="Class2.cs" />
     <Compile Include="Class3.cs" />
     <Compile Include="Comment.cs" />
+    <Compile Include="CommonBLL.cs" />
     <Compile Include="CustomerRequest.cs" />
     <Compile Include="Customers.cs" />
     <Compile Include="DropInMemo.cs" />
     <Compile Include="Email.cs" />
     <Compile Include="EmailGroup.cs" />
     <Compile Include="EmailRecord.cs" />
+    <Compile Include="EmailToSend.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="FeedbackAnswer.cs" />
     <Compile Include="FeedbackChoose.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="Task.cs" />
     <Compile Include="ThirdParty.cs" />
     <Compile Include="TrunkNO.cs" />
+    <Compile Include="WebServiceTask.cs" />
     <Compile Include="WeChatHelper.cs" />
     <Compile Include="WeixinNews.cs" />
     <Compile Include="WorkGroup.cs">

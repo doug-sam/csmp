@@ -126,6 +126,45 @@ public partial class page_call_Close : _Call_Close
         sinfo.UserID = CurrentUserID;
         sinfo.UserName = CurrentUserName;
         bool Result = CallStepBLL.AddCallStep_UpdateCall(info, sinfo);
+
+        #region 判断是汉堡王时插入“关闭”报文
+        if (info.BrandName == "汉堡王" || info.CustomerName == "汉堡王")
+        {
+            KeyValueDictionary paramDic = new KeyValueDictionary();
+            paramDic.Add("Action", "关闭");
+            paramDic.Add("cNumber", info.No);
+            paramDic.Add("Supplier", "MVSHD");
+            paramDic.Add("Agent", sinfo.UserName);
+            paramDic.Add("TSI", "MVSL2");
+            paramDic.Add("Engineer", sinfo.MajorUserName);
+            paramDic.Add("stMgr", info.ReporterName);
+            paramDic.Add("Solution", sinfo.Details);
+            paramDic.Add("Attachment", "");
+
+            string paramStr = WebUtil.BuildQueryJson(paramDic);
+            //string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + info.CustomerID.ToString() + "," + info.BrandID.ToString() + ");";
+            //int records = CallBLL.AddBurgerKingTask(sqlStrHK);
+            WebServiceTaskInfo bkWebSvrTask = new WebServiceTaskInfo();
+            bkWebSvrTask.CallNo = info.No;
+            bkWebSvrTask.TaskUrl = paramStr;
+            bkWebSvrTask.CustomerID = info.CustomerID;
+            bkWebSvrTask.CustomerName = info.CustomerName;
+            bkWebSvrTask.BrandID = info.BrandID;
+            bkWebSvrTask.BrandName = info.BrandName;
+            bkWebSvrTask.IsDone = false;
+            bkWebSvrTask.Remark = string.Empty;
+            Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask开始 动作：关闭，参数信息：" + paramStr + "，callid=" + info.ID + "，CustomerName:" + info.CustomerName + "，BrandName:" + info.BrandName + "，操作人：" + CurrentUserName, null);
+            if (WebServiceTaskBLL.Add(bkWebSvrTask) > 0)
+            {
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask成功 动作：关闭" + "，callid=" + info.ID + "，CustomerName:" + info.CustomerName + "，BrandName:" + info.BrandName + "，操作人：" + CurrentUserName, null);
+            }
+            else
+            {
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：关闭" + "，callid=" + info.ID + "，CustomerName:" + info.CustomerName + "，BrandName:" + info.BrandName + "，操作人：" + CurrentUserName, null);
+            }
+        }
+        #endregion
+
         return Result;
 
     }

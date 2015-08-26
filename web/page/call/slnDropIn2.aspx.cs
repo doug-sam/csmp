@@ -158,6 +158,44 @@ public partial class page_call_slnDropIn2 : _Call_Step
         
 
         UpdateData(cinfo, sinfo);
+        #region 判断是汉堡王时，记录到达
+        if (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王")
+        {
+            KeyValueDictionary paramDic = new KeyValueDictionary();
+            paramDic.Add("Action", "到达");
+            paramDic.Add("cNumber", cinfo.No);
+            //paramDic.Add("Supplier", "MVS");
+            paramDic.Add("TSI", "MVSL2");
+            paramDic.Add("Engineer", sinfo.MajorUserName);
+            //paramDic.Add("Agent", sinfo.MajorUserName);
+            paramDic.Add("stMgr", cinfo.ReporterName);
+            paramDic.Add("Solution", sinfo.Details);
+            paramDic.Add("Attachment", "");
+            paramDic.Add("tTime", DateTime.Now);
+            
+            string paramStr = WebUtil.BuildQueryJson(paramDic);
+            //string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
+            //int records = CallBLL.AddBurgerKingTask(sqlStrHK);
+            WebServiceTaskInfo bkWebSvrTask = new WebServiceTaskInfo();
+            bkWebSvrTask.CallNo = cinfo.No;
+            bkWebSvrTask.TaskUrl = paramStr;
+            bkWebSvrTask.CustomerID = cinfo.CustomerID;
+            bkWebSvrTask.CustomerName = cinfo.CustomerName;
+            bkWebSvrTask.BrandID = cinfo.BrandID;
+            bkWebSvrTask.BrandName = cinfo.BrandName;
+            bkWebSvrTask.IsDone = false;
+            bkWebSvrTask.Remark = string.Empty;
+            Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask开始 动作：到达，参数信息：" + paramStr + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            if (WebServiceTaskBLL.Add(bkWebSvrTask) > 0)
+            {
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask成功 动作：到达" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            }
+            else
+            {
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：到达" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            }
+        }
+        #endregion
         BtnSubmit.Visible = false;
 
 

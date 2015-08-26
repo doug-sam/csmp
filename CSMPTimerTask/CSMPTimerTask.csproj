@@ -66,9 +66,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DBUtility\DBUtility.csproj">
-      <Project>{75BE1B89-B5F8-4042-9A90-37BA93316A25}</Project>
-      <Name>DBUtility</Name>
+    <ProjectReference Include="..\BLL\CSMP.BLL.csproj">
+      <Project>{05BCD8A5-0177-4B58-AE45-CB345DD396FF}</Project>
+      <Name>CSMP.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\CSMP.Model.csproj">
+      <Project>{B3636822-0EEF-4AF8-AEB6-A9C0879AF901}</Project>
+      <Name>CSMP.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tool\Tool.csproj">
       <Project>{A67AC06D-ED23-468F-A646-95BCB86901D0}</Project>

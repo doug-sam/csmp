@@ -117,6 +117,7 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
         {
             sinfo.StepName = SysEnum.CallStateDetails.等待第三方响应.ToString();
             cinfo.StateDetail = (int)SysEnum.CallStateDetails.等待第三方响应;
+            Logger.GetLogger(this.GetType()).Info("等待第三方响应，" + "操作人：" + CurrentUserName, null);
         }
         else
         {
@@ -125,6 +126,90 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
         }
 
         UpdateData(cinfo, sinfo);
+
+        #region 判断是汉堡王时插入“接受”报文，此接口先要调用一次转呈
+        if (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王")
+        {
+            //先执行转呈
+            KeyValueDictionary paramDicZC = new KeyValueDictionary();
+            paramDicZC.Add("Action", "转呈");
+            paramDicZC.Add("cNumber", cinfo.No);
+            paramDicZC.Add("Supplier", "MVSHD");
+            paramDicZC.Add("Agent", CurrentUserName);
+
+            paramDicZC.Add("TSI","MVSL2");
+            paramDicZC.Add("stCode", cinfo.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+            paramDicZC.Add("stMgr", cinfo.ReporterName);
+            paramDicZC.Add("Time1", DateTime.Now);
+            paramDicZC.Add("Issue", sinfo.Details);
+            paramDicZC.Add("Priority", cinfo.PriorityName);
+            paramDicZC.Add("Category1", cinfo.ClassName1);
+            paramDicZC.Add("Category2", cinfo.ClassName2);
+            paramDicZC.Add("Category3", cinfo.ClassName3);
+            paramDicZC.Add("Solution", sinfo.Details);
+            paramDicZC.Add("Attachment", "");
+            string paramStrZC = WebUtil.BuildQueryJson(paramDicZC);
+            //string sqlStrHKZC = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStrZC + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
+            //int recordsZC = CallBLL.AddBurgerKingTask(sqlStrHKZC);
+            WebServiceTaskInfo bkWebSvrTaskZC = new WebServiceTaskInfo();
+            bkWebSvrTaskZC.CallNo = cinfo.No;
+            bkWebSvrTaskZC.TaskUrl = paramStrZC;
+            bkWebSvrTaskZC.CustomerID = cinfo.CustomerID;
+            bkWebSvrTaskZC.CustomerName = cinfo.CustomerName;
+            bkWebSvrTaskZC.BrandID = cinfo.BrandID;
+            bkWebSvrTaskZC.BrandName = cinfo.BrandName;
+            bkWebSvrTaskZC.IsDone = false;
+            bkWebSvrTaskZC.Remark = string.Empty;
+            Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask开始 动作：(转呈+接受)--转呈，参数信息：" + paramStrZC + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            if (WebServiceTaskBLL.Add(bkWebSvrTaskZC) > 0)
+            {
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask成功 动作：(转呈+接受)--转呈" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            }
+            else
+            {
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：(转呈+接受)--转呈" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            }
+
+
+            //后执行接受
+            KeyValueDictionary paramDicJS = new KeyValueDictionary();
+            paramDicJS.Add("Action", "接受");
+            paramDicJS.Add("cNumber", cinfo.No);
+            paramDicJS.Add("Supplier", "MVSHD");
+            paramDicJS.Add("Agent", sinfo.UserName);
+            paramDicJS.Add("TSI", "MVSL2");
+            paramDicJS.Add("Engineer", sinfo.MajorUserName);
+            paramDicJS.Add("stMgr", cinfo.ReporterName);
+            paramDicJS.Add("Solution", sinfo.Details);
+            paramDicJS.Add("Attachment", "");
+
+            string paramStrJS = WebUtil.BuildQueryJson(paramDicJS);
+            //string sqlStrHKJS = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStrJS + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
+            //int recordsJS = CallBLL.AddBurgerKingTask(sqlStrHKJS);
+
+            WebServiceTaskInfo bkWebSvrTaskJS = new WebServiceTaskInfo();
+            bkWebSvrTaskJS.CallNo = cinfo.No;
+            bkWebSvrTaskJS.TaskUrl = paramStrJS;
+            bkWebSvrTaskJS.CustomerID = cinfo.CustomerID;
+            bkWebSvrTaskJS.CustomerName = cinfo.CustomerName;
+            bkWebSvrTaskJS.BrandID = cinfo.BrandID;
+            bkWebSvrTaskJS.BrandName = cinfo.BrandName;
+            bkWebSvrTaskJS.IsDone = false;
+            bkWebSvrTaskJS.Remark = string.Empty;
+            Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask开始 动作：(转呈+接受)--接受，参数信息：" + paramStrJS + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            if (WebServiceTaskBLL.Add(bkWebSvrTaskJS) > 0)
+            {
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask成功 动作：(转呈+接受)--接受" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            }
+            else
+            {
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：(转呈+接受)--接受" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+            }
+
+        }
+        #endregion
+
+
         BtnSubmit.Visible = false;
 
     }

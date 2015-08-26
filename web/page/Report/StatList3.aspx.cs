@@ -625,6 +625,7 @@ public partial class page_call_StatList3 : _Report_ReportF
             dr["上门响应时间"] = "";
 
             dr["SLA"] = item.SLA;
+            dr["SLA扩展"] = item.SLA2;
             dr["超时时间"] = item.SLADateEnd.ToString("yyyy-MM-dd HH:mm");
             dr["是否已超时"] = "false";
             if ((item.StateMain == (int)SysEnum.CallStateMain.处理中 || item.StateMain == (int)SysEnum.CallStateMain.未处理))
@@ -669,65 +670,139 @@ public partial class page_call_StatList3 : _Report_ReportF
             listStep = CallStepBLL.GetList(item.ID);
             if (null != listStep && listStep.Count > 0)
             {
-                dr["接单时间"] = listStep[0].DateBegin.ToString("yyyy-MM-dd HH:mm");
-                dr["响应时间2（接单时间-创建时间）"] = Math.Round((listStep[0].DateBegin - item.CreateDate).TotalHours, 2);
-                dr["响应时间3（即接单时间-报修时间）"] = Math.Round((listStep[0].DateBegin - item.ErrorDate).TotalHours, 2);
-
-                int DropInCurrCallCount = 0;    //当前的报修上门次数
-                foreach (CallStepInfo ItemStep in listStep)
+                if (listStep[0].StepType == (int)(SysEnum.StepType.开单))
                 {
-                    if (ItemStep.StepType==(int)SysEnum.StepType.上门安排)
+                    if (listStep.Count > 1)
                     {
-                        DropInCurrCallCount++;
-                        dr["第" + DropInCurrCallCount + "次预约上门时间"] = ItemStep.DateBegin.ToString("yyyy-MM-dd HH:mm");;
-          
-                    }
-                    if (ItemStep.StepType == (int)SysEnum.StepType.到达门店处理)
-                    {
-                        
-                        dr["上门次数"] = DropInCurrCallCount;
-                        if (string.IsNullOrEmpty(dr["上门响应时间"].ToString()))
+                        dr["接单时间"] = listStep[1].DateBegin.ToString("yyyy-MM-dd HH:mm");
+                        dr["响应时间2（接单时间-创建时间）"] = Math.Round((listStep[1].DateBegin - item.CreateDate).TotalHours, 2);
+                        dr["响应时间3（即接单时间-报修时间）"] = Math.Round((listStep[1].DateBegin - item.ErrorDate).TotalHours, 2);
+                        int DropInCurrCallCount = 0;    //当前的报修上门次数
+                        foreach (CallStepInfo ItemStep in listStep)
                         {
-                            dr["上门响应时间"] = Math.Round((ItemStep.DateBegin - item.ErrorDate).TotalHours, 2);
-                        }
-                        UserInfo DropInUser = UserBLL.Get(ItemStep.MajorUserID);
+                            if (ItemStep.StepType == (int)SysEnum.StepType.上门安排)
+                            {
+                                DropInCurrCallCount++;
+                                dr["第" + DropInCurrCallCount + "次预约上门时间"] = ItemStep.DateBegin.ToString("yyyy-MM-dd HH:mm"); ;
 
-                        dr["第" + DropInCurrCallCount + "次上门工程师"] = ItemStep.MajorUserName;
-                        dr["第" + DropInCurrCallCount + "次上门工程师所在工作组"] = WorkGroupBLL.GetWorkGroupName(DropInUser.WorkGroupID);
-                        dr["第" + DropInCurrCallCount + "次到达门店时间"] = ItemStep.DateBegin.ToString("yyyy-MM-dd HH:mm");
+                            }
+                            if (ItemStep.StepType == (int)SysEnum.StepType.到达门店处理)
+                            {
+
+                                dr["上门次数"] = DropInCurrCallCount;
+                                if (string.IsNullOrEmpty(dr["上门响应时间"].ToString()))
+                                {
+                                    dr["上门响应时间"] = Math.Round((ItemStep.DateBegin - item.ErrorDate).TotalHours, 2);
+                                }
+                                UserInfo DropInUser = UserBLL.Get(ItemStep.MajorUserID);
+
+                                dr["第" + DropInCurrCallCount + "次上门工程师"] = ItemStep.MajorUserName;
+                                dr["第" + DropInCurrCallCount + "次上门工程师所在工作组"] = WorkGroupBLL.GetWorkGroupName(DropInUser.WorkGroupID);
+                                dr["第" + DropInCurrCallCount + "次到达门店时间"] = ItemStep.DateBegin.ToString("yyyy-MM-dd HH:mm");
+                            }
+
+                            if (ItemStep.StepType == (int)SysEnum.StepType.上门详细)
+                            {
+                                if (ItemStep.DateBegin == Function.ErrorDate)
+                                {
+                                    dr["第" + DropInCurrCallCount + "次离开门店时间"] = string.Empty;
+                                }
+                                else
+                                {
+                                    dr["第" + DropInCurrCallCount + "次离开门店时间"] = ItemStep.DateEnd.ToString("yyyy-MM-dd HH:mm");
+                                }
+                            }
+
+                            if (ItemStep.IsSolved)
+                            {
+                                dr["二线最终的处理时间"] = ItemStep.DateEnd.ToString("yyyy-MM-dd HH:mm");
+                                dr["二线最终的记录时间"] = ItemStep.AddDate.ToString("yyyy-MM-dd HH:mm");
+                                dr["二线延时关CALL时间"] = Math.Round((ItemStep.AddDate - ItemStep.DateEnd).TotalHours, 2);
+                                dr["二线最终的解决描述"] = ItemStep.Details;
+
+                            }
+                            if (ItemStep.StepType == (int)SysEnum.StepType.关单)
+                            {
+                                dr["一线的关单人"] = ItemStep.MajorUserName;
+                                dr["关单时间"] = ItemStep.AddDate.ToString("yyyy-MM-dd HH:mm"); ;
+                            }
+                            if (ItemStep.StepType == (int)SysEnum.StepType.上门安排)
+                            {
+                                dr["jobCode"] += ItemStep.Details + "+";
+                                dr["jobCode总额"] = Function.ConverToInt(dr["jobCode总额"], 0) + GetJobCodeValue(ItemStep.Details, item.WorkGroupID);
+                            }
+                        }
+                    }
+                    else {
+                        dr["二线最终的记录时间"] = "";
+                        dr["二线最终的解决描述"] = "";
+                        dr["一线的关单人"] = "";
+                        dr["关单时间"] = "";
+                        dr["jobCode"] = "";
                     }
 
-                    if (ItemStep.StepType == (int)SysEnum.StepType.上门详细)
+                }else{
+                    dr["接单时间"] = listStep[0].DateBegin.ToString("yyyy-MM-dd HH:mm");
+                    dr["响应时间2（接单时间-创建时间）"] = Math.Round((listStep[0].DateBegin - item.CreateDate).TotalHours, 2);
+                    dr["响应时间3（即接单时间-报修时间）"] = Math.Round((listStep[0].DateBegin - item.ErrorDate).TotalHours, 2);
+                    int DropInCurrCallCount = 0;    //当前的报修上门次数
+                    foreach (CallStepInfo ItemStep in listStep)
                     {
-                        if (ItemStep.DateBegin == Function.ErrorDate)
+                        if (ItemStep.StepType == (int)SysEnum.StepType.上门安排)
                         {
-                            dr["第" + DropInCurrCallCount + "次离开门店时间"] = string.Empty;
+                            DropInCurrCallCount++;
+                            dr["第" + DropInCurrCallCount + "次预约上门时间"] = ItemStep.DateBegin.ToString("yyyy-MM-dd HH:mm"); ;
+
                         }
-                        else
+                        if (ItemStep.StepType == (int)SysEnum.StepType.到达门店处理)
                         {
-                            dr["第" + DropInCurrCallCount + "次离开门店时间"] = ItemStep.DateEnd.ToString("yyyy-MM-dd HH:mm");
+
+                            dr["上门次数"] = DropInCurrCallCount;
+                            if (string.IsNullOrEmpty(dr["上门响应时间"].ToString()))
+                            {
+                                dr["上门响应时间"] = Math.Round((ItemStep.DateBegin - item.ErrorDate).TotalHours, 2);
+                            }
+                            UserInfo DropInUser = UserBLL.Get(ItemStep.MajorUserID);
+
+                            dr["第" + DropInCurrCallCount + "次上门工程师"] = ItemStep.MajorUserName;
+                            dr["第" + DropInCurrCallCount + "次上门工程师所在工作组"] = WorkGroupBLL.GetWorkGroupName(DropInUser.WorkGroupID);
+                            dr["第" + DropInCurrCallCount + "次到达门店时间"] = ItemStep.DateBegin.ToString("yyyy-MM-dd HH:mm");
                         }
-                    }
 
-                    if (ItemStep.IsSolved)
-                    {
-                        dr["二线最终的处理时间"] = ItemStep.DateEnd.ToString("yyyy-MM-dd HH:mm");
-                        dr["二线最终的记录时间"] = ItemStep.AddDate.ToString("yyyy-MM-dd HH:mm");
-                        dr["二线延时关CALL时间"] = Math.Round((ItemStep.AddDate - ItemStep.DateEnd).TotalHours, 2);
-                        dr["二线最终的解决描述"] = ItemStep.Details;
+                        if (ItemStep.StepType == (int)SysEnum.StepType.上门详细)
+                        {
+                            if (ItemStep.DateBegin == Function.ErrorDate)
+                            {
+                                dr["第" + DropInCurrCallCount + "次离开门店时间"] = string.Empty;
+                            }
+                            else
+                            {
+                                dr["第" + DropInCurrCallCount + "次离开门店时间"] = ItemStep.DateEnd.ToString("yyyy-MM-dd HH:mm");
+                            }
+                        }
 
-                    }
-                    if (ItemStep.StepType == (int)SysEnum.StepType.关单)
-                    {
-                        dr["一线的关单人"] = ItemStep.MajorUserName;
-                        dr["关单时间"] = ItemStep.AddDate.ToString("yyyy-MM-dd HH:mm"); ;
-                    }
-                    if (ItemStep.StepType == (int)SysEnum.StepType.上门安排)
-                    {
-                        dr["jobCode"] += ItemStep.Details + "+";
-                        dr["jobCode总额"] = Function.ConverToInt(dr["jobCode总额"], 0) + GetJobCodeValue(ItemStep.Details, item.WorkGroupID);
+                        if (ItemStep.IsSolved)
+                        {
+                            dr["二线最终的处理时间"] = ItemStep.DateEnd.ToString("yyyy-MM-dd HH:mm");
+                            dr["二线最终的记录时间"] = ItemStep.AddDate.ToString("yyyy-MM-dd HH:mm");
+                            dr["二线延时关CALL时间"] = Math.Round((ItemStep.AddDate - ItemStep.DateEnd).TotalHours, 2);
+                            dr["二线最终的解决描述"] = ItemStep.Details;
+
+                        }
+                        if (ItemStep.StepType == (int)SysEnum.StepType.关单)
+                        {
+                            dr["一线的关单人"] = ItemStep.MajorUserName;
+                            dr["关单时间"] = ItemStep.AddDate.ToString("yyyy-MM-dd HH:mm"); ;
+                        }
+                        if (ItemStep.StepType == (int)SysEnum.StepType.上门安排)
+                        {
+                            dr["jobCode"] += ItemStep.Details + "+";
+                            dr["jobCode总额"] = Function.ConverToInt(dr["jobCode总额"], 0) + GetJobCodeValue(ItemStep.Details, item.WorkGroupID);
+                        }
                     }
                 }
+
+                
             }
             else
             {
@@ -757,15 +832,37 @@ public partial class page_call_StatList3 : _Report_ReportF
             //判断是否有录音
             if (listStepConbime.Count > 0)
             {
-                string step1Details = listStepConbime[0].Details;
-                if (GetRecordIDFromDetails(step1Details))
+                string step1Details = string.Empty;
+                if (listStep[0].StepType == (int)(SysEnum.StepType.开单))
                 {
-                    dr["录音"] = "有";
+                    if (listStep.Count > 1)
+                    {
+                        step1Details = listStepConbime[1].Details;
+                        if (GetRecordIDFromDetails(step1Details))
+                        {
+                            dr["录音"] = "有";
+                        }
+                        else
+                        {
+                            dr["录音"] = "无";
+                        }
+                    }
+                    else {
+                        dr["录音"] = "无";
+                    }
                 }
-                else
-                {
-                    dr["录音"] = "无";
+                else {
+                    step1Details = listStepConbime[0].Details;
+                    if (GetRecordIDFromDetails(step1Details))
+                    {
+                        dr["录音"] = "有";
+                    }
+                    else
+                    {
+                        dr["录音"] = "无";
+                    }
                 }
+               
             }
             else
             {
@@ -817,6 +914,7 @@ public partial class page_call_StatList3 : _Report_ReportF
 
         dt.Columns.Add("关单时间");
         dt.Columns.Add("SLA");
+        dt.Columns.Add("SLA扩展");
         dt.Columns.Add("超时时间");
         dt.Columns.Add("是否已超时");
 

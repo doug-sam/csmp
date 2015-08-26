@@ -72,11 +72,13 @@
     <Compile Include="Class2.cs" />
     <Compile Include="Class3.cs" />
     <Compile Include="Comment.cs" />
+    <Compile Include="CommonDAL.cs" />
     <Compile Include="CustomerRequest.cs" />
     <Compile Include="Customers.cs" />
     <Compile Include="DropInMemo.cs" />
     <Compile Include="EmailGroup.cs" />
     <Compile Include="EmailRecord.cs" />
+    <Compile Include="EmailToSend.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="FeedbackAnswer.cs" />
     <Compile Include="FeedbackChoose.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="Task.cs" />
     <Compile Include="ThirdParty.cs" />
     <Compile Include="TrunkNO.cs" />
+    <Compile Include="WebServiceTask.cs" />
     <Compile Include="WeixinNews.cs" />
     <Compile Include="WorkGroupBrand.cs" />
     <Compile Include="Priorities.cs" />

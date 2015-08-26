@@ -76,17 +76,35 @@ namespace CSMP.BLL
 
             return dal.GetList(strWhere.ToString());
         }
+        //ZQL 2015.8.15 修改为加锁的
+        //public static string GetCallNoNew()
+        //{
+        //    string No = DateTime.Now.ToString("yyyyMMddHHmmssfff"); ;
+        //    while (string.IsNullOrEmpty(No) || null != CallBLL.Get(No))
+        //    {
+        //        Thread.Sleep(1);
+        //        No = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+        //    }
+        //    return No;
+        //}
 
         public static string GetCallNoNew()
         {
-            string No = DateTime.Now.ToString("yyyyMMddHHmmssfff"); ;
-            while (string.IsNullOrEmpty(No) || null != CallBLL.Get(No))
+            object syncLocker = new object();
+            lock (syncLocker)
             {
-                Thread.Sleep(1);
-                No = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+                Thread.Sleep(3);
+                string No = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+
+                while (string.IsNullOrEmpty(No) || null != CallBLL.Get(No))
+                {
+                    Thread.Sleep(2);
+                    No = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+                }
+                return No;
             }
-            return No;
         }
+
 
 
         /// <summary>

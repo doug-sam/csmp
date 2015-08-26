@@ -508,12 +508,10 @@ public partial class page_call_add : _Call_Add
             #region 判断是汉堡王时调用接口
             if (info.BrandName.Trim() == "汉堡王" || info.CustomerName.Trim() == "汉堡王")
             {
-                string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
-                //string url = "http://192.168.1.112:8088/BurgerKing/BurgerKingCall.aspx?";
                 KeyValueDictionary paramDic = new KeyValueDictionary();
                 paramDic.Add("Action", "新建");
                 paramDic.Add("cNumber",info.No);
-                paramDic.Add("Supplier","MVS");
+                paramDic.Add("Supplier", "MVSHD");
                 paramDic.Add("Agent", info.CreatorName);
                 paramDic.Add("stCode", info.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
                 paramDic.Add("stMgr", info.ReporterName);
@@ -525,47 +523,30 @@ public partial class page_call_add : _Call_Add
                 paramDic.Add("Category3", info.ClassName3);
                 paramDic.Add("Solution","开案");
                 paramDic.Add("Attachment", "");
-
-                //WebUtil webtool = new WebUtil();
                 string paramStr = WebUtil.BuildQueryJson(paramDic);
-                //string result = webtool.DoPost(url, paramDic);
-                //JObject obj = JObject.Parse(result);
-                //string errNo = obj["errNo"].ToString();
-                string Description = string.Empty;
-                //if (errNo == "0")
-                //{
-                //    Description = "接口调用成功";
-                //    //记日志
-                //    LogInfo logInfo = new LogInfo();
-                //    logInfo.AddDate = DateTime.Now;
-                //    logInfo.Category = Enum.GetName(typeof(SysEnum.LogType), SysEnum.LogType.普通日志);
-                //    logInfo.Content = "汉堡王开案接口调用成功C_NO=" + info.No;
-                //    logInfo.ErrorDate = Tool.Function.ErrorDate;
-                //    logInfo.SendEmail = true;
-                //    logInfo.UserName = DicInfo.Admin;
-                //    logInfo.Serious = 1;
-                //    LogBLL.Add(logInfo);
-
-                //}
-                //else {
-                //    Description = "接口调用失败"+obj["Desc"].ToString();
-                //    //记日志
-                //    LogInfo logInfo = new LogInfo();
-                //    logInfo.AddDate = DateTime.Now;
-                //    logInfo.Category = Enum.GetName(typeof(SysEnum.LogType), SysEnum.LogType.普通日志);
-                //    logInfo.Content = "汉堡王开案接口调用失败C_NO=" + info.No + Description;
-                //    logInfo.ErrorDate = Tool.Function.ErrorDate;
-                //    logInfo.SendEmail = true;
-                //    logInfo.UserName = DicInfo.Admin;
-                //    logInfo.Serious = 1;
-                //    LogBLL.Add(logInfo);
-                //}
+                                
+                WebServiceTaskInfo bkWebSvrTask = new WebServiceTaskInfo();
+                bkWebSvrTask.CallNo = info.No;
+                bkWebSvrTask.TaskUrl = paramStr;
+                bkWebSvrTask.CustomerID = info.CustomerID;
+                bkWebSvrTask.CustomerName = info.CustomerName;
+                bkWebSvrTask.BrandID = info.BrandID;
+                bkWebSvrTask.BrandName = info.BrandName;
+                bkWebSvrTask.IsDone = false;
+                bkWebSvrTask.Remark = string.Empty;
                 
-                string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + info.CustomerID.ToString() + "," + info.BrandID.ToString() + ");";
-                int records = CallBLL.AddBurgerKingTask(sqlStrHK);
-                if (records <= 0)
-                    Description = " 汉堡王任务记录失败，请联系管理员";
-                js = string.Format("alert('{0}');location.href=this.location.href;", "成功交给了技术中心！" + Description);
+                //string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + info.CustomerID.ToString() + "," + info.BrandID.ToString() + ");";
+                //int records = CallBLL.AddBurgerKingTask(sqlStrHK);B
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask开始 动作：新建，参数信息：" + paramStr + "，callid=" + info.ID +"，CustomerName:" +info.CustomerName+"，BrandName:"+info.BrandName+"，操作人：" + info.CreatorName, null);
+                if (WebServiceTaskBLL.Add(bkWebSvrTask) > 0)
+                {
+                    Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask成功 动作：新建" + "，callid=" + info.ID + "，CustomerName:" + info.CustomerName + "，BrandName:" + info.BrandName + "，操作人：" + info.CreatorName, null);
+                }
+                else {
+                    Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：新建" + "，callid=" + info.ID + "，CustomerName:" + info.CustomerName + "，BrandName:" + info.BrandName + "，操作人：" + info.CreatorName, null);
+                }
+                    
+                js = string.Format("alert('{0}');location.href=this.location.href;", "成功交给了技术中心！");
             }
             #endregion
         }

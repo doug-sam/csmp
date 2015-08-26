@@ -71,6 +71,7 @@
     <Compile Include="EmailGroupInfo.cs" />
     <Compile Include="EmailInfo.cs" />
     <Compile Include="EmailRecordInfo.cs" />
+    <Compile Include="EmailToSend.cs" />
     <Compile Include="FactoryInfo.cs" />
     <Compile Include="FeedbackAnswerInfo.cs" />
     <Compile Include="FeedbackChooseInfo.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="TaskInfo.cs" />
     <Compile Include="ThirdPartyInfo.cs" />
     <Compile Include="TrunkNOInfo.cs" />
+    <Compile Include="WebServiceTaskInfo.cs" />
     <Compile Include="WeChatXMLInfo.cs" />
     <Compile Include="WeixinNewsInfo.cs" />
     <Compile Include="WorkGroupBrandInfo.cs" />

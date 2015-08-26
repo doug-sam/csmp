@@ -94,7 +94,11 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
         sinfo.CallID = cinfo.ID;
         sinfo.DateBegin = Function.ConverToDateTime(TxbDate.Text.Trim());
         sinfo.DateEnd = sinfo.DateBegin;
-        sinfo.Details = TxbDetails.Text.Trim();
+        sinfo.Details = TxbDetails.Text.Trim() ;
+        if (cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王")
+        {
+            sinfo.Details+= "。第三方信息：" + (DdlThirdParty.SelectedItem.Text);
+        }
         sinfo.StepIndex = CallStepBLL.GetMaxStepIndex(cinfo.ID) + 1;
         sinfo.IsSolved = false;
         sinfo.SolutionID = 0;
@@ -144,7 +148,7 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
                 KeyValueDictionary paramDic = new KeyValueDictionary();
                 paramDic.Add("Action", "转呈");
                 paramDic.Add("cNumber", cinfo.No);
-                paramDic.Add("Supplier", "MVS");
+                paramDic.Add("Supplier", "MVSHD");
                 paramDic.Add("Agent", CurrentUserName);
                 //汉堡王的TSI取"&$&"后的字段
                 string tsi = DdlThirdParty.SelectedItem.Text;
@@ -161,24 +165,28 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
                 paramDic.Add("Category3", cinfo.ClassName3);
                 paramDic.Add("Solution", "");
                 paramDic.Add("Attachment", "");
-                //WebUtil webtool = new WebUtil();
-                //string result = webtool.DoPost(url, paramDic);
-                //JObject obj = JObject.Parse(result);
-                //string errNo = obj["errNo"].ToString();
 
-                //if (errNo == "0")
-                //{
-                //    APImsg = " 接口调用成功";
-                //}
-                //else
-                //{
-                //    APImsg = " 接口调用失败" + obj["Desc"].ToString();
-                //}
                 string paramStr = WebUtil.BuildQueryJson(paramDic);
-                string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
-                int records = CallBLL.AddBurgerKingTask(sqlStrHK);
-                if (records <= 0)
-                    APImsg = " 汉堡王任务记录失败，请联系管理员";
+                //string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
+                //int records = CallBLL.AddBurgerKingTask(sqlStrHK);
+                WebServiceTaskInfo bkWebSvrTask = new WebServiceTaskInfo();
+                bkWebSvrTask.CallNo = cinfo.No;
+                bkWebSvrTask.TaskUrl = paramStr;
+                bkWebSvrTask.CustomerID = cinfo.CustomerID;
+                bkWebSvrTask.CustomerName = cinfo.CustomerName;
+                bkWebSvrTask.BrandID = cinfo.BrandID;
+                bkWebSvrTask.BrandName = cinfo.BrandName;
+                bkWebSvrTask.IsDone = false;
+                bkWebSvrTask.Remark = string.Empty;
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask开始 动作：转呈，参数信息：" + paramStr + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                if (WebServiceTaskBLL.Add(bkWebSvrTask) > 0)
+                {
+                    Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask成功 动作：转呈" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                }
+                else
+                {
+                    Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：转呈" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                }
             }
             #endregion
 
