@@ -16,12 +16,13 @@ using Newtonsoft.Json.Linq;
 using Tool;
 using CSMP.Model;
 using CSMP.BLL;
+using System.Threading;
 
 namespace CSMPTimerTask
 {
     partial class CSMPTimerService : ServiceBase
     {
-        System.Timers.Timer taskTimer;  //计时器
+        //System.Timers.Timer taskTimer;  //计时器
         public CSMPTimerService()
         {
             InitializeComponent();
@@ -30,26 +31,28 @@ namespace CSMPTimerTask
         protected override void OnStart(string[] args)
         {
             // TODO: 在此处添加代码以启动服务。
-            taskTimer = new System.Timers.Timer();
-            string taskTimeStr = ConfigHelper.GetAppendSettingValue("TaskTime");
-            int taskTime = 3;
-            try {
-                taskTime = Convert.ToInt32(taskTimeStr);
-                //Logger.GetLogger(this.GetType()).Info("定时时间为" + taskTime, null);
-            }
-            catch {
-                taskTime = 3;
-            }
-
-            taskTimer.Interval = taskTime * 60 * 1000;  //设置计时器事件间隔执行时间,毫秒数1s=1000ms
-            taskTimer.Elapsed += new System.Timers.ElapsedEventHandler(taskTimer_Elapsed);
-            taskTimer.Enabled = true;
+            //taskTimer = new System.Timers.Timer();
+            //string taskTimeStr = ConfigHelper.GetAppendSettingValue("TaskTime");
+            //int taskTime = 3;
+            //try {
+            //    taskTime = Convert.ToInt32(taskTimeStr);
+            //    //Logger.GetLogger(this.GetType()).Info("定时时间为" + taskTime, null);
+            //}
+            //catch {
+            //    taskTime = 3;
+            //}
+            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务服务启动\r\n", null);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DoTimerTask));
+            //taskTimer.Interval = taskTime * 60 * 1000;  //设置计时器事件间隔执行时间,毫秒数1s=1000ms
+            //taskTimer.Elapsed += new System.Timers.ElapsedEventHandler(taskTimer_Elapsed);
+            //taskTimer.Enabled = true;
         }
 
         protected override void OnStop()
         {
             // TODO: 在此处添加代码以执行停止服务所需的关闭操作。
-            this.taskTimer.Enabled = false;
+            //this.taskTimer.Enabled = false;
+            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务服务停止\r\n", null);
         }
         /// <summary>
         /// 拼装邮件信息
@@ -267,217 +270,245 @@ namespace CSMPTimerTask
         }
        
 
-        private void taskTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        //private void taskTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void DoTimerTask(Object stateInfo)
         {
-
-            //执行SQL语句或其他操作
-            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务开始。\r\n", null);
-            List<WebServiceTaskInfo> taskList = new List<WebServiceTaskInfo>();
-            List<EmailToSend> emailToSendList = new List<EmailToSend>();
-            string SQLWhere = string.Empty;
-            taskList = WebServiceTaskBLL.GetList(SQLWhere);
-            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务开始。需调用接口个数：" + taskList.Count + "\r\n", null);
-            emailToSendList = EmailToSendBLL.GetList(SQLWhere);
-            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务开始。需重发邮件个数：" + emailToSendList.Count + "\r\n", null);
-            #region 先查看有没有需要重复发送邮件的
-            if (emailToSendList.Count > 0)
+            string taskTimeStr = ConfigHelper.GetAppendSettingValue("TaskTime");
+            int taskTime = 3;
+            try
             {
-                for (int j = 0; j < emailToSendList.Count; j++)
+                taskTime = Convert.ToInt32(taskTimeStr);
+                //Logger.GetLogger(this.GetType()).Info("定时时间为" + taskTime, null);
+            }
+            catch
+            {
+                taskTime = 3;
+            }
+            //毫秒数
+            int taskTimems = taskTime *60 * 1000; //毫秒数
+            while (true)
+            {
+                try
                 {
-                    EmailInfo resendEinfo = new EmailInfo();
-                    resendEinfo.Attachment = new List<System.Net.Mail.Attachment>();
-                    resendEinfo.Body = emailToSendList[j].Body;
-                    resendEinfo.CC = new List<System.Net.Mail.MailAddress>();
-                    resendEinfo.FromEmailAddress = emailToSendList[j].FromEmailAddress;
-                    resendEinfo.FromEmailDisplayName = emailToSendList[j].FromEmailDisplayName;
-                    resendEinfo.FromEmailHost = emailToSendList[j].FromEmailHost;
-                    resendEinfo.FromEmailPwd = emailToSendList[j].FromEmailPwd;
-                    resendEinfo.FromPort = Function.ConverToInt(emailToSendList[j].FromPort, 25);
-                    resendEinfo.MailAddress = new List<System.Net.Mail.MailAddress>();
-                    string resendMailTo = emailToSendList[j].MailAddress;
-                    string resendMCCto = emailToSendList[j].CC;
-                    foreach (string itemTo in resendMailTo.Split(';'))
+                    //执行SQL语句或其他操作
+                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务开始。\r\n", null);
+                    List<WebServiceTaskInfo> taskList = new List<WebServiceTaskInfo>();
+                    List<EmailToSend> emailToSendList = new List<EmailToSend>();
+                    string SQLWhere = string.Empty;
+                    taskList = WebServiceTaskBLL.GetList(SQLWhere);
+                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务开始。需调用接口个数：" + taskList.Count + "\r\n", null);
+                    emailToSendList = EmailToSendBLL.GetList(SQLWhere);
+                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务开始。需重发邮件个数：" + emailToSendList.Count + "\r\n", null);
+                    #region 先查看有没有需要重复发送邮件的
+                    if (emailToSendList.Count > 0)
                     {
-                        if (!string.IsNullOrEmpty(itemTo))
+                        for (int j = 0; j < emailToSendList.Count; j++)
                         {
-                            resendEinfo.MailAddress.Add(new System.Net.Mail.MailAddress(itemTo));
+                            EmailInfo resendEinfo = new EmailInfo();
+                            resendEinfo.Attachment = new List<System.Net.Mail.Attachment>();
+                            resendEinfo.Body = emailToSendList[j].Body;
+                            resendEinfo.CC = new List<System.Net.Mail.MailAddress>();
+                            resendEinfo.FromEmailAddress = emailToSendList[j].FromEmailAddress;
+                            resendEinfo.FromEmailDisplayName = emailToSendList[j].FromEmailDisplayName;
+                            resendEinfo.FromEmailHost = emailToSendList[j].FromEmailHost;
+                            resendEinfo.FromEmailPwd = emailToSendList[j].FromEmailPwd;
+                            resendEinfo.FromPort = Function.ConverToInt(emailToSendList[j].FromPort, 25);
+                            resendEinfo.MailAddress = new List<System.Net.Mail.MailAddress>();
+                            string resendMailTo = emailToSendList[j].MailAddress;
+                            string resendMCCto = emailToSendList[j].CC;
+                            foreach (string itemTo in resendMailTo.Split(';'))
+                            {
+                                if (!string.IsNullOrEmpty(itemTo))
+                                {
+                                    resendEinfo.MailAddress.Add(new System.Net.Mail.MailAddress(itemTo));
+                                }
+                            }
+                            foreach (string itemCCTo in resendMCCto.Split(';'))
+                            {
+                                if (!string.IsNullOrEmpty(itemCCTo))
+                                {
+                                    resendEinfo.CC.Add(new System.Net.Mail.MailAddress(itemCCTo));
+                                }
+                            }
+                            resendEinfo.ReplayTo = new System.Net.Mail.MailAddress(emailToSendList[j].ReplayTo);
+                            resendEinfo.Subject = emailToSendList[j].Subject;
+                            //由于是第一次发送，第三个参数emailToSendID=0
+                            SendEmail(resendEinfo, null, emailToSendList[j].ID);
                         }
                     }
-                    foreach (string itemCCTo in resendMCCto.Split(';'))
+                    #endregion
+                    //string sqlListStr = "select * from sys_WebServiceTask where f_IsDone = 0 order by id asc;";
+                    //using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, sqlListStr, null))
+                    if (taskList.Count > 0)
                     {
-                        if (!string.IsNullOrEmpty(itemCCTo))
+                        taskList = taskList.OrderBy(WebServiceTaskInfo => WebServiceTaskInfo.ID).ToList();
+                        for (int i = 0; i < taskList.Count; i++)
                         {
-                            resendEinfo.CC.Add(new System.Net.Mail.MailAddress(itemCCTo));
+                            int id = taskList[i].ID;
+                            string paramStr = taskList[i].TaskUrl;
+                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务,任务ID：" + id + "，参数：" + paramStr + "，CustomerName:" + taskList[i].CustomerName + ",BrandName:" + taskList[i].BrandName + "\r\n", null);
+                            System.Text.Encoding encode = System.Text.Encoding.GetEncoding("GB2312");
+                            string content = HttpUtility.UrlEncode(paramStr, encode);
+
+                            string url = ConfigHelper.GetAppendSettingValue("BKWebServiceURL");
+                            //string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
+                            url = url + "para={" + content + "}";
+                            string targeturl = url.Trim().ToString();
+                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务，任务ID=" + id + "，URL：" + targeturl + "\r\n", null);
+                            HttpWebRequest hr = null;
+                            try
+                            {
+                                //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，httpcreate开始", null);
+                                hr = (HttpWebRequest)WebRequest.Create(targeturl);
+                                //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，httpcreate成功", null);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：创建链接失败，异常：" + ex.Message + "\r\n", null);
+                                continue;
+                            }
+                            hr.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
+                            hr.Method = "GET";
+                            hr.Timeout = 30 * 60 * 1000;
+                            StreamReader ser = null;
+                            //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：开始stream", null);
+                            try
+                            {
+
+                                WebResponse hs = hr.GetResponse();
+                                Stream sr = hs.GetResponseStream();
+                                ser = new StreamReader(sr, System.Text.Encoding.UTF8);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "\r\n", null);
+                                if (ex.Message.Contains("远程服务器返回错误: (500)"))
+                                {
+                                    if (WebServiceTaskBLL.Delete(id))
+                                    {
+                                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息成功。\r\n", null);
+                                    }
+                                    else
+                                    {
+                                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息失败。\r\n", null);
+                                    }
+                                    EmailInfo(taskList[i], "错误原因：发送请求响应错误，异常：" + ex.Message);
+                                }
+                                continue;
+                            }
+
+                            string sendResult = ser.ReadToEnd();
+                            //string sendResult = "{\"status\":true,\"errNo\":101,\"Desc\":\"执行失败，请与管理员联系exec [p_SIWeb_OpenTask] @tNumber='20150821101401245',@tSupply=N'MVSHD',@tAgent=N'admin',@userCode=N'L0098677',@tCaller=N'孙先生',@tTime1='2015-08-21 10:12:00',@tIssue=N'中毒',@tStatus=N'新建',@tPriority='P2',@tPrimary=N'外设支付设备',@tSecondary=N'门店网络问题',@tThird=N'中毒',@iAction=N'新建',@iSolution=N'开案',@iAttachment=N''\"}";
+                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务,任务ID：" + id + "，接口返回结果：" + sendResult + "\n\n", null);
+
+                            JObject obj = null;
+                            try
+                            {
+                                obj = JObject.Parse(sendResult);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：JSON数据解析失败，异常：" + ex.Message + "\n\n", null);
+                                if (WebServiceTaskBLL.Delete(id))
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：JSON数据解析失败，异常：" + ex.Message + "删除数据库中的信息成功。\n\n", null);
+                                }
+                                else
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：JSON数据解析失败，异常：" + ex.Message + "删除数据库中的信息失败。\n\n", null);
+                                }
+                                EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：JSON数据解析失败，异常：" + ex.Message);
+                                continue;
+                            }
+                            string errNo = string.Empty;
+                            int errNoToInt = 0;
+                            try
+                            {
+                                errNo = obj["errNo"].ToString();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：从JSON数据中获取errNo值失败，异常：" + ex.Message + "\r\n", null);
+                                if (WebServiceTaskBLL.Delete(id))
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：从JSON数据中获取errNo值失败，异常：" + ex.Message + "删除数据库中的信息成功。\r\n", null);
+                                }
+                                else
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：从JSON数据中获取errNo值失败，异常：" + ex.Message + "删除数据库中的信息失败。\r\n", null);
+                                }
+                                EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：从JSON数据中获取errNo值失败，异常：" + ex.Message);
+                                continue;
+                            }
+                            try
+                            {
+                                errNoToInt = Convert.ToInt32(errNo);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：errNo转换为Int类型失败，异常" + ex.Message + "\r\n", null);
+                                if (WebServiceTaskBLL.Delete(id))
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo转换为Int类型失败，异常" + ex.Message + "删除数据库中的信息成功。\r\n", null);
+                                }
+                                else
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo转换为Int类型失败，异常" + ex.Message + "删除数据库中的信息失败。\r\n", null);
+                                }
+                                EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：errNo转换为Int类型失败，异常" + ex.Message);
+                                continue;
+                            }
+
+                            if (errNoToInt == 0)
+                            {
+                                if (WebServiceTaskBLL.Delete(id))
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行成功，任务ID=" + id + "，删除数据库记录成功\r\n", null);
+                                }
+                                else
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行成功，任务ID=" + id + "，删除数据库记录失败\r\n", null);
+                                }
+                            }
+                            else if (errNoToInt > 0)
+                            {
+                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo大于0。\r\n", null);
+                                if (WebServiceTaskBLL.Delete(id))
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo大于0，删除数据库信息成功。\r\n", null);
+                                }
+                                else
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo大于0,删除数据库中的信息失败。\r\n", null);
+                                }
+                                EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：errNo大于0");
+                            }
+                            else if (errNoToInt < 0)
+                            {
+                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo小于0。\r\n", null);
+                                if (WebServiceTaskBLL.Delete(id))
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo小于0，删除数据库信息成功。\r\n", null);
+                                }
+                                else
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo小于0,删除数据库中的信息失败。\r\n", null);
+                                }
+                                EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：errNo小于0");
+
+                            }
                         }
+                        //string paramStr = "\"Action\":\"新建\",\"cNumber\":\"20150210325995\",\"Supplier\":\"MVS\",\"Agent\":\"Simon\",\"stCode\":\"16594\",\"stMgr\":\"王先生\",\"Time1\":\"2015-7-1 15:23:33\",\"Issue\":\"无法打开电脑\",\"Priority\":\"P2\",\"Category1\":\"经理室硬件\",\"Category2\":\"PC机\",\"Category3\":\"显示屏故障\",\"Solution\":\"\",\"Attachment\":\"\"";
                     }
-                    resendEinfo.ReplayTo = new System.Net.Mail.MailAddress(emailToSendList[j].ReplayTo);
-                    resendEinfo.Subject = emailToSendList[j].Subject;
-                    //由于是第一次发送，第三个参数emailToSendID=0
-                    SendEmail(resendEinfo, null, emailToSendList[j].ID);
+
+                }
+                finally {
+                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行完成，休眠" + taskTime + "分钟。\r\n", null);
+                    Thread.Sleep(taskTimems);                    
                 }
             }
-            #endregion
-            //string sqlListStr = "select * from sys_WebServiceTask where f_IsDone = 0 order by id asc;";
-            //using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, sqlListStr, null))
-            if (taskList.Count > 0)
-            {
-                taskList = taskList.OrderBy(WebServiceTaskInfo => WebServiceTaskInfo.ID).ToList();
-                for (int i = 0; i < taskList.Count; i++)
-                {
-                    int id = taskList[i].ID;
-                    string paramStr = taskList[i].TaskUrl;
-                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务,任务ID：" + id + "，参数：" + paramStr + "，CustomerName:" + taskList[i].CustomerName + ",BrandName:" + taskList[i].BrandName + "\r\n", null);
-                    System.Text.Encoding encode = System.Text.Encoding.GetEncoding("GB2312");
-                    string content = HttpUtility.UrlEncode(paramStr, encode);
-
-                    string url = ConfigHelper.GetAppendSettingValue("BKWebServiceURL");
-                    //string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
-                    url = url + "para={" + content + "}";
-                    string targeturl = url.Trim().ToString();
-                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务，任务ID=" + id + "，URL：" + targeturl + "\r\n", null);
-                    HttpWebRequest hr = null;
-                    try
-                    {
-                        //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，httpcreate开始", null);
-                        hr = (HttpWebRequest)WebRequest.Create(targeturl);
-                        //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，httpcreate成功", null);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：创建链接失败，异常：" + ex.Message + "\r\n", null);
-                        continue;
-                    }
-                    hr.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
-                    hr.Method = "GET";
-                    hr.Timeout = 30 * 60 * 1000;
-                    StreamReader ser = null;
-                    //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：开始stream", null);
-                    try
-                    {
-                        
-                        WebResponse hs = hr.GetResponse();
-                        Stream sr = hs.GetResponseStream();
-                        ser = new StreamReader(sr, System.Text.Encoding.UTF8);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "\r\n", null);
-                        if (ex.Message.Contains("远程服务器返回错误: (500)"))
-                        {
-                            if (WebServiceTaskBLL.Delete(id))
-                            {
-                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息成功。\r\n", null);
-                            }
-                            else
-                            {
-                                Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息失败。\r\n", null);
-                            }
-                            EmailInfo(taskList[i], "错误原因：发送请求响应错误，异常：" + ex.Message);
-                        }
-                        continue;
-                    }
-
-                    string sendResult = ser.ReadToEnd();
-                    //string sendResult = "{\"status\":true,\"errNo\":101,\"Desc\":\"执行失败，请与管理员联系exec [p_SIWeb_OpenTask] @tNumber='20150821101401245',@tSupply=N'MVSHD',@tAgent=N'admin',@userCode=N'L0098677',@tCaller=N'孙先生',@tTime1='2015-08-21 10:12:00',@tIssue=N'中毒',@tStatus=N'新建',@tPriority='P2',@tPrimary=N'外设支付设备',@tSecondary=N'门店网络问题',@tThird=N'中毒',@iAction=N'新建',@iSolution=N'开案',@iAttachment=N''\"}";
-                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务,任务ID：" + id + "，接口返回结果：" + sendResult + "\n\n", null);
-
-                    JObject obj = null;
-                    try
-                    {
-                        obj = JObject.Parse(sendResult);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：JSON数据解析失败，异常：" + ex.Message + "\n\n", null);
-                        if (WebServiceTaskBLL.Delete(id))
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：JSON数据解析失败，异常：" + ex.Message + "删除数据库中的信息成功。\n\n", null);
-                        }
-                        else
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：JSON数据解析失败，异常：" + ex.Message + "删除数据库中的信息失败。\n\n", null);
-                        }
-                        EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：JSON数据解析失败，异常：" + ex.Message);
-                        continue;
-                    }
-                    string errNo = string.Empty;
-                    int errNoToInt = 0;
-                    try 
-                    { 
-                        errNo=obj["errNo"].ToString();
-                    
-                    }
-                    catch(Exception ex)
-                    {
-                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：从JSON数据中获取errNo值失败，异常：" + ex.Message + "\r\n", null);
-                        if (WebServiceTaskBLL.Delete(id))
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：从JSON数据中获取errNo值失败，异常：" + ex.Message + "删除数据库中的信息成功。\r\n", null);
-                        }
-                        else
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：从JSON数据中获取errNo值失败，异常：" + ex.Message + "删除数据库中的信息失败。\r\n", null);
-                        }
-                        EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：从JSON数据中获取errNo值失败，异常：" + ex.Message);
-                        continue;
-                    }
-                    try
-                    {
-                        errNoToInt = Convert.ToInt32(errNo);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：errNo转换为Int类型失败，异常" + ex.Message + "\r\n", null);
-                        if (WebServiceTaskBLL.Delete(id))
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo转换为Int类型失败，异常" + ex.Message + "删除数据库中的信息成功。\r\n", null);
-                        }
-                        else
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo转换为Int类型失败，异常" + ex.Message + "删除数据库中的信息失败。\r\n", null);
-                        }
-                        EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：errNo转换为Int类型失败，异常" + ex.Message);
-                        continue;
-                    }
-
-                    if (errNoToInt == 0)
-                    {
-                        if(WebServiceTaskBLL.Delete(id))
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行成功，任务ID=" + id + "，删除数据库记录成功\r\n", null);
-                        }else
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行成功，任务ID=" + id + "，删除数据库记录失败\r\n", null);
-                        }
-                    }
-                    else if (errNoToInt > 0){
-                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo大于0。\r\n", null);
-                        if (WebServiceTaskBLL.Delete(id))
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo大于0，删除数据库信息成功。\r\n", null);
-                        }
-                        else
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo大于0,删除数据库中的信息失败。\r\n", null);
-                        }
-                        EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：errNo大于0");
-                    }
-                    else if (errNoToInt < 0) {
-                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo小于0。\r\n", null);
-                        if (WebServiceTaskBLL.Delete(id))
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo小于0，删除数据库信息成功。\r\n", null);
-                        }
-                        else
-                        {
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务返回结果错误，任务ID=" + id + ",错误原因：errNo小于0,删除数据库中的信息失败。\r\n", null);
-                        }
-                        EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：errNo小于0");
-                    
-                    }
-                }
-                //string paramStr = "\"Action\":\"新建\",\"cNumber\":\"20150210325995\",\"Supplier\":\"MVS\",\"Agent\":\"Simon\",\"stCode\":\"16594\",\"stMgr\":\"王先生\",\"Time1\":\"2015-7-1 15:23:33\",\"Issue\":\"无法打开电脑\",\"Priority\":\"P2\",\"Category1\":\"经理室硬件\",\"Category2\":\"PC机\",\"Category3\":\"显示屏故障\",\"Solution\":\"\",\"Attachment\":\"\"";
-            }
+            
         }
     }
 }

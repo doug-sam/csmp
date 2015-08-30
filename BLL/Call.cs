@@ -87,10 +87,10 @@ namespace CSMP.BLL
         //    }
         //    return No;
         //}
-
+        private static object syncLocker = new object();
         public static string GetCallNoNew()
         {
-            object syncLocker = new object();
+            
             lock (syncLocker)
             {
                 Thread.Sleep(3);

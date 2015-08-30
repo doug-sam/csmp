@@ -233,6 +233,12 @@ public partial class page_call_slnRemote : _Call_Step
                 paramDic.Add("Supplier", "MVSHD");
                 paramDic.Add("Agent", sinfo.MajorUserName);
                 paramDic.Add("stMgr", cinfo.ReporterName);
+
+                paramDic.Add("Priority", cinfo.PriorityName);
+                paramDic.Add("Category1", cinfo.ClassName1);
+                paramDic.Add("Category2", cinfo.ClassName2);
+                paramDic.Add("Category3", cinfo.ClassName3);
+
                 paramDic.Add("Solution", sinfo.Details);
                 paramDic.Add("Attachment", "");
 

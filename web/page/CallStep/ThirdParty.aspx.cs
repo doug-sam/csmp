@@ -155,7 +155,14 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
                 int startIndex = tsi.IndexOf("&$&");
                 tsi = tsi.Substring(startIndex + 3);
                 paramDic.Add("TSI", tsi);
-                paramDic.Add("stCode", cinfo.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+
+                string BKStoreNo = cinfo.StoreName;//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+                if (BKStoreNo.StartsWith("BK"))
+                {
+                    BKStoreNo = BKStoreNo.Substring(2);
+                }
+                paramDic.Add("stCode", BKStoreNo);
+
                 paramDic.Add("stMgr", cinfo.ReporterName);
                 paramDic.Add("Time1", DateTime.Now);
                 paramDic.Add("Issue", cinfo.Details);

@@ -513,7 +513,12 @@ public partial class page_call_add : _Call_Add
                 paramDic.Add("cNumber",info.No);
                 paramDic.Add("Supplier", "MVSHD");
                 paramDic.Add("Agent", info.CreatorName);
-                paramDic.Add("stCode", info.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+                string BKStoreNo = info.StoreName;//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+                if (BKStoreNo.StartsWith("BK"))
+                {
+                    BKStoreNo = BKStoreNo.Substring(2);
+                }
+                paramDic.Add("stCode", BKStoreNo);
                 paramDic.Add("stMgr", info.ReporterName);
                 paramDic.Add("Time1", info.ErrorDate); 
                 paramDic.Add("Issue", info.Details);

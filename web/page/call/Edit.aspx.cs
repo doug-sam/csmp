@@ -161,6 +161,8 @@ public partial class page_call_Edit : _Call_Edit
         info.ClassName1 = c1.Name;
         info.ClassName2 = c2.Name;
         info.ClassName3 = c3.Name;
+        info.PriorityID = c3.PriorityID;
+        info.PriorityName = LtlPriority.Text;
         info.SLA = Function.ConverToInt(TxbSLA.Text.Trim(),0);
         info.Details = TxtDetails.Text.Trim();
         info.CallNo3 = TxbCallNo3.Text.Trim();

@@ -138,7 +138,13 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
             paramDicZC.Add("Agent", CurrentUserName);
 
             paramDicZC.Add("TSI","MVSL2");
-            paramDicZC.Add("stCode", cinfo.StoreName);//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+            string BKStoreNo = cinfo.StoreName;//由于addcall的时候calls表storeNO和StoreName赋值赋反了
+            if (BKStoreNo.StartsWith("BK"))
+            {
+                BKStoreNo = BKStoreNo.Substring(2);
+            }
+            paramDicZC.Add("stCode", BKStoreNo);
+
             paramDicZC.Add("stMgr", cinfo.ReporterName);
             paramDicZC.Add("Time1", DateTime.Now);
             paramDicZC.Add("Issue", sinfo.Details);
