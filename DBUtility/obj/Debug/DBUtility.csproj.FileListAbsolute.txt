@@ -141,3 +141,8 @@ C:\VS2008Project\GitCSMP\csmp\DBUtility\bin\Debug\DBUtility.pdb
 C:\VS2008Project\GitCSMP\csmp\DBUtility\obj\Debug\ResolveAssemblyReference.cache
 C:\VS2008Project\GitCSMP\csmp\DBUtility\obj\Debug\DBUtility.dll
 C:\VS2008Project\GitCSMP\csmp\DBUtility\obj\Debug\DBUtility.pdb
+D:\项目\GitCSMP\csmp\DBUtility\bin\Debug\DBUtility.dll
+D:\项目\GitCSMP\csmp\DBUtility\bin\Debug\DBUtility.pdb
+D:\项目\GitCSMP\csmp\DBUtility\obj\Debug\ResolveAssemblyReference.cache
+D:\项目\GitCSMP\csmp\DBUtility\obj\Debug\DBUtility.dll
+D:\项目\GitCSMP\csmp\DBUtility\obj\Debug\DBUtility.pdb

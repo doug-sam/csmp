@@ -32,6 +32,12 @@ public partial class menu : BasePage
                     LCallSch.Visible = false;
                 }
 
+                //20150831修改判断mksupport这个用户不显示 报修查询
+                if (CurrentUserID == 973 || CurrentUserName == "mksupport")
+                {
+                    LCallSch.Visible = false;
+                }
+
                 LCallList.Visible = GroupBLL.PowerCheck((int)PowerInfo.P1_Call.查询不同状态报修)&&!CurrentUser.Rule.Contains(SysEnum.Rule.客户.ToString());
                 LAddMany.Visible = GroupBLL.PowerCheck((int)PowerInfo.P1_Call.批量报修);
                 LCustomerRequest.Visible = GroupBLL.PowerCheck((int)PowerInfo.PMain.客户请求管理);
