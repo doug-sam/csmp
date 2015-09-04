@@ -63,7 +63,7 @@ namespace CSMPTimerTask
         {
             EmailInfo einfo = new EmailInfo();
             einfo.Attachment = new List<System.Net.Mail.Attachment>();
-            einfo.Body = string.Format("客户:{0}，品牌:{1}，单号:{2}，调用时间:{3} 调用接口出现错误<br/>参数类容:{4}<br/>错误信息:{5}", item.CustomerName, item.BrandName, item.CallNo,DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), item.TaskUrl, errorMessage);
+            einfo.Body = string.Format("客户:{0}，品牌:{1}，单号:{2}，调用时间:{3} 调用接口出现错误<br/>参数内容:{4}<br/>错误信息:{5}", item.CustomerName, item.BrandName, item.CallNo,DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), item.TaskUrl, errorMessage);
             einfo.CC = new List<System.Net.Mail.MailAddress>();
             einfo.FromEmailAddress = ConfigHelper.GetAppendSettingValue("FromEmailAddress");
             einfo.FromEmailDisplayName = ConfigHelper.GetAppendSettingValue("FromEmailDisplayName");
@@ -150,7 +150,7 @@ namespace CSMPTimerTask
             {
                 if (emailToSendID > 0)
                 {
-                    Logger.GetLogger("CSMPTimerService.SendEmail").Info("重新发送邮件失败，邮件ID：" + emailToSendID + "，失败原因：收件地址为空" + "，邮件类容：" + einfo.Body + "\r\n", null);
+                    Logger.GetLogger("CSMPTimerService.SendEmail").Info("重新发送邮件失败，邮件ID：" + emailToSendID + "，失败原因：收件地址为空" + "，邮件内容：" + einfo.Body + "\r\n", null);
                 }
                 else {
                     Logger.GetLogger("CSMPTimerService.SendEmail").Info("Windows定时调用接口任务,任务ID：" + taskInfo.ID + "邮件发送失败，原因：收件地址为空。\r\n", null);
@@ -186,11 +186,11 @@ namespace CSMPTimerTask
                 {
                     if (EmailToSendBLL.Delete(emailToSendID))
                     {
-                        Logger.GetLogger("CSMPTimerService.SendEmail").Info("重新发送邮件成功,删除数据库中邮件信息成功，邮件ID：" + emailToSendID + "邮件类容：" + einfo.Body + "\r\n", null);
+                        Logger.GetLogger("CSMPTimerService.SendEmail").Info("重新发送邮件成功,删除数据库中邮件信息成功，邮件ID：" + emailToSendID + "邮件内容：" + einfo.Body + "\r\n", null);
                     }
                     else
                     {
-                        Logger.GetLogger("CSMPTimerService.SendEmail").Info("重新发送邮件成功，删除数据库中邮件信息失败，邮件ID：" + emailToSendID + "邮件类容：" + einfo.Body+"\r\n", null);
+                        Logger.GetLogger("CSMPTimerService.SendEmail").Info("重新发送邮件成功，删除数据库中邮件信息失败，邮件ID：" + emailToSendID + "邮件内容：" + einfo.Body+"\r\n", null);
                     }
                 }
                 else {
@@ -262,7 +262,7 @@ namespace CSMPTimerTask
                     }
                 }
                 else {
-                    Logger.GetLogger("CSMPTimerService.SendEmail").Info("重新发送邮件失败，邮件ID：" + emailToSendID + "邮件类容：" + einfo.Body + "，失败原因：" + ex.Message + "\r\n", null);
+                    Logger.GetLogger("CSMPTimerService.SendEmail").Info("重新发送邮件失败，邮件ID：" + emailToSendID + "邮件内容：" + einfo.Body + "，失败原因：" + ex.Message + "\r\n", null);
                 }
 
                 

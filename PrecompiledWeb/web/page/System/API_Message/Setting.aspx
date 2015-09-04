@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="system_API_Message_Setting, App_Web_n1imhwjb" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="system_API_Message_Setting, App_Web_v8hq2y2a" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 <style type="text/css">

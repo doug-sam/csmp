@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Store_Edit, App_Web_taps9qsq" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Store_Edit, App_Web_mxxqzn9a" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -95,6 +95,14 @@
                             <asp:ListItem Selected="True" Text="使用" Value="1"></asp:ListItem>
                             <asp:ListItem Text="停用" Value="0"></asp:ListItem>
                         </asp:RadioButtonList>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">
+                        店铺类型：
+                    </td>
+                    <td class="td1_3">
+                        <asp:TextBox ID="TxbStoreType" runat="server"></asp:TextBox>
                     </td>
                 </tr>
                 <tr>

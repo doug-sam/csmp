@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Province_list, App_Web_afhlgh_f" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Province_list, App_Web_hirikoog" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <link href="/js/thickbox/thickbox.css" rel="stylesheet" type="text/css" />

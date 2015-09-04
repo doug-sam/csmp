@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_WorkGroupEmail_view, App_Web_yy9zk0jg" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_WorkGroupEmail_view, App_Web_imtilfsj" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 </asp:Content>

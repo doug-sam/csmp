@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_CallStep_listview, App_Web_mh7akdho" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_CallStep_listview, App_Web_tm5a1rj7" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style type="text/css">
@@ -25,8 +25,8 @@
         <Columns>
             <asp:TemplateField HeaderText="步骤">
                 <ItemTemplate>
-                    步骤
-                    <%#Container.DataItemIndex+1%></ItemTemplate>
+                    <%#GenerateATagPrefix(Container.DataItemIndex, Eval("Details").ToString())%>
+                </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
             <asp:TemplateField HeaderText="所进行操作">
@@ -52,7 +52,7 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="操作备注">
                 <ItemTemplate>
-                    <%#Eval("Details")%>
+                    <%#ProcessDetails(Eval("Details").ToString(), Eval("StepName").ToString())%>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Left" />
             </asp:TemplateField>
@@ -61,13 +61,19 @@
                     <%#Eval("UserName") %><br />
                     <%#Tool.Function.ConverToDateTime(Eval("AddDate")).ToString("yyyy-MM-dd HH:mm")%>
                 </ItemTemplate>
-                <ItemStyle HorizontalAlign="Left" />
+                <ItemStyle HorizontalAlign="Left"  />
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="已开单(分钟)">
+                <ItemTemplate>
+                    <span style=<%#CheckClore(Tool.Function.ConverToDateTime(Eval("AddDate"))) %> ><%#CountOpenTime(Tool.Function.ConverToDateTime(Eval("AddDate")))%></span>
+                </ItemTemplate>
+                <ItemStyle HorizontalAlign="Center" ForeColor=/>
             </asp:TemplateField>
             <asp:TemplateField HeaderText="是否解决">
                 <ItemTemplate>
                     <%#IsSloved(Eval("IsSolved").ToString(),Eval("StepType").ToString()) %>
                 </ItemTemplate>
-                <ItemStyle HorizontalAlign="Center" />
+                <ItemStyle HorizontalAlign="Center"/>
             </asp:TemplateField>
         </Columns>
     </asp:GridView>

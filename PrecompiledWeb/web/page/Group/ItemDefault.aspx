@@ -1,4 +1,4 @@
-﻿<%@ page language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Group_ItemDefault, App_Web_xqsjqxmb" title="无标题页" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Group_ItemDefault, App_Web_seckbsjm" title="无标题页" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <style type="text/css">

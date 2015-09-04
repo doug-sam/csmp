@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="Log_View, App_Web_tyevcomy" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="Log_View, App_Web_dkrc1fbm" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 <%@ Import Namespace="CSMP.Model" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">

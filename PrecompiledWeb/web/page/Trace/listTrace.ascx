@@ -1,4 +1,4 @@
-﻿<%@ control language="C#" autoeventwireup="true" inherits="page_Trace_listTrace, App_Web__sadlkk1" %>
+﻿<%@ control language="C#" autoeventwireup="true" inherits="page_Trace_listTrace, App_Web_6kfoqsrt" %>
     <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">
         <tr>
             <td colspan="7" style="height: 30px" class="td1_1">

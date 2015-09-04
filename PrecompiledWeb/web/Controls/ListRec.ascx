@@ -1,4 +1,4 @@
-﻿<%@ control language="C#" autoeventwireup="true" inherits="Controls_ListRec, App_Web_etara6uy" %>
+﻿<%@ control language="C#" autoeventwireup="true" inherits="Controls_ListRec, App_Web_c9cm6txk" %>
 <asp:UpdatePanel ID="UpdatePanelListRec" runat="server">
     <ContentTemplate>
         <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">

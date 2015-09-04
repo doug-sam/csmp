@@ -1,20 +1,35 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_callStep_Feedback, App_Web_d_ka4mc-" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_callStep_Feedback, App_Web_tm5a1rj7" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+<link href="/css/ajaxloader.css" rel="stylesheet" type="text/css" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div id="AjaxLoaderTipBackground" class="ajaxLoaderTipBackground"><div id="AjaxLoaderTip" class="ajaxLoaderTipDiv">通讯中,请稍候...</div></div>
     <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1" id="TableCall" runat="server">
         <tr>
+            <td colspan="5" class="td1_2">
+            请在被叫号码输入框内输入要拨打的号码。待拨打的号码必须全部是数字，不得包含其它非数字内容。<br />
+            如被叫号码框内的内容是多个号码，请将其调整成一个合法号码后再点击拨打。<br /><br />
+            分机号输入框是您当前登录的呼叫中心分机号。
+            </td>                
+        </tr>    
+        <tr>
             <td class="td1_2">
-                拨打电话<br />
-                only IE support
+                被叫号码
             </td>
             <td class="td1_3">
                 <asp:TextBox ID="TxbTel" CssClass="myTel" runat="server" 
-                    Width="360px"></asp:TextBox>
+                    Width="200px"></asp:TextBox>
             </td>
             <td class="td1_2">
-                <input type="button" onclick="BtnCall_Click();" value=" 拨打电话回访 " class="BigButton" />
+                分机号
+            </td>
+            <td class="td1_3">
+                <asp:TextBox ID="TxbExt" CssClass="myExtensionID" runat="server" 
+                    Width="120px"></asp:TextBox>
+            </td>            
+            <td class="td1_2">
+                <input type="button" onclick="OutboundCall();" value=" 拨打电话回访 " class="BigButton" /><input type="text" name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
             </td>
         </tr>
     </table>
@@ -88,6 +103,63 @@
         function BtnCall_Click() {
             var Tel = $(".myTel").val();
             window.clipboardData.setData('Text', "'AAAA$$$$BBBB$$$$CCCC::" + Tel + "'");
+        }
+        function WriteToSysLog(msg){
+            $.ajax({
+                type: 'post',
+                url: '/Services/Log/WriteToSysLogHandler.ashx',
+                data: { "category": "回访外呼", "msg":msg },
+                async: false
+            });
+        }
+        function ShowLoader(){
+            var divMarginLeft = 0 - (document.all.AjaxLoaderTip.offsetWidth);
+		    $('#AjaxLoaderTip').css('margin-left', divMarginLeft / 2);
+            AjaxLoaderTipBackground.style.visibility="visible";
+        }
+        function CloseLoader(){
+            AjaxLoaderTipBackground.style.visibility="hidden";
+        }        
+        function OutboundCall() {
+            ShowLoader();
+            var dnis = $(".myTel").val();
+            if ( !dnis || dnis == "" )
+                {alert("请输入被叫号码，否则无法执行外呼!");return;}
+            var ani = $(".myExtensionID").val();
+            if ( !ani || ani == "" )
+                {alert("请输入您登录的分机号，否则无法执行外呼!");return;}
+            var callIDStr = "  CallID:<%= CallID %>";
+            var originalUrlStr = "http://<%= CTIWSIP %>:<%= CTIWSPort %>/?<%= CTIWSObDnisName %>=" + dnis + "&<%= CTIWSObAniName %>=" + ani;
+            var urlStr = encodeURIComponent(originalUrlStr);
+            $.ajax({
+                url: "../../Services/GetHttpDataNoPage.aspx?param=" + Math.random() + "&url=" + urlStr,
+                success: function(data) {
+                    CloseLoader();
+                    var receivedstr = data;
+                    var pos = receivedstr.indexOf("error#");
+                    if ( pos != 0 ){
+                        pos = receivedstr.indexOf("#");
+                        if ( pos != -1 )  {
+                            $("#callbackrecid").val(data);
+                            WriteToSysLog("回访外呼成功：" + data + "  url:" + originalUrlStr + callIDStr);
+                            alert("回访外呼成功。");
+                        }
+                        else{
+                            WriteToSysLog("回访外呼失败：" + data + "  url:" + originalUrlStr + callIDStr)
+                            alert("回访外呼失败。" + data + "。");
+                        }
+                    }
+                    else{
+                        WriteToSysLog("回访外呼失败：" + data + "  url:" + originalUrlStr + callIDStr);
+                        alert("外呼失败，请确认主被叫号码正确无误，或请稍后再试。");
+                    }
+                },
+                error:function(xhr, errormsg, e) {
+                        CloseLoader();
+                        WriteToSysLog("回访外呼失败无响应。"+errormsg?"":errormsg + "  url:" + originalUrlStr + callIDStr);
+                        alert("外呼请求无响应，请稍后再试。");
+                }
+            });
         }
     </script>
 

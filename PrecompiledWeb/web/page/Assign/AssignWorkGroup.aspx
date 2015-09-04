@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Assign_AssignWorkGroup, App_Web_8cai04cj" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Assign_AssignWorkGroup, App_Web_ksvydknw" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <%@ Register Src="list.ascx" TagName="list" TagPrefix="uc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

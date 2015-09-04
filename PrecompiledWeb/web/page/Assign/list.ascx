@@ -1,4 +1,4 @@
-﻿<%@ control language="C#" autoeventwireup="true" inherits="page_Assign_list, App_Web_0c8bslcr" %>
+﻿<%@ control language="C#" autoeventwireup="true" inherits="page_Assign_list, App_Web_elwofihv" %>
             <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1" style="margin-top: 15px;">
                 <tr>
                     <td style="height: 30px" class="td1_1">

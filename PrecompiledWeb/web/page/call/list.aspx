@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_call_list, App_Web_rursbog1" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_call_list, App_Web_isgyizrg" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 <%@ Import Namespace="CSMP.BLL" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -290,6 +290,13 @@
                 <ItemTemplate>
                     <a href="javascript:tb_show('转派', '/page/Assign/Assign.aspx?ID=<%#Eval("ID") %>&TB_iframe=true&height=450&width=730', false);">
                         转派</a>
+                </ItemTemplate>
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="更换上门人" Visible="true">
+                <ItemTemplate>
+                    <a href="javascript:tb_show('更换上门人', '/page/Assign/ReassignOnsiteEngineer.aspx?ID=<%#Eval("ID") %>&TB_iframe=true&height=450&width=730', false);">
+                        更换上门人</a>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>

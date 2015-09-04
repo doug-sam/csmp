@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Trace_list, App_Web_z3kfg5rs" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Trace_list, App_Web_dgqtkv-d" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <%@ Register src="listTrace.ascx" tagname="listTrace" tagprefix="uc1" %>
 

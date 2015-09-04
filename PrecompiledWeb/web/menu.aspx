@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="menu, App_Web_kwecoy6s" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="menu, App_Web_mdzclwde" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <link href="/css/admin.css" type="text/css" rel="stylesheet">
@@ -119,7 +119,7 @@
                 <h6 class="ItemContainer">
                     <ul class="LeftMeunUl">
                         <asp:Literal ID="LLog" runat="server">
-                            <li><a href="/page/log/list.aspx" target="main">系统日志</a></li>
+                            <li><a href="/page/log/list.aspx?fromMenu=true" target="main">系统日志</a></li>
                             <li><a href="/page/OperationRec/list.aspx" target="main">报修回滚日志</a></li>
                         </asp:Literal>
                         <asp:Literal ID="LInport" runat="server">
@@ -186,6 +186,10 @@
                     <asp:Literal ID="LCallCategory" runat="server">
                             <li><a href="/page/CallCategory/List.aspx" target="main">服务类型管理</a> </li>
                             <%--<li><a href="/page/SlaModeDetail/List.aspx" target="main">SLA工作时间详细</a> </li>--%>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralTrunkNO" runat="server">
+                            <li><a href="/page/TrunkNO/TrunkNOList.aspx" target="main">中继号码管理</a> </li>
+                            
                     </asp:Literal>
                     </ul>
                 </h6>
@@ -254,6 +258,48 @@
                         <asp:Literal ID="LReportH" runat="server">
                     <li><a href="/page/Report/BrandSolvedBy.aspx" target="main">K、服务方式分析</a></li>
                         </asp:Literal>
+                        
+                        <asp:Literal ID="LiteralL" runat="server">
+                    <li><a href="/page/Report/CustomDateReport_Brand.aspx" target="main">L、日报修统计(品牌)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralM" runat="server">
+                    <li><a href="/page/Report/CustomDateReport.aspx" target="main">M、日报修统计(故障)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralP" runat="server">
+                    <li><a href="/page/Report/CustomMonthReport_Brand.aspx" target="main">P、月报修统计(品牌)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralQ" runat="server">
+                    <li><a href="/page/Report/CustomMonthReport.aspx" target="main">Q、月报修统计(故障)</a></li>
+                        </asp:Literal>
+                        
+                        <asp:Literal ID="LiteralR" runat="server">
+                    <li><a href="/page/Report/CustomDateToDate_Brand.aspx" target="main">R、日期段统计(品牌)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralS" runat="server">
+                    <li><a href="/page/Report/CustomDateToDate.aspx" target="main">S、日期段统计(故障)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralPMDB" runat="server">
+                    <li><a href="/page/Report/ProjectManagerReport/PMDateReport_Brand.aspx" target="main">PM、日报修统计(品牌)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralPMDC" runat="server">
+                    <li><a href="/page/Report/ProjectManagerReport/PMDateReport.aspx" target="main">PM、日报修统计(故障)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralPMMB" runat="server">
+                    <li><a href="/page/Report/ProjectManagerReport/PMMonthReport_Brand.aspx" target="main">PM、月报修统计(品牌)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralPMMC" runat="server">
+                    <li><a href="/page/Report/ProjectManagerReport/PMMonthReport.aspx" target="main">PM、月报修统计(故障)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralPMDTDB" runat="server">
+                    <li><a href="/page/Report/ProjectManagerReport/PMDateToDateReport.aspx" target="main">PM、日期段统计(品牌)</a></li>
+                        </asp:Literal>
+                        <asp:Literal ID="LiteralPMDTDC" runat="server">
+                    <li><a href="/page/Report/ProjectManagerReport/PMDateToDateReport_Brand.aspx" target="main">PM、日期段统计(故障)</a></li>
+                        </asp:Literal>
+                        
+                        
+                        
+                        
                     </ul>
                 </h6>
             </div>

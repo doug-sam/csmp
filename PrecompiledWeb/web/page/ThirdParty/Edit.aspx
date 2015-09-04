@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_ThirdParty_Edit, App_Web_wakmrxmr" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_ThirdParty_Edit, App_Web_troccnee" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -49,6 +49,11 @@
                     <td class="td1_2" colspan="2">
                          <asp:Button ID="BtnSubmit" runat="server" Text="提交" CssClass="BigButton"
                             OnClick="BtnSubmit_Click" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2" colspan="2">
+                        <p style="color:Red">如果配置汉堡王对应的第三方，名称请按照此格式:二级支持名称&$&系统名称，示例：三星银众&$&SUMSUNG</p>
                     </td>
                 </tr>
             </table>

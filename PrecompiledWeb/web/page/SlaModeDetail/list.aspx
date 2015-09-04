@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_SlaModeDetail_list, App_Web_qxl-b2fn" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_SlaModeDetail_list, App_Web_lrrmlysi" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 <%@ Import Namespace="Tool" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>

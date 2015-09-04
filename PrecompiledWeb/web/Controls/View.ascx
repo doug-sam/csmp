@@ -1,4 +1,4 @@
-﻿<%@ control language="C#" autoeventwireup="true" inherits="Controls_View, App_Web_etara6uy" %>
+﻿<%@ control language="C#" autoeventwireup="true" inherits="Controls_View, App_Web_c9cm6txk" %>
 <%@ Import Namespace="CSMP.BLL" %>
 <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">
     <tr>
@@ -166,8 +166,14 @@
         <td class="td1_2">
             服务类型：
         </td>
-        <td class="td1_3" colspan="7">
+        <td class="td1_3">
             <%=CallCategoryBLL.Get(info.Category).Name %>
+        </td>
+        <td class="td1_2">
+            SLA扩展：
+        </td>
+        <td class="td1_3" colspan="5">
+            <%=info.SLA2 %>
         </td>        
         
     </tr>

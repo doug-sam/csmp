@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_call_add, App_Web_rursbog1" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_call_add, App_Web_isgyizrg" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <%@ Register Src="/Controls/CallState.ascx" TagName="CallState" TagPrefix="uc1" %>
 <%@ Register src="/Controls/ListRec.ascx" tagname="ListRec" tagprefix="uc2" %>
@@ -78,7 +78,7 @@
                 <tr>
                     <td colspan="8" style="height: 30px" class="td1_1">
                         <div class="querytable_title_name">
-                            新建报修
+                            新建报修&nbsp&nbsp&nbsp&nbsp<asp:Label ID="labCalled" runat="server" Text=""></asp:Label>
                         </div>
                         <div style="margin: 0 10px 0 0; line-height: 24px;" align="right">
                             (店铺信息)
@@ -150,17 +150,20 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="td1_2" colspan="2" style="text-align: right; padding: 0px;">
-                        店铺联系信息
+                    <td class="td1_2">
+                        店铺类型：
+                    </td>
+                    <td class="td1_3">
+                        <asp:Label ID="LtlStoreType" runat="server" Text=""></asp:Label>
                     </td>
                     <td class="td1_2">
-                        电话：
+                        店铺电话：
                     </td>
                     <td class="td1_3">
                         <asp:Label ID="LtlTel" runat="server" Text=""></asp:Label>
                     </td>
                     <td class="td1_2">
-                        地址：
+                        店铺地址：
                     </td>
                     <td colspan="3" class="td1_3">
                         <div style="width: 333px;">

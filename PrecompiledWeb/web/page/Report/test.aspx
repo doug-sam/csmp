@@ -1,4 +1,4 @@
-﻿<%@ page language="C#" autoeventwireup="true" inherits="page_Report_test, App_Web_jwnq_nxg" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page language="C#" autoeventwireup="true" inherits="page_Report_test, App_Web_hhnouuyt" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <!DOCTYPE html>
 

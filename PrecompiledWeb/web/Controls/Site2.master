@@ -1,4 +1,4 @@
-﻿<%@ master language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="Controls_Site2, App_Web_zkjdnf4p" %>
+﻿<%@ master language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="Controls_Site2, App_Web_btz1bmkc" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <asp:ContentPlaceHolder ID="head" runat="server">

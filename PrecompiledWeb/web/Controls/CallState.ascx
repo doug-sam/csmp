@@ -1,4 +1,4 @@
-﻿<%@ control language="C#" autoeventwireup="true" inherits="Controls_CallState, App_Web_zkjdnf4p" %>
+﻿<%@ control language="C#" autoeventwireup="true" inherits="Controls_CallState, App_Web_btz1bmkc" %>
 <%@ Register src="View.ascx" tagname="View" tagprefix="uc1" %>
 <style type="text/css">
     .StateAll

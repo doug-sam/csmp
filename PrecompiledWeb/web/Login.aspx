@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="Login, App_Web_kwecoy6s" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="Login, App_Web_mdzclwde" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <link href="css/login.css" rel="stylesheet" type="text/css" />
@@ -7,10 +7,13 @@
     
     	<script language="javascript" type="text/javascript">
 	    function ChangeImg(ImgEle) {
-	        ImgEle.src = "/page/sys/RandImg.aspx?id=" + Math.random();
+	        ImgEle.src = "/page/sys/RandImg.aspx?id=" + Math.random();<asp:Literal ID="LiteralS" runat="server">
+                    <li><a href="/page/Report/CustomDateToDate_Brand.aspx" target="main">S、日期段统计(品牌)</a></li>
+                        </asp:Literal>
 	    }
 	    $(document).ready(function() { $("#<%=txtUserName.ClientID %>").focus(); });
         </script>
+        
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="bg_light">

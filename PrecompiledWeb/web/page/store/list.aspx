@@ -1,4 +1,4 @@
-﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Store_list, App_Web_taps9qsq" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
+﻿<%@ page title="" language="C#" masterpagefile="~/Controls/Site1.master" autoeventwireup="true" inherits="page_Store_list, App_Web_mxxqzn9a" enableviewstatemac="false" enableEventValidation="false" viewStateEncryptionMode="Never" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -86,12 +86,18 @@
                     <td class="td1_2">
                         是否可用
                     </td>
-                    <td class="td1_3" colspan="3">
+                    <td class="td1_3">
                         <asp:DropDownList ID="DdlIsClosed" runat="server">
                             <asp:ListItem Text="不限" Value="-1"></asp:ListItem>
                             <asp:ListItem Text="可用" Value="0"></asp:ListItem>
                             <asp:ListItem Text="不可用" Value="1"></asp:ListItem>
                         </asp:DropDownList>
+                    </td>
+                    <td class="td1_2">
+                        店铺类型：
+                    </td>
+                    <td class="td1_3">
+                        <asp:TextBox ID="TxbStoreType" runat="server"></asp:TextBox>
                     </td>                    
                 </tr>
             </table>
@@ -127,6 +133,12 @@
             <asp:TemplateField HeaderText="店铺名称">
                 <ItemTemplate>
                     <%# Eval("Name")%>
+                </ItemTemplate>
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="类型">
+                <ItemTemplate>
+                    <%#Eval("StoreType")%>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
