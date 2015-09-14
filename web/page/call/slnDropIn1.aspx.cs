@@ -117,7 +117,7 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
         {
             sinfo.StepName = SysEnum.CallStateDetails.等待第三方响应.ToString();
             cinfo.StateDetail = (int)SysEnum.CallStateDetails.等待第三方响应;
-            Logger.GetLogger(this.GetType()).Info("等待第三方响应，" + "操作人：" + CurrentUserName, null);
+            Logger.GetLogger(this.GetType()).Info("等待第三方响应，CallID：" + cinfo.ID + "，操作人：" + CurrentUserName, null);
         }
         else
         {

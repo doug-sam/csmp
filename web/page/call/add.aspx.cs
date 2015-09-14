@@ -52,6 +52,7 @@ public partial class page_call_add : _Call_Add
                 BtnStore.Visible = false;
                 TxtStoreNo.Enabled = ddlCustomer.Enabled = false;
                 TxtStoreNo.Text = sinfo.ID.ToString();
+                Logger.GetLogger(this.GetType()).Info("开单，pagelaod获取的Store信息不为null，返回的Store信息为，StoreID:" + sinfo.ID + "，StoreNo:" + sinfo.No + ",StoreName:" + sinfo.Name, null);
                 BtnStore_Click(sender, e);
                 ddlReportSource.ClearSelection();
                 foreach (ListItem item in ddlReportSource.Items)
@@ -104,14 +105,25 @@ public partial class page_call_add : _Call_Add
                 //sinfo = StoresBLL.Get(CallNo);
                 sinfo = StoresBLL.GetByCallNO(CallNo);
             }
+            if (sinfo != null)
+            {
+                Logger.GetLogger(this.GetType()).Info("开单，pagelaod通过callNumber：" + CallNo + "获取到Store信息，StoreID:" + sinfo.ID + "，StoreNo:" + sinfo.No + ",StoreName:" + sinfo.Name, null);
+            }
+            
             return sinfo;
         }
         CustomerRequestInfo crinfo = GetCustomerRequestInfo();
         if (null != crinfo)
         {
             StoreInfo sinfo = StoresBLL.Get(crinfo.StoreID);
+            if (sinfo != null)
+            {
+                Logger.GetLogger(this.GetType()).Info("开单，pagelaod通过CustomerRequestInfo ID：" + crinfo.ID + "获取到Store信息，StoreID:" + sinfo.ID + "，StoreNo:" + sinfo.No + ",StoreName:" + sinfo.Name, null);
+            }
+            
             return sinfo;
         }
+        Logger.GetLogger(this.GetType()).Info("开单，pagelaod获取到的Store信息为null", null);
         return null;
     }
 
@@ -371,7 +383,7 @@ public partial class page_call_add : _Call_Add
         {
             Function.AlertMsg("SLA需要是一个正整数"); return;
         }
-
+        Logger.GetLogger(this.GetType()).Info("开单，最后选中的Store信息为，StoreID:" + sinfo.ID + "，StoreNo:" + sinfo.No + ",StoreName:" + sinfo.Name, null);
         #endregion
         CallInfo info = new CallInfo();
 
@@ -391,6 +403,7 @@ public partial class page_call_add : _Call_Add
         info.StoreID = sinfo.ID;
         info.StoreName = sinfo.No;//赋值赋反了？？？？？？？？？？？？？
         info.StoreNo = sinfo.Name;//赋值赋反了？？？？？？？？？？？？？
+        Logger.GetLogger(this.GetType()).Info("开单，最后赋值给call的Store信息为，info.StoreID:" + info.StoreID + "，info.StoreName:" + info.StoreName + ",info.StoreNo:" + info.StoreNo, null);
         info.ReportSourceID = Function.ConverToInt(ddlReportSource.SelectedValue);
         info.ReportSourceName = ddlReportSource.SelectedItem.Text;
         info.ReportSourceNo = txtSourceNo.Text.Trim();
@@ -575,7 +588,9 @@ public partial class page_call_add : _Call_Add
         ID = Function.ConverToInt(TxtStoreNo.Text.Trim());
         if (ID > 0)
         {
+            Logger.GetLogger(this.GetType()).Info("开单，BtnStore_Click通过TxtStoreNo.Text的值：" + TxtStoreNo.Text.Trim() + "获取Store信息", null);
             sinfo = StoresBLL.Get(ID);
+            
             if (null == sinfo)
             {
                 Function.AlertMsg("店铺编号信息有误");
@@ -594,7 +609,9 @@ public partial class page_call_add : _Call_Add
                     Function.AlertMsg("店铺编号信息有误");
                     return;
                 }
+                Logger.GetLogger(this.GetType()).Info("开单，BtnStore_Click通过TxtStoreNo.Text的值：" + TxtStoreNo.Text.Trim() + "获取Store信息", null);
                 sinfo = StoresBLL.Get(ID);
+                
                 if (null == sinfo)
                 {
                     Function.AlertMsg("店铺编号信息有误");
@@ -616,6 +633,11 @@ public partial class page_call_add : _Call_Add
         {
             return;
         }
+        if (sinfo != null)
+        {
+            Logger.GetLogger(this.GetType()).Info("开单，BtnStore_Click通过TxtStoreNo.Text的值" + TxtStoreNo.Text.Trim() + "获取的Store信息为，StoreID:" + sinfo.ID + "，StoreNo:" + sinfo.No + ",StoreName:" + sinfo.Name, null);
+        }
+        
         ddlCustomer.SelectedValue = binfo.CustomerID.ToString();
 
         ddlBrand.DataSource = BrandBLL.GetList(binfo.CustomerID);

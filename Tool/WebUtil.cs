@@ -245,6 +245,15 @@ namespace Tool
                 // 忽略参数名或参数值为空的参数
                 if (!String.IsNullOrEmpty(name))
                 {
+                    //新增对详情内容判断是否有单斜杠，有则替换为双斜杠
+                    if (name == "Solution" || name == "Issue")
+                    {
+                        if (value.Contains("\\"))
+                        {
+                            value = value.Replace("\\", "\\\\");
+                        }
+                    }
+
                     postData.Append("\""+name+"\"");
                     postData.Append(":");
                     //postData.Append("\"" + HttpUtility.UrlEncode(value) + "\"");

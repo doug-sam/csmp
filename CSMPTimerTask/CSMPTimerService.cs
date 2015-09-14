@@ -498,6 +498,8 @@ namespace CSMPTimerTask
                                 EmailInfo(taskList[i], "返回结果" + sendResult + ",错误原因：errNo小于0");
 
                             }
+                            //单个调用结束后休眠5s后再调用接下来的
+                            Thread.Sleep(5000);
                         }
                         //string paramStr = "\"Action\":\"新建\",\"cNumber\":\"20150210325995\",\"Supplier\":\"MVS\",\"Agent\":\"Simon\",\"stCode\":\"16594\",\"stMgr\":\"王先生\",\"Time1\":\"2015-7-1 15:23:33\",\"Issue\":\"无法打开电脑\",\"Priority\":\"P2\",\"Category1\":\"经理室硬件\",\"Category2\":\"PC机\",\"Category3\":\"显示屏故障\",\"Solution\":\"\",\"Attachment\":\"\"";
                     }
