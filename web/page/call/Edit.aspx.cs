@@ -44,6 +44,7 @@ public partial class page_call_Edit : _Call_Edit
             LtlStoreName.Text = sinfo.Name;
             LtlTel.Text = sinfo.Tel;
             LtlAddress.Text = sinfo.Address;
+            LtlStoreType.Text = sinfo.StoreType;
             TxbSLA.Text = info.SLA.ToString();
             TxbSlaExt.Text = info.SLA2;
 
@@ -171,7 +172,8 @@ public partial class page_call_Edit : _Call_Edit
         info.Category = Function.ConverToInt(DdlCategory.SelectedValue);
         if (CallBLL.EditWithLog(info,CurrentUserName+"修改了Call"))
         {
-            Function.AlertRedirect("修改成功", "list.aspx?state=" + info.StateMain, "main");
+            //Function.AlertRedirect("修改成功", "list.aspx?state=" + info.StateMain, "main");
+            Function.AlertRefresh("修改成功","main");
         }
         else
         {

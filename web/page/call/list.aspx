@@ -260,7 +260,7 @@
             <asp:TemplateField HeaderText="处理">
                 <ItemTemplate>
                     <asp:PlaceHolder ID="PhHandle" runat="server">
-                        <a href="sln.aspx?id=<%#Eval("ID") %>">前往处理</a>
+                        <a href="sln.aspx?id=<%#Eval("ID") %> " target="main">前往处理</a>
                     </asp:PlaceHolder>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />

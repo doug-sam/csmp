@@ -50,6 +50,7 @@ public partial class Controls_View : System.Web.UI.UserControl
         }
         LtlTel.Text = sinfo.Tel;
         LtlAddress.Text = sinfo.Address;
+        LtlStoreType.Text = sinfo.StoreType;
         Page_Load(null, null);
     }
 }

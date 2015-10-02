@@ -39,8 +39,8 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
             CallState1.CallID = info.ID;
             //2015.7.27修改，判断如果是汉堡王的只加载汉堡王的带&$&特殊符号的第三方
             if (info.CustomerName.Trim() == "汉堡王" || info.BrandName.Trim() == "汉堡王")
-            { 
-                string tpWhere = "f_Name like '%&$&%'";
+            {
+                string tpWhere = "f_Name like '%&$&%' and f_Enable = 1 ";
                 DdlThirdParty.DataSource = ThirdPartyBLL.GetList(tpWhere);
             }
             else {
@@ -170,7 +170,7 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
                 paramDic.Add("Category1", cinfo.ClassName1);
                 paramDic.Add("Category2", cinfo.ClassName2);
                 paramDic.Add("Category3", cinfo.ClassName3);
-                paramDic.Add("Solution", "");
+                paramDic.Add("Solution", TxbDetails.Text.Trim());
                 paramDic.Add("Attachment", "");
 
                 string paramStr = WebUtil.BuildQueryJson(paramDic);

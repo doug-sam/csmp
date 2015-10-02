@@ -265,6 +265,41 @@ public partial class page_call_slnDropIn4 : _Call_Step
                 {
                     Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：完成（上门）" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
                 }
+
+                #region 上门完成调用 关闭
+                KeyValueDictionary paramCloseDic = new KeyValueDictionary();
+                paramCloseDic.Add("Action", "关闭");
+                paramCloseDic.Add("cNumber", cinfo.No);
+                paramCloseDic.Add("Supplier", "MVSHD");
+                paramCloseDic.Add("Agent", sinfo.UserName);
+                paramCloseDic.Add("TSI", "MVSL2");
+                paramCloseDic.Add("Engineer", sinfo.MajorUserName);
+                paramCloseDic.Add("stMgr", cinfo.ReporterName);
+                paramCloseDic.Add("Solution", sinfo.Details);
+                paramCloseDic.Add("Attachment", "");
+
+                string paramCloseStr = WebUtil.BuildQueryJson(paramCloseDic);
+                //string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + info.CustomerID.ToString() + "," + info.BrandID.ToString() + ");";
+                //int records = CallBLL.AddBurgerKingTask(sqlStrHK);
+                WebServiceTaskInfo bkWebSvrTaskClose = new WebServiceTaskInfo();
+                bkWebSvrTaskClose.CallNo = cinfo.No;
+                bkWebSvrTaskClose.TaskUrl = paramCloseStr;
+                bkWebSvrTaskClose.CustomerID = cinfo.CustomerID;
+                bkWebSvrTaskClose.CustomerName = cinfo.CustomerName;
+                bkWebSvrTaskClose.BrandID = cinfo.BrandID;
+                bkWebSvrTaskClose.BrandName = cinfo.BrandName;
+                bkWebSvrTaskClose.IsDone = false;
+                bkWebSvrTaskClose.Remark = string.Empty;
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask开始 动作：关闭（上门），参数信息：" + paramCloseStr + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                if (WebServiceTaskBLL.Add(bkWebSvrTaskClose) > 0)
+                {
+                    Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask成功 动作：关闭（上门）" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                }
+                else
+                {
+                    Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：关闭（上门）" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                }
+                #endregion
             }
             #endregion
 

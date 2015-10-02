@@ -382,7 +382,12 @@ namespace CSMP.BLL
             {
                 return true;
             }
-            if (info.StateMain == (int)SysEnum.CallStateMain.已完成 || info.StateMain == (int)SysEnum.CallStateMain.已关闭)
+            //2015.09.14 ZQL 修改，call状态为已完成时也可以修改call
+            //if (info.StateMain == (int)SysEnum.CallStateMain.已完成 || info.StateMain == (int)SysEnum.CallStateMain.已关闭)
+            //{
+            //    return false;
+            //}
+            if (info.StateMain == (int)SysEnum.CallStateMain.已关闭)
             {
                 return false;
             }

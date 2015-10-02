@@ -71,11 +71,25 @@
             <asp:Literal ID="LtlTel" runat="server"></asp:Literal>
         </td>
         <td class="td1_2">
+            店铺类型：
+        </td>
+        <td class="td1_3" colspan="3">
+            <asp:Literal ID="LtlStoreType" runat="server"></asp:Literal>
+        </td>
+    </tr>
+    <tr>
+        <td class="td1_2">
+            地址：
+        </td>
+        <td class="td1_3" colspan="7">
+            <asp:Literal ID="LtlAddress" runat="server"></asp:Literal>
+        </td>
+        <%--<td class="td1_2">
             地址：
         </td>
         <td class="td1_3" colspan="3">
-            <asp:Literal ID="LtlAddress" runat="server"></asp:Literal>
-        </td>
+            <asp:Literal ID="Literal1" runat="server"></asp:Literal>
+        </td>--%>
     </tr>
     <tr>
         <td class="td1_2" colspan="8">
@@ -179,7 +193,7 @@
     </tr>
      <tr id="tr_Edit" runat="server" >
         <td class="td1_2" colspan="8">
-                <a href="javascript:tb_show('编辑报修', '/page/call/Edit.aspx?ID=<%=info.ID %>&TB_iframe=true&height=380&width=700&modal=false', false);">
+                <a href="javascript:tb_show('编辑报修', '/page/call/Edit.aspx?ID=<%=info.ID %>&TB_iframe=true&height=380&width=720&modal=false', false);">
             编辑</a>
         </td>
     </tr>

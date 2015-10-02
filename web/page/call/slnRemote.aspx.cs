@@ -216,32 +216,18 @@ public partial class page_call_slnRemote : _Call_Step
             #region 汉堡王升级到客户处理完成时
             if ((int)SysEnum.CallStateMain.已完成 == cinfo.StateMain&&(cinfo.BrandName == "汉堡王" || cinfo.CustomerName == "汉堡王"))
             {
-                //string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
                 KeyValueDictionary paramDic = new KeyValueDictionary();
-                //paramDic.Add("Action", "完成");
-                //paramDic.Add("cNumber", cinfo.No);
-                //paramDic.Add("TSI", "MVSL2");
-                //paramDic.Add("Engineer", sinfo.MajorUserName);
-                //paramDic.Add("stMgr", cinfo.ReporterName);
-                //paramDic.Add("Solution", sinfo.Details);
-                //paramDic.Add("Attachment", "");
-                //paramDic.Add("tTime", DateTime.Now);
-                //paramDic.Add("Method", "ONLINE");
-
                 paramDic.Add("Action", "完成HD");
                 paramDic.Add("cNumber", cinfo.No);
                 paramDic.Add("Supplier", "MVSHD");
                 paramDic.Add("Agent", sinfo.MajorUserName);
                 paramDic.Add("stMgr", cinfo.ReporterName);
-
                 paramDic.Add("Priority", cinfo.PriorityName);
                 paramDic.Add("Category1", cinfo.ClassName1);
                 paramDic.Add("Category2", cinfo.ClassName2);
                 paramDic.Add("Category3", cinfo.ClassName3);
-
                 paramDic.Add("Solution", sinfo.Details);
                 paramDic.Add("Attachment", "");
-
                 string paramStr = WebUtil.BuildQueryJson(paramDic);
                 //string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
                 //int records = CallBLL.AddBurgerKingTask(sqlStrHK);
@@ -263,6 +249,41 @@ public partial class page_call_slnRemote : _Call_Step
                 {
                     Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：完成（远程）" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
                 }
+
+                #region 远程支持完成调用 关闭HD
+                KeyValueDictionary paramCloseDic = new KeyValueDictionary();
+                paramCloseDic.Add("Action", "关闭HD");
+                paramCloseDic.Add("cNumber", cinfo.No);
+                paramCloseDic.Add("Supplier", "MVSHD");
+                paramCloseDic.Add("Agent", sinfo.UserName);
+                paramCloseDic.Add("TSI", "MVSL2");
+                paramCloseDic.Add("Engineer", sinfo.MajorUserName);
+                paramCloseDic.Add("stMgr", cinfo.ReporterName);
+                paramCloseDic.Add("Solution", sinfo.Details);
+                paramCloseDic.Add("Attachment", "");
+
+                string paramCloseStr = WebUtil.BuildQueryJson(paramCloseDic);
+                //string sqlStrHK = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStr + "',0," + info.CustomerID.ToString() + "," + info.BrandID.ToString() + ");";
+                //int records = CallBLL.AddBurgerKingTask(sqlStrHK);
+                WebServiceTaskInfo bkWebSvrCloseTask = new WebServiceTaskInfo();
+                bkWebSvrCloseTask.CallNo = cinfo.No;
+                bkWebSvrCloseTask.TaskUrl = paramCloseStr;
+                bkWebSvrCloseTask.CustomerID = cinfo.CustomerID;
+                bkWebSvrCloseTask.CustomerName = cinfo.CustomerName;
+                bkWebSvrCloseTask.BrandID = cinfo.BrandID;
+                bkWebSvrCloseTask.BrandName = cinfo.BrandName;
+                bkWebSvrCloseTask.IsDone = false;
+                bkWebSvrCloseTask.Remark = string.Empty;
+                Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask开始 动作：关闭(远程支持)，参数信息：" + paramCloseStr + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                if (WebServiceTaskBLL.Add(bkWebSvrCloseTask) > 0)
+                {
+                    Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask成功 动作：关闭(远程支持)" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                }
+                else
+                {
+                    Logger.GetLogger(this.GetType()).Info("插入一条WebServiceTask失败 动作：关闭(远程支持)" + "，callid=" + cinfo.ID + "，CustomerName:" + cinfo.CustomerName + "，BrandName:" + cinfo.BrandName + "，操作人：" + CurrentUserName, null);
+                }
+                #endregion
             }
             #endregion
 

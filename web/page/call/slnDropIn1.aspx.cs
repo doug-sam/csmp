@@ -147,12 +147,13 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
 
             paramDicZC.Add("stMgr", cinfo.ReporterName);
             paramDicZC.Add("Time1", DateTime.Now);
-            paramDicZC.Add("Issue", sinfo.Details);
+            paramDicZC.Add("Issue", cinfo.Details);
             paramDicZC.Add("Priority", cinfo.PriorityName);
             paramDicZC.Add("Category1", cinfo.ClassName1);
             paramDicZC.Add("Category2", cinfo.ClassName2);
             paramDicZC.Add("Category3", cinfo.ClassName3);
-            paramDicZC.Add("Solution", sinfo.Details);
+            //paramDicZC.Add("Solution", sinfo.Details);
+            paramDicZC.Add("Solution", "上门工程师：" + sinfo.MajorUserName + "，预约上门时间：" + sinfo.DateBegin.ToString("yyyy-MM-dd HH:mm"));
             paramDicZC.Add("Attachment", "");
             string paramStrZC = WebUtil.BuildQueryJson(paramDicZC);
             //string sqlStrHKZC = "INSERT INTO sys_WebServiceTask VALUES ('" + paramStrZC + "',0," + cinfo.CustomerID.ToString() + "," + cinfo.BrandID.ToString() + ");";
@@ -186,7 +187,8 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
             paramDicJS.Add("TSI", "MVSL2");
             paramDicJS.Add("Engineer", sinfo.MajorUserName);
             paramDicJS.Add("stMgr", cinfo.ReporterName);
-            paramDicJS.Add("Solution", sinfo.Details);
+            //paramDicJS.Add("Solution", sinfo.Details);
+            paramDicJS.Add("Solution", "上门工程师：" + sinfo.MajorUserName + "，预约上门时间：" + sinfo.DateBegin.ToString("yyyy-MM-dd HH:mm"));
             paramDicJS.Add("Attachment", "");
 
             string paramStrJS = WebUtil.BuildQueryJson(paramDicJS);

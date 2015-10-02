@@ -78,11 +78,25 @@
                         <asp:Literal ID="LtlTel" runat="server"></asp:Literal>
                     </td>
                     <td class="td1_2">
+                        店铺类型：
+                    </td>
+                    <td class="td1_3" colspan="3">
+                        <asp:Literal ID="LtlStoreType" runat="server"></asp:Literal>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1_2">
+                        地址：
+                    </td>
+                    <td class="td1_3" colspan="7">
+                        <asp:Literal ID="LtlAddress" runat="server"></asp:Literal>
+                    </td>
+                    <%--<td class="td1_2">
                         地址：
                     </td>
                     <td class="td1_3" colspan="3">
-                        <asp:Literal ID="LtlAddress" runat="server"></asp:Literal>
-                    </td>
+                        <asp:Literal ID="Literal2" runat="server"></asp:Literal>
+                    </td>--%>
                 </tr>
                 <tr>
                     <td class="td1_2" colspan="8">
