@@ -53,6 +53,7 @@
     <Compile Include="AssignInfo.cs" />
     <Compile Include="AttachmentInfo.cs" />
     <Compile Include="BillRecInfo.cs" />
+    <Compile Include="BKStoreInfo.cs" />
     <Compile Include="BrandInfo.cs" />
     <Compile Include="CallCategoryInfo.cs" />
     <Compile Include="CallInfo.cs" />

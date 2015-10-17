@@ -271,8 +271,153 @@ namespace CSMP.DAL
             if (WorkGroup > 0) strSQL.Append(" AND f_BrandID in(select f_MID ").Append(WorkGroupBrandDAL.FROM_TABLE).Append(" where f_WorkGroupID=").Append(WorkGroup).Append(") ");
             return strSQL.ToString();
         }
+        
+        /// <summary>
+        /// 查询现场工程师负责的call列表
+        /// </summary>
+        /// <param name="StateMain">2代表处理中，3代表完成</param>
+        /// <param name="UserID">现场工程师的userid</param>
+        /// <param name="WorkGroupID">工作组ID，暂不使用</param>
+        /// <returns></returns>
+        public List<CallInfo> GetMyCallsForOnsiteEngineer(int StateMain, int UserID, int WorkGroupID)
+        {
+            //ZQL 20151013 为APP接口编写
+            StringBuilder strSQL = new StringBuilder();
+            List<CallInfo> list = new List<CallInfo>();
+            strSQL.Append("SELECT " + ALL_PARM + " FROM sys_Calls ");
+            strSQL.Append(" inner join ");
+            strSQL.Append(" (select f_MajorUserID,f_MajorUserName,CallStep.f_CallID  from sys_CallStep CallStep,(select f_CallID ,max(f_StepIndex) as maxid from sys_CallStep where f_StepType=3 and f_AddDate> DATEADD(MM,-12,GETDATE()) group by f_callid) MAXIndexCallStep where CallStep.f_callid=MAXIndexCallStep.f_CallID and CallStep.f_StepIndex=MAXIndexCallStep.maxid and f_MajorUserID =" + UserID + ") sysCallStep ");
+            strSQL.Append(" on sys_Calls.ID = sysCallStep.f_CallID where f_StateMain = " + StateMain + " and f_CreateDate>DATEADD(MM,-6,GETDATE()) ORDER BY sys_Calls.f_CreateDate DESC ");
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null))
+            {
+                while (rdr.Read())
+                {
+                    list.Add(GetByDataReader(rdr));
+                }
+            }
+            return list;
+        }
+        /// <summary>
+        /// 查询现场工程师负责的历史call列表
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="UserID"></param>
+        /// <param name="WorkGroupID"></param>
+        /// <returns></returns>
+        public List<CallInfo> GetHistoryCallsForOnsiteEngineer(int pageIndex,int pageSize, int UserID, int WorkGroupID)
+        {
+            //ZQL 20151013 为APP接口编写
+            int count = 100000;
+            int pageCount = 0;
+            
+            StringBuilder strSQLCount = new StringBuilder();
+            strSQLCount.Append("SELECT COUNT(1) FROM sys_Calls ");
+            strSQLCount.Append(" inner join ");
+            strSQLCount.Append(" (select f_MajorUserID,f_MajorUserName,CallStep.f_CallID  from sys_CallStep CallStep,(select f_CallID ,max(f_StepIndex) as maxid from sys_CallStep where f_StepType=3 and f_AddDate> DATEADD(MM,-12,GETDATE()) group by f_callid) MAXIndexCallStep where CallStep.f_callid=MAXIndexCallStep.f_CallID and CallStep.f_StepIndex=MAXIndexCallStep.maxid and f_MajorUserID =" + UserID + ") sysCallStep ");
+            strSQLCount.Append(" on sys_Calls.ID = sysCallStep.f_CallID where f_StateMain = 3 and f_CreateDate>DATEADD(MM,-6,GETDATE()) ");
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQLCount.ToString(), null))
+            count =  Convert.ToInt32(SqlHelper.ExecuteScalar(SqlHelper.SqlconnString, CommandType.Text, strSQLCount.ToString(), null));
+            pageCount = count / pageSize;
+            int curPageSize = pageSize;
+            if (count % pageSize>0)
+            {
+                pageCount += 1;
+                curPageSize=count % pageSize;
+            }
+            if(pageCount==0)
+            {
+                return null;
+            }
+            int top1 = 0;
+            int top2 = 0;
+            if (pageIndex >= pageCount && curPageSize > 0)
+            {
+                top1 = curPageSize;
+            }
+            else {
+                top1 = pageSize;
+            }
+            top2 = (pageIndex - 1) * pageSize + top1;
+            StringBuilder strSQL = new StringBuilder();
+            List<CallInfo> list = new List<CallInfo>();
+            strSQL.Append("SELECT B.* FROM ( ");
+            strSQL.Append("SELECT TOP " + top1 + " A.* FROM (");
+            strSQL.Append("SELECT TOP "+top2+ALL_PARM+"  FROM sys_Calls inner join ");
+            strSQL.Append(" (select f_MajorUserID,f_MajorUserName,CallStep.f_CallID  from sys_CallStep CallStep,(select f_CallID ,max(f_StepIndex) as maxid from sys_CallStep where f_StepType=3 and f_AddDate> DATEADD(MM,-6,GETDATE()) group by f_callid) MAXIndexCallStep where CallStep.f_callid=MAXIndexCallStep.f_CallID and CallStep.f_StepIndex=MAXIndexCallStep.maxid and f_MajorUserID =" + UserID + ") sysCallStep ");
+            strSQL.Append(" on sys_Calls.ID = sysCallStep.f_CallID where f_StateMain = 3 and f_CreateDate>DATEADD(MM,-6,GETDATE()) ORDER BY sys_Calls.f_CreateDate DESC ");
+            strSQL.Append(") A ORDER BY  A.f_CreateDate ASC");
+            strSQL.Append(" ) B ORDER BY B.f_CreateDate DESC");
 
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null))
+            {
+                while (rdr.Read())
+                {
+                    list.Add(GetByDataReader(rdr));
+                }
+            }
+            return list;
+        }
+        
+        
+        /// <summary>
+        /// 工单查询
+        /// </summary>
+        /// <param name="StateMain"></param>
+        /// <param name="StateDetail"></param>
+        /// <param name="UserID"></param>
+        /// <param name="WorkGroupID"></param>
+        /// <param name="CustomeName"></param>
+        /// <param name="BrandName"></param>
+        /// <returns></returns>
+        public List<CallInfo> GetMyCallsForOnsiteEngineer(int StateMain, int StateDetail,int UserID, int WorkGroupID,string  CustomeName,string BrandName)
+        {
+            //ZQL 20151013 为APP接口编写
+            StringBuilder strSQL = new StringBuilder();
+            List<CallInfo> list = new List<CallInfo>();
+            strSQL.Append("SELECT " + ALL_PARM + ",sysCallStep.UserWorkgroupID FROM sys_Calls ");
+            strSQL.Append(" inner join ");
+            strSQL.Append(" (select f_MajorUserID,f_MajorUserName,CallStep.f_CallID ,sys_User.f_WorkGroupID UserWorkgroupID from sys_CallStep CallStep,(select f_CallID ,max(f_StepIndex) as maxid from sys_CallStep where f_StepType=3 and f_AddDate> DATEADD(MM,-12,GETDATE()) group by f_callid) MAXIndexCallStep ,sys_user where CallStep.f_callid=MAXIndexCallStep.f_CallID and CallStep.f_StepIndex=MAXIndexCallStep.maxid and sys_user.ID=CallStep.f_MajorUserID ) sysCallStep ");
+            strSQL.Append(" on sys_Calls.ID = sysCallStep.f_CallID where  f_CreateDate>DATEADD(MM,-6,GETDATE()) ");
+            strSQL.Append(" and f_StateMain = " + StateMain );
+            if (StateMain == 2)
+            {
+                if (StateDetail == 100)
+                {
+                    strSQL.Append(" and (f_StateDetail = " + (int)SysEnum.CallStateDetails.等待工程师上门+" or f_StateDetail ="+(int)SysEnum.CallStateDetails.等待第三方响应+") ");
+                }
+                else {
+                    strSQL.Append(" and f_StateDetail = " + StateDetail);
+                }
+                
+            }
+            if (UserID >0)
+            {
+                strSQL.Append(" and f_MajorUserID  = " + UserID);
+            }
+            if (WorkGroupID > 0)
+            {
+                strSQL.Append(" and UserWorkgroupID  = " + WorkGroupID);
+            }
+            if (!string.IsNullOrEmpty(CustomeName))
+            {
+                strSQL.Append(" and f_CustomerName = '" + CustomeName+"' ");
+            }
+            if (!string.IsNullOrEmpty(BrandName))
+            {
+                strSQL.Append(" and f_BrandName = '" + BrandName + "' ");
+            }
 
+            strSQL.Append(" ORDER BY sys_Calls.f_CreateDate DESC ");
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null))
+            {
+                while (rdr.Read())
+                {
+                    list.Add(GetByDataReader(rdr));
+                }
+            }
+            return list;
+        }
 
         #endregion
 

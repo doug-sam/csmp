@@ -51,6 +51,46 @@ namespace CSMP.BLL
         }
 
         /// <summary>
+        /// 查询现场工程师负责的call列表
+        /// </summary>
+        /// <param name="StateMain">2代表处理中，3代表完成</param>
+        /// <param name="UserID">现场工程师的userid</param>
+        /// <param name="WorkGroupID">工作组ID，暂不使用</param>
+        /// <returns></returns>
+        public  static List<CallInfo> GetMyCallsForOnsiteEngineer(int StateMain, int UserID, int WorkGroupID)
+        {
+            return dal.GetMyCallsForOnsiteEngineer(StateMain, UserID, WorkGroupID);
+        }
+
+        /// <summary>
+        /// 查询现场工程师负责的历史call列表
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="UserID"></param>
+        /// <param name="WorkGroupID"></param>
+        /// <returns></returns>
+        public static List<CallInfo> GetHistoryCallsForOnsiteEngineer(int pageIndex, int pageSize, int UserID, int WorkGroupID)
+        {
+            return dal.GetHistoryCallsForOnsiteEngineer( pageIndex,  pageSize,  UserID,  WorkGroupID);
+        }
+
+        /// <summary>
+        /// 工单查询，APP专用
+        /// </summary>
+        /// <param name="StateMain"></param>
+        /// <param name="StateDetail"></param>
+        /// <param name="UserID"></param>
+        /// <param name="WorkGroupID"></param>
+        /// <param name="CustomeName"></param>
+        /// <param name="BrandName"></param>
+        /// <returns></returns>
+        public static List<CallInfo> GetMyCallsForOnsiteEngineer(int StateMain, int StateDetail, int UserID, int WorkGroupID, string CustomeName, string BrandName)
+        {
+            //ZQL 20151013 为APP接口编写
+            return dal.GetMyCallsForOnsiteEngineer( StateMain,  StateDetail,  UserID,  WorkGroupID,  CustomeName,  BrandName);
+        }
+        /// <summary>
         /// 获取当前用户所有负责的追call
         /// </summary>
         /// <param name="CallID"></param>

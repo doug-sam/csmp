@@ -62,6 +62,7 @@
     <Compile Include="Assign.cs" />
     <Compile Include="Attachment.cs" />
     <Compile Include="BillRec.cs" />
+    <Compile Include="BKStoreInfo.cs" />
     <Compile Include="Brand.cs" />
     <Compile Include="CallCategory.cs" />
     <Compile Include="Calls.cs" />
