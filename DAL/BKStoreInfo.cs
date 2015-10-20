@@ -91,6 +91,27 @@ namespace CSMP.DAL
             return parms;
         }
         #endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="StrWhere"></param>
+        /// <returns></returns>
+        public List<BKStoreInfo> GetList(string StrWhere)
+        {
+            List<BKStoreInfo> list = new List<BKStoreInfo>();
+            StringBuilder strSQL = new StringBuilder();
+            strSQL.Append("select ").Append(ALL_PARM).Append(FROM_TABLE);
+            strSQL.Append(" where ").Append(" 1=1 ").Append(StrWhere);
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null))
+            {
+                while (rdr.Read())
+                {
+                    list.Add(GetByDataReader(rdr));
+                }
+            }
+            return list;
+        }
+
 
         /// <summary>
         /// 根据店铺号查找
@@ -141,6 +162,18 @@ namespace CSMP.DAL
             strSQL.Append("update ").Append(TABLE).Append(" set ").Append(UPDATE).Append(" where id = ").Append(info.ID);
             SqlParameter[] parms = GetParameter(info);
             return SqlHelper.ExecuteNonQueryByTran(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), parms);
+        }
+
+        /// <summary>
+        /// 删除Member
+        /// </summary>
+        /// <param name="id">Member id</param>
+        public bool Delete(int id)
+        {
+            StringBuilder strSQL = new StringBuilder();
+            strSQL.Append("delete ").Append(FROM_TABLE).Append(" where id = ").Append(id);
+
+            return SqlHelper.ExecuteNonQueryByTran(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null);
         }
     }
 }
