@@ -103,7 +103,15 @@ public partial class APPService_Default : System.Web.UI.Page
                 case "WorkRecord":
                     result = WorkRecord(obj);
                     break;
-
+                case "UploadImageUrl":
+                    result = UploadImageUrl(obj);
+                    break;
+                //case "CompanyList":
+                //    result = CompanyList(obj);
+                //    break;
+                //case "ProductList":
+                //    result = ProductList(obj);
+                //    break;
                     
                 default:
                     result = "{\"code\":\"Unknown\",\"result\":\"102\",\"desc\":\"param值中的参数无效\"}";
@@ -666,37 +674,38 @@ public partial class APPService_Default : System.Web.UI.Page
         paramDic.Add("technologyScore", commentInfoList.Count>0?commentInfoList[0].Score2.ToString():"");
         paramDic.Add("attitudeScore", commentInfoList.Count > 0 ? commentInfoList[0].Score3.ToString() : "");
 
-        KeyValueDictionary paramUrlDic = new KeyValueDictionary();
+        
         List<AttachmentInfo> urlList = AttachmentBLL.GetList(callInfo.ID, AttachmentInfo.EUserFor.Call);
         if (urlList.Count > 0)
         {
             string url = string.Empty;
             for (int i = 0; i < urlList.Count; i++)
             {
+                KeyValueDictionary paramUrlDic = new KeyValueDictionary();
                 if (i + 1 == urlList.Count)
                 {
                     paramUrlDic.Add("url", urlList[i].FilePath);
-                    url =WebUtil.BuildQueryJson(paramDic);
+                    url = WebUtil.BuildQueryJson(paramUrlDic);
                     if (url.EndsWith(","))
                     {
                         url = url.Remove(url.Length - 1);
                     }
-                    url = "{" + url + "}";
+                    picUrlList = picUrlList+"{" + url + "}";
                     
                 }
                 else
                 {
 
                     paramUrlDic.Add("url", urlList[i].FilePath);
-                    url = WebUtil.BuildQueryJson(paramDic);
+                    url = WebUtil.BuildQueryJson(paramUrlDic);
                     if (url.EndsWith(","))
                     {
                         url = url.Remove(url.Length - 1);
                     }
-                    url = "{" + url + "},";
+                    picUrlList = picUrlList + "{" + url + "},";
                 }
             }
-            picUrlList = "[" + url + "]";
+            picUrlList = "[" + picUrlList + "]";
         }
         else
         {
@@ -1437,6 +1446,310 @@ public partial class APPService_Default : System.Web.UI.Page
         }
 
 
+    }
+
+    /// <summary>
+    /// 图片上传
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected string UploadImageUrl(JObject obj)
+    {
+        string userName = string.Empty;
+        string callNo = string.Empty;
+        string urlStr = string.Empty;
+
+        string result = string.Empty;
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+        UserInfo user = UserBLL.Get(userName);
+        if (user == null)
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，用户：" + userName + "不存在\r\n", null);
+            return result;
+        }
+
+        try
+        {
+            callNo = obj["orderId"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"解析JSON数据获取orderId值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，解析JSON数据获取orderId值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        callNo = callNo.Trim('"');
+        if (string.IsNullOrEmpty(callNo))
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"解析JSON数据获取orderId值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，解析JSON数据获取orderId值为空\r\n", null);
+            return result;
+        }
+        CallInfo callInfo = CallBLL.Get(callNo);
+        if (callInfo == null)
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"单号：" + callNo + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，单号" + callNo + "不存在\r\n", null);
+            return result;
+        }
+
+        try
+        {
+            urlStr = obj["url"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"解析JSON数据获取url值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，解析JSON数据获取url值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        urlStr = urlStr.Trim('"');
+        if (string.IsNullOrEmpty(urlStr))
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"解析JSON数据获取url值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，解析JSON数据获取url值为空\r\n", null);
+            return result;
+        }
+
+        AttachmentInfo.EUserFor eUserFor = AttachmentInfo.EUserFor.Call;
+        AttachmentInfo info = new AttachmentInfo();
+        info.Addtime = DateTime.Now;
+        info.CallID = callInfo.ID;
+        info.CallStepID = 0;
+        info.ContentType = "";
+        info.DirID = 0;
+        info.Ext = "";
+        info.UserID = user.ID;
+        info.UserName = user.Name;
+
+        info.FilePath = urlStr;
+        info.FileSize = 0;
+        info.Memo = "";
+        info.Title = "APP上传的图片列表";
+        info.UseFor = eUserFor.ToString();
+        
+        info.ID = AttachmentBLL.Add(info);
+        if (info.ID > 0)
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"1\",\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，保存url连接成功\r\n", null);
+            return result;
+        }
+        else
+        {
+            result = "{\"code\":\"UploadImageUrl\",\"result\":\"0\",\"desc\":\"提交数据到数据库失败\"}";
+            Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，提交数据到数据库失败\r\n", null);
+            return result;
+        }
+
+
+    }
+
+    /// <summary>
+    /// 客户公司列表
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected string CompanyList(JObject obj)
+    {
+        string userName = string.Empty;
+        string result = string.Empty;
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"CompanyList\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP CompanyList接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"CompanyList\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP CompanyList接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+        UserInfo user = UserBLL.Get(userName);
+        if (user == null)
+        {
+            result = "{\"code\":\"CompanyList\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP CompanyList接口被调用，用户：" + userName + "不存在\r\n", null);
+            return result;
+        }
+
+        List<CustomersInfo> customerList = CustomersBLL.GetList(user);
+
+        if (customerList.Count > 0)
+        {
+            string customerInfo = string.Empty;
+            for (int i = 0; i < customerList.Count; i++)
+            {
+                if (i + 1 == customerList.Count)
+                {
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    paramDic.Add("companyId", customerList[i].ID);
+                    paramDic.Add("companyName", customerList[i].Name);
+
+                    customerInfo = WebUtil.BuildQueryJson(paramDic);
+                    if (customerInfo.EndsWith(","))
+                    {
+                        customerInfo = customerInfo.Remove(customerInfo.Length - 1);
+                    }
+                    customerInfo = "{" + customerInfo + "}";
+                    result += customerInfo;
+                }
+                else
+                {
+
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    paramDic.Add("companyId", customerList[i].ID);
+                    paramDic.Add("companyName", customerList[i].Name);
+
+                    customerInfo = WebUtil.BuildQueryJson(paramDic);
+                    if (customerInfo.EndsWith(","))
+                    {
+                        customerInfo = customerInfo.Remove(customerInfo.Length - 1);
+                    }
+                    customerInfo = "{" + customerInfo + "},";
+                    result += customerInfo;
+                }
+            }
+            result = "{\"code\":\"CompanyList\",\"list\":[" + result + "],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP CompanyList接口被调用，用户：" + userName + "客户列表为：" + result + "\r\n", null);
+        }
+        else
+        {
+            result = "{\"code\":\"CompanyList\",\"list\":[],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP CompanyList接口被调用，用户：" + userName + "客户列表为空\r\n", null);
+        }
+        return result;
+    }
+    /// <summary>
+    /// 品牌列表
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected string ProductList(JObject obj)
+    {
+        string userName = string.Empty;
+        string companyName = string.Empty;
+        string result = string.Empty;
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"ProductList\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ProductList接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"ProductList\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ProductList接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+        UserInfo user = UserBLL.Get(userName);
+        if (user == null)
+        {
+            result = "{\"code\":\"ProductList\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ProductList接口被调用，用户：" + userName + "不存在\r\n", null);
+            return result;
+        }
+
+
+        try
+        {
+            companyName = obj["companyName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"ProductList\",\"result\":\"0\",\"desc\":\"解析JSON数据获取companyName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ProductList接口被调用，解析JSON数据获取companyName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        companyName = companyName.Trim('"');
+        if (string.IsNullOrEmpty(companyName))
+        {
+            result = "{\"code\":\"ProductList\",\"result\":\"0\",\"desc\":\"解析JSON数据获取companyName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ProductList接口被调用，解析JSON数据获取companyName值为空\r\n", null);
+            return result;
+        }
+        CustomersInfo customer = CustomersBLL.Get(companyName);
+        if (customer == null)
+        {
+            result = "{\"code\":\"ProductList\",\"result\":\"0\",\"desc\":\"公司名称：" + companyName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ProductList接口被调用，公司名称：" + companyName + "不存在\r\n", null);
+            return result;
+        }
+
+        List<BrandInfo> brandList = BrandBLL.GetList(customer.ID);
+
+        if (brandList.Count > 0)
+        {
+            string brandInfo = string.Empty;
+            for (int i = 0; i < brandList.Count; i++)
+            {
+                if (i + 1 == brandList.Count)
+                {
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    paramDic.Add("productId", brandList[i].ID);
+                    paramDic.Add("productName", brandList[i].Name);
+
+                    brandInfo = WebUtil.BuildQueryJson(paramDic);
+                    if (brandInfo.EndsWith(","))
+                    {
+                        brandInfo = brandInfo.Remove(brandInfo.Length - 1);
+                    }
+                    brandInfo = "{" + brandInfo + "}";
+                    result += brandInfo;
+                }
+                else
+                {
+
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    paramDic.Add("productId", brandList[i].ID);
+                    paramDic.Add("productName", brandList[i].Name);
+
+                    brandInfo = WebUtil.BuildQueryJson(paramDic);
+                    if (brandInfo.EndsWith(","))
+                    {
+                        brandInfo = brandInfo.Remove(brandInfo.Length - 1);
+                    }
+                    brandInfo = "{" + brandInfo + "},";
+                    result += brandInfo;
+                }
+            }
+            result = "{\"code\":\"ProductList\",\"list\":[" + result + "],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ProductList接口被调用，用户：" + userName + "品牌列表为：" + result + "\r\n", null);
+        }
+        else
+        {
+            result = "{\"code\":\"ProductList\",\"list\":[],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ProductList接口被调用，用户：" + userName + "品牌列表为空\r\n", null);
+        }
+        return result;
     }
 
     /// <summary>
