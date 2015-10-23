@@ -106,12 +106,22 @@ public partial class APPService_Default : System.Web.UI.Page
                 case "UploadImageUrl":
                     result = UploadImageUrl(obj);
                     break;
-                //case "CompanyList":
-                //    result = CompanyList(obj);
-                //    break;
-                //case "ProductList":
-                //    result = ProductList(obj);
-                //    break;
+                case "CompanyList":
+                    result = CompanyList(obj);
+                    break;
+                case "ProductList":
+                    result = ProductList(obj);
+                    break;
+                case "SignIn":
+                    result = SignIn(obj);
+                    break;
+                case "SignRecord":
+                    result = SignRecord(obj);
+                    break;
+                case "Knowledge":
+                    result = Knowledge(obj);
+                    break;
+                    
                     
                 default:
                     result = "{\"code\":\"Unknown\",\"result\":\"102\",\"desc\":\"param值中的参数无效\"}";
@@ -529,7 +539,18 @@ public partial class APPService_Default : System.Web.UI.Page
         page = page.Trim('"');
         if (!string.IsNullOrEmpty(page))
         {
-            pageIndex = Convert.ToInt32(page);
+            try 
+            {
+                pageIndex = Convert.ToInt32(page);
+            }
+            catch(Exception ex)
+            {
+
+                result = "{\"code\":\"HistoryOrder\",\"result\":\"0\",\"desc\":\"参数page的值必须为整数\"}";
+                Logger.GetLogger(this.GetType()).Info("APP HistoryOrder接口被调用，参数page的值必须为整数，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+                return result;
+            }
+            
         }
 
         //WorkGroupInfo workGroup = WorkGroupBLL.Get(user.WorkGroupID);
@@ -1752,6 +1773,465 @@ public partial class APPService_Default : System.Web.UI.Page
         return result;
     }
 
+    /// <summary>
+    /// 打卡签到、签退
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected string SignIn(JObject obj)
+    {
+        string userName = string.Empty;
+        string oper = string.Empty;
+        string gps = string.Empty;
+        string result = string.Empty;
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+        UserInfo user = UserBLL.Get(userName);
+        if (user == null)
+        {
+            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + "不存在\r\n", null);
+            return result;
+        }
+        try
+        {
+            gps = obj["gps"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取gps值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取gps值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        gps = gps.Trim('"');
+        //if (string.IsNullOrEmpty(gps))
+        //{
+        //    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取gps值为空\"}";
+        //    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取gps值为空\r\n", null);
+        //    return result;
+        //}
+        try
+        {
+            oper = obj["oper"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        oper = oper.Trim('"');
+        if (string.IsNullOrEmpty(oper))
+        {
+            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值为空\r\n", null);
+            return result;
+        }
+        if (oper == "0")
+        {
+            APPLoginLogoutLog login = APPLoginLogoutLogBLL.Get(user.ID.ToString());
+            if (login == null||login.LoginTime.Date!=DateTime.Now.Date)
+            {
+                result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天还没有签到，不能签退！\"}";
+                Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天还没有签到，不能签退！\r\n", null);
+                return result;
+            }else{
+                if (login.LogoutTime.Date==DateTime.Now.Date)
+                {
+                    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天已经签退过了，不能重复签退！\"}";
+                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天已经签退过了，不能重复签退！\r\n", null);
+                    return result;
+                }
+                else {
+                    login.LogoutTime = DateTime.Now;
+                    login.LogoutLocation = gps;
+                    if (APPLoginLogoutLogBLL.Edit(login))
+                    {
+                        result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
+                        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + "签退成功\r\n", null);
+                        return result;
+                    }
+                    else
+                    {
+                        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签退数据保存到数据库时失败\"}";
+                        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签退数据保存到数据库时失败\r\n", null);
+                        return result;
+                    }
+                }
+
+            }
+        }else if(oper=="1"){
+            APPLoginLogoutLog login = APPLoginLogoutLogBLL.Get(user.ID.ToString());
+            if (login == null)
+            {
+                login = new APPLoginLogoutLog();
+                login.LoginTime = DateTime.Now;
+                login.OpenID = user.ID.ToString();
+                login.LoginLocation = gps;
+                login.Status = 1;
+                login.LogoutTime = DateTime.Now.AddYears(-100);
+                login.LogoutLocation = "";
+                if (APPLoginLogoutLogBLL.Add(login) > 0)
+                {
+                    result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
+                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户："+userName+" 签到成功\r\n", null);
+                    return result;
+                }
+                else {
+                    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签到数据保存到数据库时失败\"}";
+                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到数据保存到数据库时失败\r\n", null);
+                    return result;
+                }
+                
+            }
+            else { 
+                if(login.LoginTime.Date==DateTime.Now.Date)
+                {
+                    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天已经做过签到了，不能再签到！\"}";
+                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天已经做过签到了，不能再签到！\r\n", null);
+                    return result;
+                
+                }else{
+                    login = new APPLoginLogoutLog();
+                    login.LoginTime = DateTime.Now;
+                    login.OpenID = user.ID.ToString();
+                    login.LoginLocation = gps;
+                    login.Status = 1;
+                    login.LogoutTime = DateTime.Now.AddYears(-100);
+                    login.LogoutLocation = "";
+                    if (APPLoginLogoutLogBLL.Add(login) > 0)
+                    {
+                        result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
+                        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到成功\r\n", null);
+                        return result;
+                    }
+                    else
+                    {
+                        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签到数据保存到数据库时失败\"}";
+                        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到数据保存到数据库时失败\r\n", null);
+                        return result;
+                    }
+                }
+            
+            }
+        }else{
+            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值为"+oper+"，没有对应的值\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值为" + oper + "，没有对应的值\r\n", null);
+            return result;
+        }
+    }
+
+    protected string SignRecord(JObject obj)
+    {
+        string userName = string.Empty;
+        string page = string.Empty;
+        int pageIndex = 1;
+        string result = string.Empty;
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SignRecord\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignRecord接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"SignRecord\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignRecord接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+        UserInfo user = UserBLL.Get(userName);
+        if (user == null)
+        {
+            result = "{\"code\":\"SignRecord\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignRecord接口被调用，用户：" + userName + "不存在\r\n", null);
+            return result;
+        }
+
+        try
+        {
+            page = obj["page"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SignRecord\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignRecord接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        page = page.Trim('"');
+        if (!string.IsNullOrEmpty(page))
+        {
+            try
+            {
+                pageIndex = Convert.ToInt32(page);
+            }
+            catch (Exception ex)
+            {
+                result = "{\"code\":\"SignRecord\",\"result\":\"0\",\"desc\":\"参数page的值必须为整数\"}";
+                Logger.GetLogger(this.GetType()).Info("APP SignRecord接口被调用，参数page的值必须为整数，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+                return result;
+            }
+        }
+        string StrWhere = " f_openid= '" + user.ID + "' order by f_logintime desc";
+        int Count=0;
+        List<APPLoginLogoutLog> records = APPLoginLogoutLogBLL.GetList(10, pageIndex, StrWhere,out Count);
+
+        if (records != null && records.Count > 0)
+        {
+            string record = string.Empty;
+            for (int i = 0; i < records.Count; i++)
+            {
+                if (i + 1 == records.Count)
+                {
+
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    paramDic.Add("time", records[i].LoginTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                    paramDic.Add("gps", records[i].LoginLocation);
+
+                    record = WebUtil.BuildQueryJson(paramDic);
+                    if (record.EndsWith(","))
+                    {
+                        record = record.Remove(record.Length - 1);
+                    }
+                    record = "{" + record + "}";
+                    result += record;
+                }
+                else
+                {
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    paramDic.Add("time", records[i].LoginTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                    paramDic.Add("gps", records[i].LoginLocation);
+                    record = WebUtil.BuildQueryJson(paramDic);
+                    if (record.EndsWith(","))
+                    {
+                        record = record.Remove(record.Length - 1);
+                    }
+                    record = "{" + record + "},";
+                    result += record;
+                }
+            }
+            result = "{\"code\":\"SignRecord\",\"list\":[" + result + "],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignRecord接口被调用，用户：" + userName + "签到记录：" + result + "\r\n", null);
+        }
+        else
+        {
+            result = "{\"code\":\"SignRecord\",\"list\":[],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SignRecord接口被调用，用户：" + userName + "签到记录为空\r\n", null);
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 分页查询资料库
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected string Knowledge(JObject obj)
+    {
+        string userName = string.Empty;
+        string page = string.Empty;
+        int pageIndex = 1;
+        string result = string.Empty;
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"Knowledge\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP Knowledge接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"Knowledge\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP Knowledge接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+        UserInfo user = UserBLL.Get(userName);
+        if (user == null)
+        {
+            result = "{\"code\":\"Knowledge\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP Knowledge接口被调用，用户：" + userName + "不存在\r\n", null);
+            return result;
+        }
+
+        try
+        {
+            page = obj["page"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"Knowledge\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP Knowledge接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        page = page.Trim('"');
+        if (!string.IsNullOrEmpty(page))
+        {
+            try
+            {
+                pageIndex = Convert.ToInt32(page);
+            }
+            catch (Exception ex)
+            {
+                result = "{\"code\":\"Knowledge\",\"result\":\"0\",\"desc\":\"参数page的值必须为整数\"}";
+                Logger.GetLogger(this.GetType()).Info("APP Knowledge接口被调用，参数page的值必须为整数，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+                return result;
+            }
+        }
+        //string StrWhere = " f_openid= '" + user.ID + "' order by f_logintime desc";
+        int Count = 0;
+        List<KnowledgeBaseInfo> knowledge = KnowledgeBaseBLL.GetList(10, pageIndex, " 1=1 ", out Count);
+        if (knowledge != null && knowledge.Count > 0)
+        {
+            string record = string.Empty;
+            for (int i = 0; i < knowledge.Count; i++)
+            {
+                if (i + 1 == knowledge.Count)
+                {
+
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    if (knowledge[i].Title.Contains("\\"))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\\","\\\\");
+                    }
+                    if (knowledge[i].Content.Contains("\\"))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\\", "\\\\");
+                    }
+                    if (knowledge[i].Title.Contains("\""))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\"", "'");
+                    }
+                    if (knowledge[i].Content.Contains("\""))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\"", "'");
+                    }
+
+                    if (knowledge[i].Title.Contains("\r"))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\r", "");
+                    }
+                    if (knowledge[i].Content.Contains("\r"))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\r", "");
+                    }
+
+                    if (knowledge[i].Title.Contains("\n"))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\n", "");
+                    }
+                    if (knowledge[i].Content.Contains("\n"))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\n", "");
+                    }
+
+                    if (knowledge[i].Title.Contains("\t"))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\t", "");
+                    }
+                    if (knowledge[i].Content.Contains("\t"))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\t", "");
+                    }
+                    paramDic.Add("question", knowledge[i].Title);
+                    paramDic.Add("answer", knowledge[i].Content);
+
+                    record = WebUtil.BuildQueryJson(paramDic);
+                    if (record.EndsWith(","))
+                    {
+                        record = record.Remove(record.Length - 1);
+                    }
+                    record = "{" + record + "}";
+                    result += record;
+                }
+                else
+                {
+                    KeyValueDictionary paramDic = new KeyValueDictionary();
+                    if (knowledge[i].Title.Contains("\\"))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\\", "\\\\");
+                    }
+                    if (knowledge[i].Content.Contains("\\"))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\\", "\\\\");
+                    }
+                    if (knowledge[i].Title.Contains("\""))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\"", "'");
+                    }
+                    if (knowledge[i].Content.Contains("\""))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\"", "'");
+                    }
+                    if (knowledge[i].Title.Contains("\r"))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\r", "");
+                    }
+                    if (knowledge[i].Content.Contains("\r"))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\r", "");
+                    }
+
+                    if (knowledge[i].Title.Contains("\n"))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\n", "");
+                    }
+                    if (knowledge[i].Content.Contains("\n"))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\n", "");
+                    }
+
+                    if (knowledge[i].Title.Contains("\t"))
+                    {
+                        knowledge[i].Title = knowledge[i].Title.Replace("\t", "");
+                    }
+                    if (knowledge[i].Content.Contains("\t"))
+                    {
+                        knowledge[i].Content = knowledge[i].Content.Replace("\t", "");
+                    }
+                    paramDic.Add("question", knowledge[i].Title);
+                    paramDic.Add("answer", knowledge[i].Content);
+                    record = WebUtil.BuildQueryJson(paramDic);
+                    if (record.EndsWith(","))
+                    {
+                        record = record.Remove(record.Length - 1);
+                    }
+                    record = "{" + record + "},";
+                    result += record;
+                }
+            }
+            result = "{\"code\":\"Knowledge\",\"list\":[" + result + "],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP Knowledge接口被调用，用户：" + userName + "查询资料库列表：" + result + "\r\n", null);
+        }
+        else
+        {
+            result = "{\"code\":\"Knowledge\",\"list\":[],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP Knowledge接口被调用，用户：" + userName + "查询资料库列表为空\r\n", null);
+        }
+        return result;
+    }
     /// <summary>
     /// 判断用户是不是组长，现场工程师判断方法为判断是否有更换现场工程师的权限
     /// </summary>

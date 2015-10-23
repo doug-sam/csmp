@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheManage.cs" />
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="CookiesHelper.cs" />
     <Compile Include="DataHelper.cs" />

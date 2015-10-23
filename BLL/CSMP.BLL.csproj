@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APPLoginLogoutLog.cs" />
     <Compile Include="Assign.cs" />
     <Compile Include="Attachment.cs" />
     <Compile Include="BillRec.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Jobcode.cs" />
     <Compile Include="KnowkedgeBaseBrand.cs" />
     <Compile Include="KnowledgeBase.cs" />
+    <Compile Include="LeftMenuData.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="loginlog.cs" />
     <Compile Include="Manufacturer.cs" />
