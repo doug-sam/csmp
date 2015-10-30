@@ -13,6 +13,7 @@
             <li><a href="/page/Inport/Class.aspx">故障类整体导入</a></li>
             <li><a href="javascript:alert('在开发时遇到这样一个问题：不同的大类中下，中类名就可以重名，\n\n那么导入小类时，既要填写中类名，也要填写大类名，\n\n如果不匹配，系统也无法导入，\n\n这个在可行性上不够实际。');">小类数据导入</a></li>
             <li><a href="/page/Inport/Store.aspx">店铺信息数据导入</a></li>
+            <li><a href="/page/Inport/BKStoreInfo.aspx">汉堡王店铺信息数据导入</a></li>
         </ul>
 <div style=" margin:50px; padding:10px; line-height:22px;">
     <h2>数据导入模板下载</h2>

@@ -137,6 +137,34 @@ namespace CSMP.DAL
                 return 0;
             }
         }
+        /// <summary>
+        /// 是用SP打卡，牵出、签退
+        /// </summary>
+        /// <param name="userID">用户ID</param>
+        /// <param name="loginMode">打卡类型 1为签到，0为签退</param>
+        /// <param name="loginTime">打卡时间</param>
+        /// <param name="location">打卡地点</param>
+        /// <returns></returns>
+        public string AddBySP(string userID,string loginMode,string loginTime,string location)
+        {
+            StoreProcedure sp = new StoreProcedure("sp_APP_Loginlogout");//类的对象
+            Object[] paraValues = new object[5];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
+
+            paraValues[0] = userID;//从第二个参数开始赋值
+            paraValues[1] = loginMode;
+            paraValues[2] = loginTime;
+            paraValues[3] = location;
+            paraValues[4] = "";
+            object[] output;
+            sp.ExecProcOutput(out  output, 2,paraValues);
+            if (output != null)
+            {
+                return output[1].ToString();
+            }
+            else {
+                return "";
+            }
+        }
 
         /// <summary>
         /// 修改

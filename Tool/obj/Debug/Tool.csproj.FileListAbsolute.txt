@@ -159,8 +159,6 @@ D:\项目\GitCSMP\csmp\Tool\bin\Debug\Tool.dll
 D:\项目\GitCSMP\csmp\Tool\bin\Debug\Tool.pdb
 D:\项目\GitCSMP\csmp\Tool\bin\Debug\log4net.dll
 D:\项目\GitCSMP\csmp\Tool\bin\Debug\Microsoft.Office.Interop.Excel.dll
-D:\项目\GitCSMP\csmp\Tool\bin\Debug\Microsoft.Office.Interop.Word.dll
-D:\项目\GitCSMP\csmp\Tool\bin\Debug\office.dll
 D:\项目\GitCSMP\csmp\Tool\bin\Debug\Interop.Microsoft.Office.Core.dll
 D:\项目\GitCSMP\csmp\Tool\obj\Debug\ResolveAssemblyReference.cache
 D:\项目\GitCSMP\csmp\Tool\obj\Debug\Interop.Microsoft.Office.Core.dll

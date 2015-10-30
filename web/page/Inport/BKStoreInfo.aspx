@@ -25,7 +25,9 @@
                 <asp:Button ID="BtnCheck" runat="server" Text="检查数据" CssClass="BigButton" 
                     onclick="BtnCheck_Click"/>
                 <asp:Button ID="BtnSubmit" runat="server" Text="开始导入" CssClass="BigButton" 
-                    Visible="false" onclick="BtnSubmit_Click"/>
+                    Visible="false" onclick="BtnSubmit_Click"/>&nbsp&nbsp
+                <asp:Button ID="BtnPostToBK" runat="server" Text="同步数据到汉堡王转呈系统" 
+                    CssClass="BigButton" onclick="BtnPostToBK_Click" />
             </td>
         </tr>
         <tr>

@@ -36,6 +36,30 @@ namespace CSMP.DAL
             return info;
         }
 
+        private List<LeftMenuData> GetByDataTable(DataTable dt)
+        {
+            List<LeftMenuData> dataList = new List<LeftMenuData>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                LeftMenuData info = new LeftMenuData();
+                info.ToBeOnSite = Convert.ToInt32(dr["f_ToBeOnSite"].ToString());
+                info.ToBeDisposed = Convert.ToInt32(dr["f_ToBeDisposed"].ToString());
+                info.Disposing = Convert.ToInt32(dr["f_Disposing"].ToString());
+                info.Complete = Convert.ToInt32(dr["f_Complete"].ToString());
+                info.Closed = Convert.ToInt32(dr["f_Closed"].ToString());
+                info.StoreUrgency = Convert.ToInt32(dr["f_StoreUrgency"].ToString());
+                info.StoreRequest = Convert.ToInt32(dr["f_StoreRequest"].ToString());
+                info.UserID = Convert.ToInt32(dr["f_UserID"].ToString());
+                info.WorkGroupID = Convert.ToInt32(dr["f_WorkGroupID"].ToString());
+                info.HaveGroupPower = Convert.ToBoolean(dr["f_HaveGroupPower"].ToString());
+
+                dataList.Add(info);
+            }
+
+
+            return dataList;
+        }
+
         private SqlParameter[] GetParameter(LeftMenuData info)
         {
             SqlParameter[] parms = new SqlParameter[] {
@@ -73,6 +97,24 @@ namespace CSMP.DAL
                     list.Add(GetByDataReader(rdr));
                 }
             }
+            return list;
+        }
+        /// <summary>
+        /// 使用存储过程获取所有列表
+        /// </summary>
+        /// <param name="StrWhere"></param>
+        /// <returns></returns>
+        public List<LeftMenuData> GetListBySP()
+        {
+            List<LeftMenuData> list = new List<LeftMenuData>();
+            //StoreProcedure sp = new StoreProcedure("sp_wx_querycoworkers");
+            StoreProcedure sp = new StoreProcedure("SP_GetLeftData");//类的对象
+            //Object[] paraValues = new object[2];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
+
+            //paraValues[0] = "o8dWJt1hWuBHIJnJUZ46i6B1myuk";//从第二个参数开始赋值
+            //paraValues[1] = "";//从第二个参数开始赋值
+
+            list = GetByDataTable(sp.ExecuteDataTable(null));
             return list;
         }
         

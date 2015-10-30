@@ -20,8 +20,32 @@ public partial class LeftMenu_DataCache : System.Web.UI.Page
         LeftMenuDataBLL.InsertLeftMenuDataCache();
         UserInfo currentUser = UserBLL.Get(845);
 
-        LeftMenuData data = LeftMenuDataBLL.GetExpressInfoCacheByName(currentUser.ID); 
-        tboxResult.Text = data.ToBeOnSite.ToString() ;
 
+        LeftMenuData data = LeftMenuDataBLL.GetLeftMenuCacheByName(currentUser.ID);
+        tboxResult.Text = data.Closed.ToString();
+
+    }
+
+
+    protected void BtnCacheAdd_Click(object sender, EventArgs e)
+    {
+        List<LeftMenuData> list = CacheManage.GetSearch("leftMenuKey") as List<LeftMenuData>;
+        UserInfo currentUser = UserBLL.Get(845);
+        int index = list.FindIndex(s => s.UserID == currentUser.ID);
+        list[index].Closed += 1;
+        CacheManage.InsertCache("leftMenuKey", list);
+        LeftMenuData currentData = LeftMenuDataBLL.GetLeftMenuCacheByName(currentUser.ID);
+        tboxResult.Text = currentData.Closed.ToString();
+
+    }
+    protected void BtnCacheMinus_Click(object sender, EventArgs e)
+    {
+        List<LeftMenuData> list = CacheManage.GetSearch("leftMenuKey") as List<LeftMenuData>;
+        UserInfo currentUser = UserBLL.Get(845);
+        int index = list.FindIndex(s => s.UserID == currentUser.ID);
+        list[index].Closed -= 1;
+        CacheManage.InsertCache("leftMenuKey", list);
+        LeftMenuData currentData = LeftMenuDataBLL.GetLeftMenuCacheByName(currentUser.ID);
+        tboxResult.Text = currentData.Closed.ToString();
     }
 }

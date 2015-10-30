@@ -196,7 +196,19 @@ public partial class page_Store_list : _BaseData_Store
         {
             if (item.Length > 0)
             {
+                StoreInfo info = StoresBLL.Get(Function.ConverToInt(item));
                 StoresBLL.Delete(Function.ConverToInt(item));
+                //新增删除BKStore表中的信息
+                
+                if (info.No.StartsWith("BK"))
+                {
+                    info.No = info.No.Remove(0, 2);
+                }
+                BKStoreInfo BKStore = BKStoreInfoBLL.GetByStoreNo(info.No);
+                if (BKStore != null)
+                {
+                    BKStoreInfoBLL.Delete(BKStore.ID);
+                }
             }
         }
         Function.Refresh();

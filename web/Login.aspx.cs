@@ -14,7 +14,8 @@ public partial class Login : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-
+            //txtUserName.Text = "admin";
+            //txtPassword.Text = "!Q@W3e4rqwe!@#Q";
         }
     }
     protected void btnLogin_Click(object sender, ImageClickEventArgs e)

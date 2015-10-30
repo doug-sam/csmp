@@ -8,6 +8,7 @@ namespace CSMP.Model
     /// <summary>
     /// 汉堡王转呈系统店铺信息数据同步专用店铺类
     /// </summary>
+    [SerializableAttribute]
     public class BKStoreInfo
     {
         /// <summary>

@@ -17,6 +17,18 @@ namespace CSMP.BLL
         {
             return dal.GetByStoreNo(LocalCode);
         }
+        /// <summary>
+        /// 分页
+        /// </summary>
+        /// <param name="PageSize"></param>
+        /// <param name="CurPage"></param>
+        /// <param name="StrWhere"></param>
+        /// <param name="Count"></param>
+        /// <returns></returns>
+        public static List<BKStoreInfo> GetList(int PageSize, int CurPage, string StrWhere, out int Count)
+        {
+            return dal.GetList(PageSize, CurPage, StrWhere, out Count);
+        }
 
         /// <summary>
         /// 获取列表
@@ -25,8 +37,15 @@ namespace CSMP.BLL
         {
             return dal.GetList(StrWhere);
         }
-
-        
+        /// <summary>
+        /// 查询总记录数
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public static int CountAll()
+        {
+            return dal.CountAll();
+        }
 
         #region Set
         /// <summary>

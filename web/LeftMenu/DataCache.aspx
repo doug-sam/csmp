@@ -16,8 +16,10 @@
         <br/>
         <asp:Button ID="BtnGetFromData" runat="server" Text="从数据库同步" 
             onclick="BtnGetFromData_Click" />&nbsp&nbsp&nbsp
-        <asp:Button ID="BtnCacheAdd" runat="server" Text="内存数据加1" />&nbsp&nbsp&nbsp
-        <asp:Button ID="BtnCacheMinus" runat="server" Text="内存数据减1" />&nbsp&nbsp&nbsp
+        <asp:Button ID="BtnCacheAdd" runat="server" Text="内存数据加1" 
+            onclick="BtnCacheAdd_Click" />&nbsp&nbsp&nbsp
+        <asp:Button ID="BtnCacheMinus" runat="server" Text="内存数据减1" 
+            onclick="BtnCacheMinus_Click" />&nbsp&nbsp&nbsp
         <asp:Button ID="BtnShowCache" runat="server" Text="显示内存数据" />
     </div>
     </form>

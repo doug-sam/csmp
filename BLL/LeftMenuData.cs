@@ -15,7 +15,15 @@ namespace CSMP.BLL
         {
             return dal.GetList(StrWhere);
         }
-
+        /// <summary>
+        /// 调用SP 获取列表
+        /// </summary>
+        /// <param name="StrWhere"></param>
+        /// <returns></returns>
+        public static List<LeftMenuData> GetListBySP()
+        {
+            return dal.GetListBySP();
+        }
 
         /// <summary>
         /// 获取Info
@@ -88,7 +96,7 @@ namespace CSMP.BLL
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        public static LeftMenuData GetExpressInfoCacheByName(int userID)
+        public static LeftMenuData GetLeftMenuCacheByName(int userID)
         {
 
             List<LeftMenuData> list;
@@ -135,40 +143,40 @@ namespace CSMP.BLL
                 List<UserInfo> userList = UserBLL.GetList("");
                 List<LeftMenuData> dataList = new List<LeftMenuData>();
                 //循环所有用户count LeftMenu数据 并写入数据库
-                foreach (UserInfo currentUser in userList)
-                {
-                    //currentUser = UserBLL.Get(845);
-                    LeftMenuData data = new LeftMenuData();
-                    data.UserID = currentUser.ID;
-                    data.WorkGroupID = currentUser.WorkGroupID;
-                    data.ToBeOnSite = CallBLL.GetCountSln1(currentUser.WorkGroupID);
-                    data.ToBeDisposed = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.未处理, currentUser);
-                    data.Disposing = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.处理中, currentUser);
-                    data.Complete = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已完成, currentUser);
-                    data.Closed = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已关闭, currentUser);
+                //foreach (UserInfo currentUser in userList)
+                //{
+                //    //currentUser = UserBLL.Get(845);
+                //    LeftMenuData data = new LeftMenuData();
+                //    data.UserID = currentUser.ID;
+                //    data.WorkGroupID = currentUser.WorkGroupID;
+                //    data.ToBeOnSite = CallBLL.GetCountSln1(currentUser.WorkGroupID);
+                //    data.ToBeDisposed = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.未处理, currentUser);
+                //    data.Disposing = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.处理中, currentUser);
+                //    data.Complete = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已完成, currentUser);
+                //    data.Closed = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已关闭, currentUser);
 
-                    List<CallInfo> Tracelist = LeftMenuDataBLL.GetListTraceByCurrentUser(currentUser);
-                    if (null == Tracelist || Tracelist.Count == 0)
-                    {
-                        data.StoreUrgency = 0;
-                    }
-                    else
-                    {
-                        data.StoreUrgency = Tracelist.Count;
-                    }
-                    data.StoreRequest = CSMP.BLL.CustomerRequestBLL.GetConut(currentUser.WorkGroupID);
-                    data.HaveGroupPower = false;
-                    if (LeftMenuDataBLL.Get(currentUser.ID) == null)
-                    {
-                        LeftMenuDataBLL.Add(data);
-                    }
-                    else
-                    {
-                        LeftMenuDataBLL.Edit(data);
-                    }
-                }
+                //    List<CallInfo> Tracelist = LeftMenuDataBLL.GetListTraceByCurrentUser(currentUser);
+                //    if (null == Tracelist || Tracelist.Count == 0)
+                //    {
+                //        data.StoreUrgency = 0;
+                //    }
+                //    else
+                //    {
+                //        data.StoreUrgency = Tracelist.Count;
+                //    }
+                //    data.StoreRequest = CSMP.BLL.CustomerRequestBLL.GetConut(currentUser.WorkGroupID);
+                //    data.HaveGroupPower = false;
+                //    if (LeftMenuDataBLL.Get(currentUser.ID) == null)
+                //    {
+                //        LeftMenuDataBLL.Add(data);
+                //    }
+                //    else
+                //    {
+                //        LeftMenuDataBLL.Edit(data);
+                //    }
+                //}
 
-                dataList = LeftMenuDataBLL.GetList("");
+                dataList = LeftMenuDataBLL.GetListBySP();
                 CacheManage.InsertCache("leftMenuKey", dataList);
                 return true;
             }

@@ -21,42 +21,6 @@ namespace Tool
             set { this._timeout = value; }
         }
 
-        /// <summary>
-        /// 执行HTTP POST请求。
-        /// </summary>
-        /// <param name="url">请求地址</param>
-        /// <param name="parameters">请求参数</param>
-        /// <returns>HTTP响应</returns>
-        //public String DoPost(String url, IDictionary<String, String> parameters)
-        //{
-        //    HttpWebRequest req = GetWebRequest(url, "POST");
-        //    req.ContentType = "application/x-www-form-urlencoded;charset=utf-8";
-
-        //    Byte[] postData = Encoding.UTF8.GetBytes(BuildQueryJson(parameters));
-        //    Stream reqStream = req.GetRequestStream();
-        //    reqStream.Write(postData, 0, postData.Length);
-        //    reqStream.Close();
-
-        //    HttpWebResponse rsp = (HttpWebResponse)req.GetResponse();
-        //    Encoding encoding = Encoding.GetEncoding(rsp.CharacterSet);
-        //    return GetResponseAsString(rsp, encoding);
-        //}
-
-        //public String DoPost(String url, IDictionary<String, String> parameters)
-        //{
-        //    HttpWebRequest req = GetWebRequest(url, "POST");
-        //    req.ContentType = "application/x-www-form-urlencoded;charset=gb2312";
-
-        //    Byte[] postData = Encoding.GetEncoding("GB2312").GetBytes(BuildQueryJson(parameters));
-        //    Stream reqStream = req.GetRequestStream();
-        //    reqStream.Write(postData, 0, postData.Length);
-        //    reqStream.Close();
-
-        //    HttpWebResponse rsp = (HttpWebResponse)req.GetResponse();
-        //    Encoding encoding = Encoding.GetEncoding(rsp.CharacterSet);
-        //    return GetResponseAsString(rsp, encoding);
-        //}
-
 
         public String DoPost(String url, IDictionary<String, String> parameters)
         {
@@ -78,6 +42,48 @@ namespace Tool
             string sendResult = ser.ReadToEnd();
             return sendResult;
 
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url">URL地址</param>
+        /// <param name="param">参数内容</param>
+        /// <param name="EncodeType">编码格式，1为UTF-8，2为GB2312</param>
+        /// <returns></returns>
+        public static String DoPost(String url, string paramStr, int EncodeType)
+        {
+            //StringBuilder strBuilder = new StringBuilder();
+            //strBuilder.Append("{\"Action\":\"updateStoreMaster\",\"stores\":[");
+            //strBuilder.Append("{\"GlobalCode\":\"21036\",\"LocalCode\":\"21036\",\"Region\":\"加盟区\",\"City\":\"昆明市\",\"StoreType\":\"加盟\",\"Name\":\"昆明南亚金鹰店\",\"Address\":\"首都机场T3\",\"OpenDate\":\"2012-08-10\",\"CloseDate\":\"\",\"Tel\":\"010-64558294\",\"FAX\":\"64558294\",\"Email\":\"123@qq.com\",\"OM\":\"张三\",\"OC\":\"李四\",\"ServerIP\":\"10.40.1.90\",\"LANGateway\":\"193.22.22.1\",\"TSI\":\"MVS\",\"BroadbandUsername\":\"admin\",\"BroadbandPWD\":\"admin\",\"Teamviewer\":\"admin\",\"MenuBread\":\"\",\"PriceTier\":\"\",\"Status\":\"营业\",\"Remark\":\"\",\"Longitude\":\"100\",\"Latitude\":\"admin\"},");
+            //strBuilder.Append("{\"GlobalCode\":\"21100\",\"LocalCode\":\"21100\",\"Region\":\"加盟区\",\"City\":\"大庆市\",\"StoreType\":\"加盟\",\"Name\":\"大庆世纪大道\",\"Address\":\"首都机场T3\",\"OpenDate\":\"2012-08-10\",\"CloseDate\":\"\",\"Tel\":\"010-64558294\",\"FAX\":\"64558294\",\"Email\":\"123@qq.com\",\"OM\":\"张三\",\"OC\":\"李四\",\"ServerIP\":\"10.40.1.90\",\"LANGateway\":\"193.22.22.1\",\"TSI\":\"MVS\",\"BroadbandUsername\":\"admin\",\"BroadbandPWD\":\"admin\",\"Teamviewer\":\"admin\",\"MenuBread\":\"\",\"PriceTier\":\"\",\"Status\":\"营业\",\"Remark\":\"\",\"Longitude\":\"100\",\"Latitude\":\"admin\"},");
+            //strBuilder.Append("{\"GlobalCode\":\"20963\",\"LocalCode\":\"20963\",\"Region\":\"加盟区\",\"City\":\"慈溪市\",\"StoreType\":\"加盟\",\"Name\":\"宁波慈溪\",\"Address\":\"首都机场T3\",\"OpenDate\":\"2012-08-10\",\"CloseDate\":\"\",\"Tel\":\"010-64558294\",\"FAX\":\"64558294\",\"Email\":\"123@qq.com\",\"OM\":\"张三\",\"OC\":\"李四\",\"ServerIP\":\"10.40.1.90\",\"LANGateway\":\"193.22.22.1\",\"TSI\":\"MVS\",\"BroadbandUsername\":\"admin\",\"BroadbandPWD\":\"admin\",\"Teamviewer\":\"admin\",\"MenuBread\":\"\",\"PriceTier\":\"\",\"Status\":\"营业\",\"Remark\":\"\",\"Longitude\":\"100\",\"Latitude\":\"admin\"},");
+            //strBuilder.Append("{\"GlobalCode\":\"20746\",\"LocalCode\":\"20746\",\"Region\":\"加盟区\",\"City\":\"金华市\",\"StoreType\":\"加盟\",\"Name\":\"义乌国际商贸\",\"Address\":\"首都机场T3\",\"OpenDate\":\"2012-08-10\",\"CloseDate\":\"\",\"Tel\":\"010-64558294\",\"FAX\":\"64558294\",\"Email\":\"123@qq.com\",\"OM\":\"张三\",\"OC\":\"李四\",\"ServerIP\":\"10.40.1.90\",\"LANGateway\":\"193.22.22.1\",\"TSI\":\"MVS\",\"BroadbandUsername\":\"admin\",\"BroadbandPWD\":\"admin\",\"Teamviewer\":\"admin\",\"MenuBread\":\"\",\"PriceTier\":\"\",\"Status\":\"营业\",\"Remark\":\"\",\"Longitude\":\"100\",\"Latitude\":\"admin\"},");
+            //strBuilder.Append("{\"GlobalCode\":\"20647\",\"LocalCode\":\"20647\",\"Region\":\"加盟区\",\"City\":\"兰州市\",\"StoreType\":\"加盟\",\"Name\":\"兰州中川机场\",\"Address\":\"首都机场T3\",\"OpenDate\":\"2012-08-10\",\"CloseDate\":\"\",\"Tel\":\"010-64558294\",\"FAX\":\"64558294\",\"Email\":\"123@qq.com\",\"OM\":\"张三\",\"OC\":\"李四\",\"ServerIP\":\"10.40.1.90\",\"LANGateway\":\"193.22.22.1\",\"TSI\":\"MVS\",\"BroadbandUsername\":\"admin\",\"BroadbandPWD\":\"admin\",\"Teamviewer\":\"admin\",\"MenuBread\":\"\",\"PriceTier\":\"\",\"Status\":\"营业\",\"Remark\":\"\",\"Longitude\":\"100\",\"Latitude\":\"admin\"}");
+            //strBuilder.Append("]}");
+            //param = strBuilder.ToString();
+            //string paramStr = "para=" + param;
+
+            //url = "http://helpdesk.bkchina.cn/siweb_test/ws_hesheng.ashx";
+            //string url = "http://192.168.31.112:8088/APPService/Default.aspx";
+
+            HttpWebRequest req = GetWebRequest(url, "POST");
+            req.ContentType = "application/x-www-form-urlencoded;charset=utf-8";
+            Byte[] postData= Encoding.UTF8.GetBytes(paramStr);
+            if (EncodeType == 1)
+            {
+                postData = Encoding.UTF8.GetBytes(paramStr);
+            }
+            else if (EncodeType == 2)
+            {
+                postData = Encoding.GetEncoding("GB2312").GetBytes(paramStr);
+            }
+            Stream reqStream = req.GetRequestStream();
+            reqStream.Write(postData, 0, postData.Length);
+            reqStream.Close();
+            HttpWebResponse rsp = (HttpWebResponse)req.GetResponse();
+            Encoding encoding = Encoding.GetEncoding(rsp.CharacterSet);
+            string result = GetResponseAsString(rsp, encoding);
+            return result;
         }
 
         /// <summary>
@@ -131,14 +137,14 @@ namespace Tool
 
 
 
-        public HttpWebRequest GetWebRequest(String url, String method)
+        public static HttpWebRequest GetWebRequest(String url, String method)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
             req.ServicePoint.Expect100Continue = false;
             req.Method = method;
             req.KeepAlive = true;
             req.UserAgent = "CSMP";
-            req.Timeout = this._timeout;
+            req.Timeout = 100000;
             return req;
         }
 

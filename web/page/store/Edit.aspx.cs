@@ -152,6 +152,11 @@ public partial class page_Store_Edit : _BaseData_Store_Edit
         if (GetInfo() == null)
         {
             info.AddDate = DateTime.Now;
+            if (info.CustomerName =="汉堡王"||info.BrandName=="汉堡王")
+            {
+                Function.AlertRefresh("汉堡王店铺不能直接新增，请从数据导入页面导入。", "main");
+            }
+
             if (StoresBLL.Add(info) > 0)
             {
                 Function.AlertRefresh("添加成功","main");
@@ -163,9 +168,41 @@ public partial class page_Store_Edit : _BaseData_Store_Edit
         }
         else
         {
+            if (info.CustomerName == "汉堡王" || info.BrandName == "汉堡王")
+            {
+                if (info.No != StoresBLL.Get(info.ID).No)
+                {
+                    
+                    Function.AlertMsg("请不要修改汉堡王店铺店铺号信息！");
+                }
+            }
             if (StoresBLL.Edit(info))
             {
-                Function.AlertRefresh("修改成功","main");
+                if (info.CustomerName == "汉堡王" || info.BrandName == "汉堡王")
+                {
+                    
+                    if (info.No.StartsWith("BK"))
+                    {
+                        info.No = info.No.Remove(0,2);
+                    }
+                    BKStoreInfo BKStore = BKStoreInfoBLL.GetByStoreNo(info.No);
+                    if (BKStore != null)
+                    {
+                        BKStore.Name = info.Name;
+                        BKStore.Address = info.Address;
+                        BKStore.Tel = info.Tel;
+                        BKStore.Email = info.Email;
+                        BKStore.City = info.CityName;
+                        BKStore.StoreType = info.StoreType;
+                        //BKStore.Status = info.IsClosed ? "Closed" : "Open";
+                        BKStoreInfoBLL.Edit(BKStore);
+                        Function.AlertRefresh("修改成功", "main");
+                    }
+                    else {
+                        Function.AlertMsg("修改成功，但汉堡王转呈系统表中没有对应的店铺信息");
+                    }
+                }
+                Function.AlertRefresh("修改成功", "main");
             }
             else
             {

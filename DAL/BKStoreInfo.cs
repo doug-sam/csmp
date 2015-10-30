@@ -92,6 +92,24 @@ namespace CSMP.DAL
         }
         #endregion
         /// <summary>
+        /// 获取列表
+        /// </summary>
+        public List<BKStoreInfo> GetList(int PageSize, int CurPage, string StrWhere, out int Count)
+        {
+            List<BKStoreInfo> list = new List<BKStoreInfo>();
+            string strSQL = Function.GetPageSQL(PageSize, CurPage, TABLE, StrWhere, out Count);
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL, null))
+            {
+                while (rdr.Read())
+                {
+                    list.Add(GetByDataReader(rdr));
+                }
+            }
+            return list;
+        }
+
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="StrWhere"></param>
@@ -131,6 +149,18 @@ namespace CSMP.DAL
                 return GetByDataReader(rdr);
             }
         }
+        /// <summary>
+        /// 查询总记录数
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public int CountAll()
+        {
+            string CountSQL = "select count(*) as MyCount from " + TABLE;
+            return Convert.ToInt32(SqlHelper.ExecuteScalar(SqlHelper.SqlconnString, CommandType.Text, CountSQL, null).ToString());
+        }
+
+
         /// <summary>
         /// 添加
         /// </summary>
