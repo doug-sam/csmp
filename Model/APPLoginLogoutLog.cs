@@ -20,7 +20,7 @@ namespace CSMP.Model
         /// <summary>
         ///签到时间
         /// </summary>
-        public DateTime LoginTime { get; set; }
+        public DateTime? LoginTime { get; set; }
         /// <summary>
         ///签到地点
         /// </summary>
@@ -28,7 +28,7 @@ namespace CSMP.Model
         /// <summary>
         ///签退时间
         /// </summary>
-        public DateTime LogoutTime { get; set; }
+        public DateTime? LogoutTime { get; set; }
         /// <summary>
         ///签退地点
         /// </summary>

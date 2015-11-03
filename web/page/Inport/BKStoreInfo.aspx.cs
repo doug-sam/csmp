@@ -352,14 +352,14 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
 
 
             BKinfo.Region = dt.Rows[i]["REGION"].ToString();
-            if (BKinfo.Region.StartsWith("{"))
-            {
-                BKinfo.Region.Remove(0, 1);
-            }
-            if (BKinfo.Region.EndsWith("}"))
-            {
-                BKinfo.Region.Remove(BKinfo.Region.Length-1, 1);
-            }
+            //if (BKinfo.Region.StartsWith("{"))
+            //{
+            //    BKinfo.Region.Remove(0, 1);
+            //}
+            //if (BKinfo.Region.EndsWith("}"))
+            //{
+            //    BKinfo.Region.Remove(BKinfo.Region.Length - 1, 1);
+            //}
             BKinfo.Status=dt.Rows[i]["STATUS"].ToString().Trim();
 
             if (!string.IsNullOrEmpty(dt.Rows[i]["OPEN_DATE"].ToString().Trim()))
@@ -530,96 +530,193 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
     /// <param name="e"></param>
     protected void BtnPostToBK_Click(object sender, EventArgs e)
     {
-        int count = BKStoreInfoBLL.CountAll();
-        int pageSize = 5;
-        int pageIndex = 1;
-        int pageCount = count / pageSize;
+
+        #region 分批调用数据同步接口，每批发送5条记录
+        //int count = BKStoreInfoBLL.CountAll();
+        //int pageSize = 5;
+        //int pageIndex = 1;
+        //int pageCount = count / pageSize;
+        //string para = string.Empty;
+        //string result = string.Empty;
+        ////string url = "http://helpdesk.bkchina.cn/siweb_test/ws_hesheng.ashx";
+        //string url = ConfigurationManager.AppSettings["BKStoreDataUrl"].ToString();
+        //if (count % pageSize > 0)
+        //{
+        //    pageCount += 1;
+        //}
+        //if (count > 0)
+        //{
+        //    for(;pageIndex<pageCount;pageIndex++)
+        //    {
+        //        List<BKStoreInfo> bkStoreList = BKStoreInfoBLL.GetList(pageSize, pageIndex, " 1=1 order by id ", out count);
+        //        for (int i = 0; i < bkStoreList.Count; i++)
+        //        {
+        //            string store = string.Empty;
+        //            if (i + 1 ==bkStoreList.Count) {
+        //                store = GetStorePara(bkStoreList[i]);
+        //                if (store.EndsWith(","))
+        //                {
+        //                    store = store.Remove(store.Length - 1);
+        //                }
+        //                para = para+"{" + store + "}";
+        //            } else {
+        //                store = GetStorePara(bkStoreList[i]);
+        //                if (store.EndsWith(","))
+        //                {
+        //                    store = store.Remove(store.Length - 1);
+        //                }
+        //                para = para + "{" + store + "},";
+                    
+        //            }
+        //        }
+        //        para ="para={\"Action\":\"updateStoreMaster\",\"stores\":["+para+"]}";
+        //        result = WebUtil.DoPost(url, para, 2);
+        //        JObject obj = null;
+        //        try
+        //        {
+        //            obj = JObject.Parse(result);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为："+result+" 错误原因："+ex.Message+"\r\n", null);
+        //            Function.AlertBack(string.Format("同步数据库中第{0}行至第{1}行数据时返回错误！", (pageSize*(pageIndex-1)+1),(pageSize*pageIndex)));
+        //            return;
+        //        }
+        //        string errNo = string.Empty;
+        //        int errNoToInt = 0;
+        //        try
+        //        {
+        //            errNo = obj["errNo"].ToString();
+
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " 错误原因：" + ex.Message + "\r\n", null);
+        //            Function.AlertBack(string.Format("同步数据库中第{0}行至第{1}行数据时返回错误！", (pageSize * (pageIndex - 1) + 1), (pageSize * pageIndex)));
+        //            return;
+        //        }
+        //        try
+        //        {
+        //            errNoToInt = Convert.ToInt32(errNo);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " 错误原因：" + ex.Message + "\r\n", null);
+        //            Function.AlertBack(string.Format("同步数据库中第{0}行至第{1}行数据时返回错误！", (pageSize * (pageIndex - 1) + 1), (pageSize * pageIndex)));
+        //            return;
+        //        }
+
+        //        if (errNoToInt == 0)
+        //        {
+        //            Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " \r\n", null);
+        //            Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。" + string.Format("同步数据库中第{0}行至第{1}行数据时返回成功！", (pageSize * (pageIndex - 1) + 1), (pageSize * pageIndex)) +  " \r\n", null);
+                    
+        //        }
+        //        else {
+        //            Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " \r\n", null);
+        //            Function.AlertBack(string.Format("同步数据库中第{0}行至第{1}行数据时返回错误！", (pageSize * (pageIndex - 1) + 1), (pageSize * pageIndex)));
+        //            return;
+        //        }
+        //    }
+        //}
+        //else {
+        //    Function.AlertBack("数据库中没有任何数据。"); return;
+        //}
+        #endregion
+
+        //int count = BKStoreInfoBLL.CountAll();
+        //int pageSize = 5;
+        //int pageIndex = 1;
+        //int pageCount = count / pageSize;
         string para = string.Empty;
         string result = string.Empty;
         //string url = "http://helpdesk.bkchina.cn/siweb_test/ws_hesheng.ashx";
         string url = ConfigurationManager.AppSettings["BKStoreDataUrl"].ToString();
-        if (count % pageSize > 0)
+        
+        
+            
+        List<BKStoreInfo> bkStoreList = BKStoreInfoBLL.GetList(" order by id ");
+        if (bkStoreList == null || bkStoreList.Count <= 0)
         {
-            pageCount += 1;
-        }
-        if (count > 0)
-        {
-            for(;pageIndex<pageCount;pageIndex++)
-            {
-                List<BKStoreInfo> bkStoreList = BKStoreInfoBLL.GetList(pageSize, pageIndex, " 1=1 order by id ", out count);
-                for (int i = 0; i < bkStoreList.Count; i++)
-                {
-                    string store = string.Empty;
-                    if (i + 1 ==bkStoreList.Count) {
-                        store = GetStorePara(bkStoreList[i]);
-                        if (store.EndsWith(","))
-                        {
-                            store = store.Remove(store.Length - 1);
-                        }
-                        para = para+"{" + store + "}";
-                    } else {
-                        store = GetStorePara(bkStoreList[i]);
-                        if (store.EndsWith(","))
-                        {
-                            store = store.Remove(store.Length - 1);
-                        }
-                        para = para + "{" + store + "},";
-                    
-                    }
-                }
-                para ="para={\"Action\":\"updateStoreMaster\",\"stores\":["+para+"]}";
-                result = WebUtil.DoPost(url, para, 2);
-                JObject obj = null;
-                try
-                {
-                    obj = JObject.Parse(result);
-                }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为："+result+" 错误原因："+ex.Message+"\r\n", null);
-                    Function.AlertBack(string.Format("同步数据库中第{0}行至第{1}行数据时返回错误！", (pageSize*(pageIndex-1)+1),(pageSize*pageIndex)));
-                    return;
-                }
-                string errNo = string.Empty;
-                int errNoToInt = 0;
-                try
-                {
-                    errNo = obj["errNo"].ToString();
+            Function.AlertBack("数据库中没有任何数据。"); return;
 
-                }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " 错误原因：" + ex.Message + "\r\n", null);
-                    Function.AlertBack(string.Format("同步数据库中第{0}行至第{1}行数据时返回错误！", (pageSize * (pageIndex - 1) + 1), (pageSize * pageIndex)));
-                    return;
-                }
-                try
-                {
-                    errNoToInt = Convert.ToInt32(errNo);
-                }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " 错误原因：" + ex.Message + "\r\n", null);
-                    Function.AlertBack(string.Format("同步数据库中第{0}行至第{1}行数据时返回错误！", (pageSize * (pageIndex - 1) + 1), (pageSize * pageIndex)));
-                    return;
-                }
-
-                if (errNoToInt == 0)
-                {
-                    Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " \r\n", null);
-                    Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。" + string.Format("同步数据库中第{0}行至第{1}行数据时返回成功！", (pageSize * (pageIndex - 1) + 1), (pageSize * pageIndex)) +  " \r\n", null);
-                    
-                }
-                else {
-                    Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " \r\n", null);
-                    Function.AlertBack(string.Format("同步数据库中第{0}行至第{1}行数据时返回错误！", (pageSize * (pageIndex - 1) + 1), (pageSize * pageIndex)));
-                    return;
-                }
-            }
         }
         else {
-            Function.AlertBack("数据库中没有任何数据。"); return;
+            for (int i = 0; i < bkStoreList.Count; i++)
+            {
+                string store = string.Empty;
+                if (i + 1 == bkStoreList.Count)
+                {
+                    store = GetStorePara(bkStoreList[i]);
+                    if (store.EndsWith(","))
+                    {
+                        store = store.Remove(store.Length - 1);
+                    }
+                    para = para + "{" + store + "}";
+                }
+                else
+                {
+                    store = GetStorePara(bkStoreList[i]);
+                    if (store.EndsWith(","))
+                    {
+                        store = store.Remove(store.Length - 1);
+                    }
+                    para = para + "{" + store + "},";
+
+                }
+            }
+            para = "para={\"Action\":\"updateStoreMaster\",\"stores\":[" + para + "]}";
+            result = WebUtil.DoPost(url, para, 2);
+            JObject obj = null;
+            try
+            {
+                obj = JObject.Parse(result);
+            }
+            catch (Exception ex)
+            {
+                Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " 错误原因：" + ex.Message + "\r\n", null);
+                Function.AlertBack(string.Format("同步数据时返回错误！"));
+                return;
+            }
+            string errNo = string.Empty;
+            int errNoToInt = 0;
+            try
+            {
+                errNo = obj["errNo"].ToString();
+
+            }
+            catch (Exception ex)
+            {
+                Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " 错误原因：" + ex.Message + "\r\n", null);
+                Function.AlertBack(string.Format("同步数据时返回错误！"));
+                return;
+            }
+            try
+            {
+                errNoToInt = Convert.ToInt32(errNo);
+            }
+            catch (Exception ex)
+            {
+                Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " 错误原因：" + ex.Message + "\r\n", null);
+                Function.AlertBack(string.Format("同步数据时返回错误！"));
+                return;
+            }
+
+            if (errNoToInt == 0)
+            {
+                Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " \r\n", null);
+                Function.AlertRefresh("共" + bkStoreList.Count + "条数据同步成功！");
+
+            }
+            else
+            {
+                Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，解析收到的返回结果错误。发送参数为：" + para + " 返回结果为：" + result + " \r\n", null);
+                Function.AlertBack(string.Format("同步数据时返回错误！"));
+                return;
+            }
+        
         }
+        
     }
     /// <summary>
     /// 拼装Store JSON数据
@@ -633,10 +730,22 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
         paramDic.Add("GlobalCode", storeInfo.GlobalCode);
         paramDic.Add("LocalCode", storeInfo.LocalCode);
         //paramDic.Add("GlobalCode", storeInfo.GlobalCode);
+        if (storeInfo.Region.Contains("{"))
+        {
+            storeInfo.Region = storeInfo.Region.Remove(0, storeInfo.Region.IndexOf("{")+1);
+        }
+        if (storeInfo.Region.Contains("}"))
+        {
+            storeInfo.Region = storeInfo.Region.Remove(storeInfo.Region.IndexOf("}"), 1);
+        }
         paramDic.Add("Region", storeInfo.Region);
         paramDic.Add("City", storeInfo.City);
         paramDic.Add("StoreType", storeInfo.StoreType);
         paramDic.Add("Name", storeInfo.Name);
+        if (storeInfo.Address.Contains("&"))
+        {
+            storeInfo.Address=storeInfo.Address.Replace("&","");
+        }
         paramDic.Add("Address", storeInfo.Address);
         if (storeInfo.OpenDate.Year == 1800)
         {
@@ -653,11 +762,27 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
         {
             paramDic.Add("CloseDate", storeInfo.CloseDate);
         }
-     
+
+        if (storeInfo.Tel.Contains("/"))
+        {
+            storeInfo.Tel = storeInfo.Tel.Replace("/", " ");
+        }
+        if (storeInfo.Tel.Contains("\\"))
+        {
+            storeInfo.Tel = storeInfo.Tel.Replace("\\", " ");
+        }
         paramDic.Add("Tel", storeInfo.Tel);
         paramDic.Add("FAX", storeInfo.FAX);
         paramDic.Add("Email", storeInfo.Email);
         paramDic.Add("OM", storeInfo.OM);
+        if (storeInfo.OC.Contains("{"))
+        {
+            storeInfo.OC = storeInfo.OC.Remove(0, storeInfo.OC.IndexOf("{") + 1);
+        }
+        if (storeInfo.OC.Contains("}"))
+        {
+            storeInfo.OC = storeInfo.OC.Remove(storeInfo.OC.IndexOf("}"), 1);
+        }
         paramDic.Add("OC", storeInfo.OC);
         paramDic.Add("ServerIP", storeInfo.ServerIP);
         paramDic.Add("LANGateway", storeInfo.LANGateway);

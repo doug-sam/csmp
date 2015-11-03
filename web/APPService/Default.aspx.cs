@@ -1790,164 +1790,164 @@ public partial class APPService_Default : System.Web.UI.Page
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    protected string SignIn(JObject obj)
-    {
-        string userName = string.Empty;
-        string oper = string.Empty;
-        string gps = string.Empty;
-        string result = string.Empty;
-        try
-        {
-            userName = obj["userName"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        userName = userName.Trim('"');
-        if (string.IsNullOrEmpty(userName))
-        {
-            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取userName值为空\r\n", null);
-            return result;
-        }
-        UserInfo user = UserBLL.Get(userName);
-        if (user == null)
-        {
-            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + "不存在\r\n", null);
-            return result;
-        }
-        try
-        {
-            gps = obj["gps"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取gps值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取gps值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        gps = gps.Trim('"');
-        //if (string.IsNullOrEmpty(gps))
-        //{
-        //    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取gps值为空\"}";
-        //    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取gps值为空\r\n", null);
-        //    return result;
-        //}
-        try
-        {
-            oper = obj["oper"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        oper = oper.Trim('"');
-        if (string.IsNullOrEmpty(oper))
-        {
-            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值为空\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值为空\r\n", null);
-            return result;
-        }
-        if (oper == "0")
-        {
-            APPLoginLogoutLog login = APPLoginLogoutLogBLL.Get(user.ID.ToString());
-            if (login == null||login.LoginTime.Date!=DateTime.Now.Date)
-            {
-                result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天还没有签到，不能签退！\"}";
-                Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天还没有签到，不能签退！\r\n", null);
-                return result;
-            }else{
-                if (login.LogoutTime.Date==DateTime.Now.Date)
-                {
-                    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天已经签退过了，不能重复签退！\"}";
-                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天已经签退过了，不能重复签退！\r\n", null);
-                    return result;
-                }
-                else {
-                    login.LogoutTime = DateTime.Now;
-                    login.LogoutLocation = gps;
-                    login.Status = 1;
-                    if (APPLoginLogoutLogBLL.Edit(login))
-                    {
-                        result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
-                        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + "签退成功\r\n", null);
-                        return result;
-                    }
-                    else
-                    {
-                        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签退数据保存到数据库时失败\"}";
-                        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签退数据保存到数据库时失败\r\n", null);
-                        return result;
-                    }
-                }
+    //protected string SignIn(JObject obj)
+    //{
+    //    string userName = string.Empty;
+    //    string oper = string.Empty;
+    //    string gps = string.Empty;
+    //    string result = string.Empty;
+    //    try
+    //    {
+    //        userName = obj["userName"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    userName = userName.Trim('"');
+    //    if (string.IsNullOrEmpty(userName))
+    //    {
+    //        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取userName值为空\r\n", null);
+    //        return result;
+    //    }
+    //    UserInfo user = UserBLL.Get(userName);
+    //    if (user == null)
+    //    {
+    //        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + "不存在\r\n", null);
+    //        return result;
+    //    }
+    //    try
+    //    {
+    //        gps = obj["gps"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取gps值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取gps值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    gps = gps.Trim('"');
+    //    //if (string.IsNullOrEmpty(gps))
+    //    //{
+    //    //    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取gps值为空\"}";
+    //    //    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取gps值为空\r\n", null);
+    //    //    return result;
+    //    //}
+    //    try
+    //    {
+    //        oper = obj["oper"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    oper = oper.Trim('"');
+    //    if (string.IsNullOrEmpty(oper))
+    //    {
+    //        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值为空\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值为空\r\n", null);
+    //        return result;
+    //    }
+    //    if (oper == "0")
+    //    {
+    //        APPLoginLogoutLog login = APPLoginLogoutLogBLL.Get(user.ID.ToString());
+    //        if (login == null||login.LoginTime.Date!=DateTime.Now.Date)
+    //        {
+    //            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天还没有签到，不能签退！\"}";
+    //            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天还没有签到，不能签退！\r\n", null);
+    //            return result;
+    //        }else{
+    //            if (login.LogoutTime.Date==DateTime.Now.Date)
+    //            {
+    //                result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天已经签退过了，不能重复签退！\"}";
+    //                Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天已经签退过了，不能重复签退！\r\n", null);
+    //                return result;
+    //            }
+    //            else {
+    //                login.LogoutTime = DateTime.Now;
+    //                login.LogoutLocation = gps;
+    //                login.Status = 1;
+    //                if (APPLoginLogoutLogBLL.Edit(login))
+    //                {
+    //                    result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
+    //                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + "签退成功\r\n", null);
+    //                    return result;
+    //                }
+    //                else
+    //                {
+    //                    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签退数据保存到数据库时失败\"}";
+    //                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签退数据保存到数据库时失败\r\n", null);
+    //                    return result;
+    //                }
+    //            }
 
-            }
-        }else if(oper=="1"){
-            APPLoginLogoutLog login = APPLoginLogoutLogBLL.Get(user.ID.ToString());
-            if (login == null)
-            {
-                login = new APPLoginLogoutLog();
-                login.LoginTime = DateTime.Now;
-                login.OpenID = user.ID.ToString();
-                login.LoginLocation = gps;
-                login.Status = 0;
-                login.LogoutTime = DateTime.Now.AddYears(-100);
-                login.LogoutLocation = "";
-                if (APPLoginLogoutLogBLL.Add(login) > 0)
-                {
-                    result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
-                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户："+userName+" 签到成功\r\n", null);
-                    return result;
-                }
-                else {
-                    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签到数据保存到数据库时失败\"}";
-                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到数据保存到数据库时失败\r\n", null);
-                    return result;
-                }
+    //        }
+    //    }else if(oper=="1"){
+    //        APPLoginLogoutLog login = APPLoginLogoutLogBLL.Get(user.ID.ToString());
+    //        if (login == null)
+    //        {
+    //            login = new APPLoginLogoutLog();
+    //            login.LoginTime = DateTime.Now;
+    //            login.OpenID = user.ID.ToString();
+    //            login.LoginLocation = gps;
+    //            login.Status = 0;
+    //            login.LogoutTime = DateTime.Now.AddYears(-100);
+    //            login.LogoutLocation = "";
+    //            if (APPLoginLogoutLogBLL.Add(login) > 0)
+    //            {
+    //                result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
+    //                Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户："+userName+" 签到成功\r\n", null);
+    //                return result;
+    //            }
+    //            else {
+    //                result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签到数据保存到数据库时失败\"}";
+    //                Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到数据保存到数据库时失败\r\n", null);
+    //                return result;
+    //            }
                 
-            }
-            else { 
-                if(login.LoginTime.Date==DateTime.Now.Date)
-                {
-                    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天已经做过签到了，不能再签到！\"}";
-                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天已经做过签到了，不能再签到！\r\n", null);
-                    return result;
+    //        }
+    //        else { 
+    //            if(login.LoginTime.Date==DateTime.Now.Date)
+    //            {
+    //                result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"今天已经做过签到了，不能再签到！\"}";
+    //                Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，今天已经做过签到了，不能再签到！\r\n", null);
+    //                return result;
                 
-                }else{
-                    login = new APPLoginLogoutLog();
-                    login.LoginTime = DateTime.Now;
-                    login.OpenID = user.ID.ToString();
-                    login.LoginLocation = gps;
-                    login.Status = 1;
-                    login.LogoutTime = DateTime.Now.AddYears(-100);
-                    login.LogoutLocation = "";
-                    if (APPLoginLogoutLogBLL.Add(login) > 0)
-                    {
-                        result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
-                        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到成功\r\n", null);
-                        return result;
-                    }
-                    else
-                    {
-                        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签到数据保存到数据库时失败\"}";
-                        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到数据保存到数据库时失败\r\n", null);
-                        return result;
-                    }
-                }
+    //            }else{
+    //                login = new APPLoginLogoutLog();
+    //                login.LoginTime = DateTime.Now;
+    //                login.OpenID = user.ID.ToString();
+    //                login.LoginLocation = gps;
+    //                login.Status = 1;
+    //                login.LogoutTime = DateTime.Now.AddYears(-100);
+    //                login.LogoutLocation = "";
+    //                if (APPLoginLogoutLogBLL.Add(login) > 0)
+    //                {
+    //                    result = "{\"code\":\"SignIn\",\"result\":\"1\",\"desc\":\"\"}";
+    //                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到成功\r\n", null);
+    //                    return result;
+    //                }
+    //                else
+    //                {
+    //                    result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"签到数据保存到数据库时失败\"}";
+    //                    Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，用户：" + userName + " 签到数据保存到数据库时失败\r\n", null);
+    //                    return result;
+    //                }
+    //            }
             
-            }
-        }else{
-            result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值为"+oper+"，没有对应的值\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值为" + oper + "，没有对应的值\r\n", null);
-            return result;
-        }
-    }
+    //        }
+    //    }else{
+    //        result = "{\"code\":\"SignIn\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oper值为"+oper+"，没有对应的值\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值为" + oper + "，没有对应的值\r\n", null);
+    //        return result;
+    //    }
+    //}
 
     protected string SignRecord(JObject obj)
     {
@@ -2019,10 +2019,19 @@ public partial class APPService_Default : System.Web.UI.Page
                     KeyValueDictionary paramDic = new KeyValueDictionary();
                     //paramDic.Add("time", records[i].LoginTime.ToString("yyyy-MM-dd"));
                     paramDic.Add("gps", records[i].LoginLocation);
-                    paramDic.Add("signInTime", records[i].LoginTime.ToString("yyyy-MM-dd HH:mm:ss"));
-                    if (records[i].LoginTime.Date == records[i].LogoutTime.Date)
+                    //paramDic.Add("signInTime", records[i].LoginTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                    if (records[i].LoginTime != null)
                     {
-                        paramDic.Add("signOutTime", records[i].LogoutTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                        paramDic.Add("signInTime", records[i].LoginTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+                    }
+                    else
+                    {
+
+                        paramDic.Add("signInTime", "");
+                    }
+                    if (records[i].LogoutTime != null)
+                    {
+                        paramDic.Add("signOutTime", records[i].LogoutTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
                     }
                     else {
 
@@ -2042,10 +2051,19 @@ public partial class APPService_Default : System.Web.UI.Page
                     KeyValueDictionary paramDic = new KeyValueDictionary();
                     //paramDic.Add("time", records[i].LoginTime.ToString("yyyy-MM-dd"));
                     paramDic.Add("gps", records[i].LoginLocation);
-                    paramDic.Add("signInTime", records[i].LoginTime.ToString("yyyy-MM-dd HH:mm:ss"));
-                    if (records[i].LoginTime.Date == records[i].LogoutTime.Date)
+                    //paramDic.Add("signInTime", records[i].LoginTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                    if (records[i].LoginTime != null)
                     {
-                        paramDic.Add("signOutTime", records[i].LogoutTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                        paramDic.Add("signInTime", records[i].LoginTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+                    }
+                    else
+                    {
+
+                        paramDic.Add("signInTime", "");
+                    }
+                    if (records[i].LogoutTime != null)
+                    {
+                        paramDic.Add("signOutTime", records[i].LogoutTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
                     }
                     else
                     {
@@ -2306,17 +2324,25 @@ public partial class APPService_Default : System.Web.UI.Page
         }
 
 
-        string StrWhere = " and f_openid= '" + user.ID + "' and Convert(Varchar(10),f_logintime,120)='" + DateTime.Now.ToString("yyyy-MM-dd") + "' order by f_logintime desc";
+        string StrWhere = " and f_openid= '" + user.ID + "' and (Convert(Varchar(10),f_logintime,120)='" + DateTime.Now.ToString("yyyy-MM-dd") + "' or Convert(Varchar(10),f_logouttime,120)='" + DateTime.Now.ToString("yyyy-MM-dd") + "')";
         List<APPLoginLogoutLog> records = APPLoginLogoutLogBLL.GetList(StrWhere);
         if (records.Count > 0)
         {
             KeyValueDictionary paramDic = new KeyValueDictionary();
             //paramDic.Add("time", records[i].LoginTime.ToString("yyyy-MM-dd"));
             //paramDic.Add("gps", records[i].LoginLocation);
-            paramDic.Add("signInTime", records[0].LoginTime.ToString("HH:mm:ss"));
-            if (records[0].LoginTime.Date == records[0].LogoutTime.Date)
+            if (records[0].LoginTime != null)
             {
-                paramDic.Add("signOutTime", records[0].LogoutTime.ToString("HH:mm:ss"));
+                paramDic.Add("signInTime", records[0].LoginTime.Value.ToString("HH:mm:ss"));
+            }
+            else
+            {
+                paramDic.Add("signInTime", "");
+            }
+            //paramDic.Add("signInTime", records[0].LoginTime.ToString("HH:mm:ss"));
+            if (records[0].LogoutTime!=null)
+            {
+                paramDic.Add("signOutTime", records[0].LogoutTime.Value.ToString("HH:mm:ss"));
             }
             else
             {

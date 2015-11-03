@@ -23,9 +23,17 @@ namespace CSMP.DAL
             info.ID = Convert.ToInt32(rdr["ID"]);
             info.OpenID = rdr["f_openid"].ToString();
             info.LoginLocation = rdr["f_loginlocation"].ToString();
-            info.LoginTime = Convert.ToDateTime(rdr["f_logintime"]);
+            if (!string.IsNullOrEmpty(rdr["f_logintime"].ToString()))
+            {
+                info.LoginTime=Convert.ToDateTime(rdr["f_logintime"]);
+            }
+            
             info.LogoutLocation = rdr["f_logoutlocation"].ToString();
-            info.LogoutTime = Convert.ToDateTime(rdr["f_logouttime"]);
+            if(!string.IsNullOrEmpty(rdr["f_logouttime"].ToString()))
+            {
+                info.LogoutTime=Convert.ToDateTime(rdr["f_logouttime"]);
+            }
+            
             info.Status = Convert.ToInt32(rdr["f_status"]);
 
             return info;
