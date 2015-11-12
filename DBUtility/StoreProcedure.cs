@@ -276,5 +276,36 @@ namespace DBUtility
                 }
             }
         }
+
+        //// <summary>
+        /// 执行存储过程，返回 System.Data.DataTable。
+        /// </summary>
+        /// <param name="paraValues">传递给存储过程的参数值列表。</param>
+        /// <returns>包含查询结果的 System.Data.DataTable。</returns>
+        public DataTable ExecuteDataTable(out object[] output,params object[] paraValues )
+        {
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+
+                SqlCommand command = this.CreateSqlCommand(connection);
+                output = new object[1];
+                try
+                {
+                    this.DeriveParameters(command);
+                    this.AssignParameterValues(command, paraValues);
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    //将存储过程返回的参数值返回到程序中
+                    output[0] = command.Parameters["@ReturnCode"].Value;
+                    return dataTable;
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+        }
     }
 }

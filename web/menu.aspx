@@ -352,11 +352,11 @@
         UpdateCount();
         
         
-        var TimeSpan = 30;
+        var TimeSpan = 60;
         function Timer_Trick() {
             if (TimeSpan == 0) {
                 UpdateCount();
-                TimeSpan = 30;
+                TimeSpan = 60;
                 return;
             }
             TimeSpan--;

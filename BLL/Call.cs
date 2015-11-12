@@ -63,6 +63,16 @@ namespace CSMP.BLL
         }
 
         /// <summary>
+        /// 查询现场工程师负责的call列表，APP查询我的工单专用，调用SP实现
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="returnValue"></param>
+        /// <returns></returns>
+        public static DataTable GetMyCallsForOnsiteEngineerBySp(string userName, out string returnValue)
+        {
+            return dal.GetMyCallsForOnsiteEngineerBySp(userName, out returnValue);
+        }
+        /// <summary>
         /// 查询现场工程师负责的历史call列表
         /// </summary>
         /// <param name="pageIndex"></param>
@@ -89,6 +99,21 @@ namespace CSMP.BLL
         {
             //ZQL 20151013 为APP接口编写
             return dal.GetMyCallsForOnsiteEngineer( StateMain,  StateDetail,  UserID,  WorkGroupID,  CustomeName,  BrandName);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="state"></param>
+        /// <param name="getGroup"></param>
+        /// <param name="CustomeName"></param>
+        /// <param name="BrandName"></param>
+        /// <param name="returnValue"></param>
+        /// <returns></returns>
+        public static DataTable GetMyCallsForOnsiteEngineerBySp(string userName, string state, string getGroup, string CustomeName, string BrandName, out string returnValue)
+        {
+            //ZQL 20151013 为APP接口编写,调用存储过程实现
+            return dal.GetMyCallsForOnsiteEngineerBySp(userName, state, getGroup, CustomeName, BrandName, out returnValue);
         }
         /// <summary>
         /// 获取当前用户所有负责的追call

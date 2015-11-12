@@ -146,7 +146,7 @@ namespace CSMP.DAL
             }
         }
         /// <summary>
-        /// 是用SP打卡，牵出、签退
+        /// 使用SP打卡，牵出、签退
         /// </summary>
         /// <param name="userID">用户ID</param>
         /// <param name="loginMode">打卡类型 1为签到，0为签退</param>

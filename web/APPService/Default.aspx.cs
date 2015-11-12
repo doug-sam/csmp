@@ -12,6 +12,7 @@ using System.Text;
 using System.Net.Mail;
 using System.Net;
 using System.Configuration;
+using System.Data;
 
 public partial class APPService_Default : System.Web.UI.Page
 {
@@ -85,8 +86,11 @@ public partial class APPService_Default : System.Web.UI.Page
                 case "AddressBook":
                     result = AddressBook(obj);
                     break;
+                //case "MyOrder":
+                //    result = MyOrder(obj);
+                //    break;
                 case "MyOrder":
-                    result = MyOrder(obj);
+                    result = SPMyOrder(obj);
                     break;
                 case "OrderDetail":
                     result = OrderDetail(obj);
@@ -94,8 +98,11 @@ public partial class APPService_Default : System.Web.UI.Page
                 case "HistoryOrder":
                     result = HistoryOrder(obj);
                     break;
+                //case "SearchOrder":
+                //    result = SearchOrder(obj);
+                //    break;
                 case "SearchOrder":
-                    result = SearchOrder(obj);
+                    result = SPSearchOrder(obj);
                     break;
                 case "AssignOrder":
                     result = AssignOrder(obj);
@@ -363,7 +370,7 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         return result;
     }
-
+    #region 我的工单旧代码
     /// <summary>
     /// 我的工单接口
     /// </summary>
@@ -496,7 +503,107 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         return result;
     }
+    #endregion
 
+    /// <summary>
+    /// 我的工单接口,使用SP完成
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected string SPMyOrder(JObject obj)
+    {
+        string userName = string.Empty;
+        string result = string.Empty;
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"MyOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"MyOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+        
+        DataTable dt = new DataTable();
+        string spReturnValue = string.Empty;
+        dt = CallBLL.GetMyCallsForOnsiteEngineerBySp(userName, out spReturnValue);
+
+        if (spReturnValue == "not binding")
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "不存在\r\n", null);
+            return result;
+        }
+        if (dt.Rows.Count > 0)
+        {
+            string callInfo = string.Empty;
+            foreach (DataRow dr in dt.Rows)
+            {
+                
+                string stateDetail = string.Empty;
+                if (dr["f_StateDetail"].ToString() == ((int)SysEnum.CallStateDetails.等待工程师上门).ToString() || dr["f_StateDetail"].ToString() == ((int)SysEnum.CallStateDetails.等待第三方响应).ToString())
+                {
+                    //待上门
+                    stateDetail = "0";
+                }
+                else if (dr["f_StateDetail"].ToString() == ((int)SysEnum.CallStateDetails.到达门店处理).ToString())
+                {
+                    //处理中
+                    stateDetail = "1";
+                }
+                else if (dr["f_StateDetail"].ToString() == ((int)SysEnum.CallStateDetails.上门支持).ToString())
+                {
+                    //已离场
+                    stateDetail = "2";
+                }
+                else
+                {
+                    stateDetail = "2";
+                }
+                KeyValueDictionary paramDic = new KeyValueDictionary();
+                paramDic.Add("orderId", dr["f_No"].ToString());
+                paramDic.Add("gps", "");
+                paramDic.Add("address", dr["f_Address"].ToString());
+                paramDic.Add("customerName", dr["f_CustomerName"].ToString());
+                paramDic.Add("productName", dr["f_BrandName"].ToString());
+                paramDic.Add("customerLogo", "");
+                string callDetails = dr["f_Details"].ToString();
+                callDetails = DeleteSpecialChar(callDetails);
+                paramDic.Add("orderDescribe", callDetails);
+                paramDic.Add("state", stateDetail);
+                paramDic.Add("desc", callDetails);
+
+
+                callInfo = WebUtil.BuildQueryJson(paramDic);
+                if (callInfo.EndsWith(","))
+                {
+                    callInfo = callInfo.Remove(callInfo.Length - 1);
+                }
+                callInfo = "{" + callInfo + "},";
+                result += callInfo;
+            }
+            if (result.EndsWith(","))
+            {
+                result = result.Remove(result.Length - 1);
+            }
+            result = "{\"code\":\"MyOrder\",\"list\":[" + result + "],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "我的工单为：" + result + "\r\n", null);
+        }
+        else
+        {
+            result = "{\"code\":\"MyOrder\",\"list\":[],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "我的工单为空\r\n", null);
+        }
+        return result;
+    }
 
     /// <summary>
     /// 历史工单
@@ -576,9 +683,12 @@ public partial class APPService_Default : System.Web.UI.Page
                     StoreInfo store = StoresBLL.Get(callList[i].StoreID);
                     paramDic.Add("address", store == null ? "" : store.Address);
                     paramDic.Add("customerName", callList[i].CustomerName);
+                    paramDic.Add("productName", callList[i].BrandName);
                     paramDic.Add("customerLogo", "");
-                    paramDic.Add("orderDescribe", callList[i].Details);
-                    paramDic.Add("desc", callList[i].Details);
+                    string callDetails = callList[i].Details;
+                    callDetails = DeleteSpecialChar(callDetails);
+                    paramDic.Add("orderDescribe", callDetails);
+                    paramDic.Add("desc", callDetails);
                     callInfo = WebUtil.BuildQueryJson(paramDic);
                     if (callInfo.EndsWith(","))
                     {
@@ -594,10 +704,13 @@ public partial class APPService_Default : System.Web.UI.Page
                     paramDic.Add("gps", "");
                     StoreInfo store = StoresBLL.Get(callList[i].StoreID);
                     paramDic.Add("address", store == null ? "" : store.Address);
-                    paramDic.Add("customerName", callList[i].CustomerName);
+                    //paramDic.Add("customerName", callList[i].CustomerName);
+                    paramDic.Add("customerName", callList[i].BrandName);
                     paramDic.Add("customerLogo", "");
-                    paramDic.Add("orderDescribe", callList[i].Details);
-                    paramDic.Add("desc", callList[i].Details);
+                    string callDetails = callList[i].Details;
+                    callDetails = DeleteSpecialChar(callDetails);
+                    paramDic.Add("orderDescribe", callDetails);
+                    paramDic.Add("desc", callDetails);
                     callInfo = WebUtil.BuildQueryJson(paramDic);
                     if (callInfo.EndsWith(","))
                     {
@@ -665,9 +778,13 @@ public partial class APPService_Default : System.Web.UI.Page
         paramDic.Add("gps", "");
         StoreInfo store = StoresBLL.Get(callInfo.StoreID);
         paramDic.Add("address", store == null ? "" : store.Address);
+        
+
         paramDic.Add("customerName", callInfo.CustomerName);
+        paramDic.Add("productName", callInfo.BrandName);
         paramDic.Add("customerLogo", "");
-        paramDic.Add("orderDescribe", callInfo.Details);
+        string callDetails = DeleteSpecialChar(callInfo.Details);
+        paramDic.Add("orderDescribe", callDetails);
         CallStepInfo callstep = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.上门安排);
         if (callstep!=null)
         {
@@ -676,10 +793,21 @@ public partial class APPService_Default : System.Web.UI.Page
             accessTime = "";
         }
         paramDic.Add("acceptTime", accessTime);
+        callstep = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.上门准备);
+        paramDic.Add("maintaimUserName", callInfo.MaintaimUserName);
+        if (callstep == null)
+        {
+            paramDic.Add("disposeSuggest", "");
+        }
+        else {
+            paramDic.Add("disposeSuggest", DeleteSpecialChar(callstep.Details));
+        }
         callstep = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.到达门店处理);
+        List<CommentInfo> commentInfoList = new List<CommentInfo>();
         if (callstep!=null)
         {
             singInTime = callstep.AddDate.ToString("yyyy-MM-dd HH:mm");
+            commentInfoList = CommentBLL.GetList(" f_CallID = " + callInfo.ID + " AND f_CallStepID=" + callstep.ID + " AND f_IsDropInUserDoIt=1 AND f_ByMachine='APP' order by f_AddDate desc ");
         }
         else
         {
@@ -689,18 +817,17 @@ public partial class APPService_Default : System.Web.UI.Page
 
 
         callstep = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.上门详细);
+        
         if (callstep != null)
         {
             signOutTime = callstep.AddDate.ToString("yyyy-MM-dd HH:mm");
+            
         }
         else
         {
             signOutTime = "";
         }
         paramDic.Add("signOutTime", signOutTime);
-
-        List<CommentInfo> commentInfoList = CommentBLL.GetList(" f_CallID = " + callInfo.ID+ " order by f_AddDate desc ");
-
         paramDic.Add("technologyScore", commentInfoList.Count>0?commentInfoList[0].Score2.ToString():"");
         paramDic.Add("attitudeScore", commentInfoList.Count > 0 ? commentInfoList[0].Score3.ToString() : "");
         if (commentInfoList.Count > 0)
@@ -768,13 +895,13 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         else
         {
-            stateDetail = "";
+            stateDetail = "2";
         }
 
         result = "{" + WebUtil.BuildQueryJson(paramDic) + "\"picList\":" + picUrlList + ",\"state\":\"" + stateDetail + "\",\"desc\":\"" + recordDesc + "\"}";
-        return result;       
+        return result;
     }
-
+    #region 工查询旧代码
     /// <summary>
     /// 工单查询
     /// </summary>
@@ -1024,7 +1151,189 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         return result;
     }
+    #endregion
 
+    /// <summary>
+    /// 工单查询,调用SP实现
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected string SPSearchOrder(JObject obj)
+    {
+        string userName = string.Empty;
+        string result = string.Empty;
+        string state = string.Empty;
+        string getWorkgroup = string.Empty;
+        string customName = string.Empty;
+        string brandName = string.Empty;
+        
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+        
+
+        try
+        {
+            state = obj["state"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取state值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        state = state.Trim('"');
+        if (state == "0")
+        {
+            //因为待分配分两种，SysEnum.CallStateDetails.等待工程师上门和SysEnum.CallStateDetails.等待第三方响应
+            //stateMain = 2;
+            //stateDetail = 100;
+            state = "w";
+
+        }
+        else if (state == "1")
+        {
+            //stateMain = 2;
+            //stateDetail = (int)SysEnum.CallStateDetails.到达门店处理;
+            state = "p";
+        }
+        else if (state == "2")
+        {
+            //stateMain = 2;
+            //stateDetail = (int)SysEnum.CallStateDetails.上门支持;
+            state = "o";
+        }
+        else if (state == "3")
+        {
+            //stateMain = 3;
+            state = "f";
+
+        }
+        else
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取state值为" + state + "系统中不存在该状态\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值为" + state + "系统中不存在该状态，错误原因：" + result + "\r\n", null);
+            return result;
+        }
+
+        try
+        {
+            customName = obj["companyName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取companyName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取companyName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        customName = customName.Trim('"');
+        customName = customName.Trim();
+
+
+        try
+        {
+            brandName = obj["productName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取brandName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取brandName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        brandName = brandName.Trim('"');
+        brandName = brandName.Trim();
+
+
+        try
+        {
+            getWorkgroup = obj["all"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取all值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取all值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        getWorkgroup = getWorkgroup.Trim('"');
+        getWorkgroup = getWorkgroup.Trim();
+        if (string.IsNullOrEmpty(getWorkgroup))
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取getWorkgroup值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取getWorkgroup值为空\r\n", null);
+            return result;
+        }
+        if (getWorkgroup == "0")
+        {
+            getWorkgroup = "false";
+        }
+        else
+        {
+            getWorkgroup = "true";
+        }
+        DataTable dt = new DataTable();
+        string spReturnValue =string.Empty;
+        dt = CallBLL.GetMyCallsForOnsiteEngineerBySp(userName, state, getWorkgroup, customName, brandName, out  spReturnValue);
+        //List<CallInfo> callList = CallBLL.GetMyCallsForOnsiteEngineer(stateMain, stateDetail, userID, workgroupID, customName, brandName);
+        if (spReturnValue == "not binding")
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "不存在\r\n", null);
+            return result;
+        }
+
+        if (dt.Rows.Count > 0)
+        {
+            string callInfo = string.Empty;
+            foreach (DataRow dr in dt.Rows)
+            {
+                KeyValueDictionary paramDic = new KeyValueDictionary();
+                paramDic.Add("orderId", dr["f_No"].ToString());
+                paramDic.Add("gps", "");
+                paramDic.Add("address", dr["f_Address"].ToString());
+                paramDic.Add("customerName", dr["f_CustomerName"].ToString());
+                paramDic.Add("productName", dr["f_BrandName"].ToString());
+                paramDic.Add("customerLogo", "");
+                string callDetails = DeleteSpecialChar(dr["f_Details"].ToString());
+                paramDic.Add("orderDescribe", callDetails);
+                //paramDic.Add("state", callStateDetail);
+                paramDic.Add("desc", callDetails);
+                callInfo = WebUtil.BuildQueryJson(paramDic);
+                if (callInfo.EndsWith(","))
+                {
+                    callInfo = callInfo.Remove(callInfo.Length - 1);
+                }
+                callInfo = "{" + callInfo + "},";
+                result += callInfo;
+
+            }
+            if (result.EndsWith(","))
+            {
+                result = result.Remove(result.Length - 1);
+            }
+            result = "{\"code\":\"SearchOrder\",\"list\":[" + result + "],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，用户：" + userName + "工单查询列表为：" + result + "\r\n", null);
+        }
+        else
+        {
+            result = "{\"code\":\"SearchOrder\",\"list\":[],\"desc\":\"\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，用户：" + userName + "工单查询列表为空\r\n", null);
+        }
+        return result;
+    }
 
     /// <summary>
     /// 签到、离场、更换现场工程师
@@ -1445,21 +1754,28 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         desc = desc.Trim('"');
 
-        CallStepInfo stepinfo = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.上门详细);
+        CallStepInfo stepinfo = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.到达门店处理);
         if (stepinfo == null)
         {
             result = "{\"code\":\"WorkRecord\",\"result\":\"0\",\"desc\":\"该工单没有上门处理记录，不能做评价\"}";
             Logger.GetLogger(this.GetType()).Info("APP WorkRecord接口被调用，该工单没有上门处理记录，不能做评价" + result + "\r\n", null);
             return result;
         }
+        List<CommentInfo> commentInfoList = CommentBLL.GetList(" f_CallID = " + callInfo.ID + " AND f_CallStepID=" + stepinfo.ID + " AND f_IsDropInUserDoIt=1 AND f_ByMachine='APP' order by f_AddDate desc ");
+        if (commentInfoList.Count > 0)
+        { 
+            result = "{\"code\":\"WorkRecord\",\"result\":\"0\",\"desc\":\"该工单的本次上门处理记录已做过评价，不能做重复评价\"}";
+            Logger.GetLogger(this.GetType()).Info("APP WorkRecord接口被调用，该工单的本次上门处理记录已做过评价，不能做重复评价" + result + "\r\n", null);
+            return result;
+        }
         CommentInfo info = new CommentInfo();
         info.AddDate = DateTime.Now;
-        info.ByMachine = CommentInfo.MachineType.web.ToString();
+        info.ByMachine = "APP";
         info.CallID = callInfo.ID;
         info.CallStepID = stepinfo.ID;
         info.Details = desc;
         info.DropInUserID = stepinfo.MajorUserID;
-        info.IsDropInUserDoIt = false;
+        info.IsDropInUserDoIt = true;
         info.Score2 = tScore;
         info.Score3 =aScore;
         info.Score = info.Score2 + info.Score3;
@@ -1785,6 +2101,7 @@ public partial class APPService_Default : System.Web.UI.Page
         return result;
     }
 
+    #region 原打卡签到、签退
     /// <summary>
     /// 打卡签到、签退
     /// </summary>
@@ -1948,6 +2265,7 @@ public partial class APPService_Default : System.Web.UI.Page
     //        return result;
     //    }
     //}
+    #endregion
 
     protected string SignRecord(JObject obj)
     {
@@ -2333,7 +2651,7 @@ public partial class APPService_Default : System.Web.UI.Page
             //paramDic.Add("gps", records[i].LoginLocation);
             if (records[0].LoginTime != null)
             {
-                paramDic.Add("signInTime", records[0].LoginTime.Value.ToString("HH:mm:ss"));
+                paramDic.Add("signInTime", records[0].LoginTime.Value.ToString("HH:mm"));
             }
             else
             {
@@ -2342,7 +2660,7 @@ public partial class APPService_Default : System.Web.UI.Page
             //paramDic.Add("signInTime", records[0].LoginTime.ToString("HH:mm:ss"));
             if (records[0].LogoutTime!=null)
             {
-                paramDic.Add("signOutTime", records[0].LogoutTime.Value.ToString("HH:mm:ss"));
+                paramDic.Add("signOutTime", records[0].LogoutTime.Value.ToString("HH:mm"));
             }
             else
             {
@@ -2508,6 +2826,36 @@ public partial class APPService_Default : System.Web.UI.Page
         string Powers = Comma + Ginfo.PowerList.Trim(',') + Comma;
         bool b = Powers.Contains(Comma + powerID + Comma);
         return b;
+    }
+    /// <summary>
+    /// 去除参数中的特殊符号包括\ " 回车 换行
+    /// </summary>
+    /// <param name="paramer"></param>
+    /// <returns></returns>
+    protected string DeleteSpecialChar(string paramer)
+    {
+        if (paramer.Contains("\\"))
+        {
+            paramer = paramer.Replace("\\", "\\\\");
+        }
+        if (paramer.Contains("\""))
+        {
+            paramer = paramer.Replace("\"", "'");
+        }
+        if (paramer.Contains("\r"))
+        {
+            paramer = paramer.Replace("\r", " ");
+        }
+        if (paramer.Contains("\n"))
+        {
+            paramer = paramer.Replace("\n", " ");
+        }
+        if (paramer.Contains("\t"))
+        {
+            paramer = paramer.Replace("\t", " ");
+        }
+        return paramer;
+   
     }
     
 }

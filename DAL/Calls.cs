@@ -145,7 +145,31 @@ namespace CSMP.DAL
 
             return parms;
         }
-        
+
+
+        //private List<CallInfo> GetByDataTable(DataTable dt)
+        //{
+        //    List<CallInfo> dataList = new List<CallInfo>();
+        //    foreach (DataRow dr in dt.Rows)
+        //    {
+        //        CallInfo info = new CallInfo();
+        //        info.No = dr["f_No"].ToString();
+        //        info.CustomerName = dr["f_CustomerName"].ToString();
+        //        info.BrandName = dr["f_BrandName"].ToString();
+        //        info.Details = dr["f_Details"].ToString();
+        //        info.a = dr["f_Address"].ToString();
+        //        info.StoreUrgency = Convert.ToInt32(dr["f_StoreUrgency"].ToString());
+        //        info.StoreRequest = Convert.ToInt32(dr["f_StoreRequest"].ToString());
+        //        info.UserID = Convert.ToInt32(dr["f_UserID"].ToString());
+        //        info.WorkGroupID = Convert.ToInt32(dr["f_WorkGroupID"].ToString());
+        //        info.HaveGroupPower = Convert.ToBoolean(dr["f_HaveGroupPower"].ToString());
+
+        //        dataList.Add(info);
+        //    }
+
+
+        //    return dataList;
+        //}
         #endregion
 
 
@@ -298,6 +322,26 @@ namespace CSMP.DAL
             return list;
         }
         /// <summary>
+        /// 查询现场工程师负责的call列表，APP查询我的工单专用，调用SP实现
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="returnValue"></param>
+        /// <returns></returns>
+        public DataTable GetMyCallsForOnsiteEngineerBySp(string userName,out string returnValue )
+        {
+            StoreProcedure sp = new StoreProcedure("sp_APP_MyOrder");//类的对象
+            Object[] paraValues = new object[2];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
+            paraValues[0] = userName;//从第二个参数开始赋值
+            paraValues[1] = "";
+            object[] output = new object[1];
+            DataTable dt = new DataTable();
+            dt = sp.ExecuteDataTable(out output, paraValues);
+            returnValue = output[0].ToString();
+            return dt;
+        }
+
+
+        /// <summary>
         /// 查询现场工程师负责的历史call列表
         /// </summary>
         /// <param name="pageIndex"></param>
@@ -417,6 +461,34 @@ namespace CSMP.DAL
                 }
             }
             return list;
+        }
+        /// <summary>
+        /// 工单查询SP实现
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="state"></param>
+        /// <param name="getGroup"></param>
+        /// <param name="CustomeName"></param>
+        /// <param name="BrandName"></param>
+        /// <param name="returnValue"></param>
+        /// <returns></returns>
+        public DataTable GetMyCallsForOnsiteEngineerBySp(string userName, string state, string getGroup, string CustomeName, string BrandName,out string returnValue)
+        {
+            StoreProcedure sp = new StoreProcedure("sp_APP_OrderSearch");//类的对象
+            Object[] paraValues = new object[6];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
+
+            paraValues[0] = userName;//从第二个参数开始赋值
+            paraValues[1] = CustomeName;
+            paraValues[2] = BrandName;
+            paraValues[3] = state;
+            paraValues[4] = getGroup;
+            paraValues[5] = "";
+            object[] output = new object[1];
+            DataTable dt = new DataTable() ;
+            dt=sp.ExecuteDataTable(out output, paraValues);
+            returnValue = output[0].ToString();
+            return dt;
+        
         }
 
         #endregion

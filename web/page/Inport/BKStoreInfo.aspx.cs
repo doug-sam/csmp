@@ -179,6 +179,10 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
         {
             Function.AlertBack("格式错误，表中第35列应为《WeiChatPay》"); return;
         }
+        if (dt.Columns[35].ColumnName.Trim() != "是否可用")
+        {
+            Function.AlertBack("格式错误，表中第36列应为《是否可用》"); return;
+        }
 
         
         
@@ -275,11 +279,11 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
 
 
             //转呈系统额外所需字段
-            if (dt.Rows[i]["REGION"].ToString().Trim().Length > 100)
+            if (dt.Rows[i]["REGION"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《REGION》过长！", (i + 1))); return;
             }
-            if (dt.Rows[i]["STATUS"].ToString().Trim().Length > 50)
+            if (dt.Rows[i]["STATUS"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《STATUS》过长！", (i + 1))); return;
             }
@@ -292,33 +296,37 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
             //    Function.AlertBack(string.Format("第{0}行中《CLOSE_DATE》过长！", (i + 1))); return;
             //}
 
-            if (dt.Rows[i]["OC"].ToString().Trim().Length > 100)
+            if (dt.Rows[i]["OC"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《OC》过长！", (i + 1))); return;
             }
-            if (dt.Rows[i]["LATITUDE"].ToString().Trim().Length > 50)
+            if (dt.Rows[i]["LATITUDE"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《LATITUDE》过长！", (i + 1))); return;
             }
-            if (dt.Rows[i]["LONGITUDE"].ToString().Trim().Length > 50)
+            if (dt.Rows[i]["LONGITUDE"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《LONGITUDE》过长！", (i + 1))); return;
             }
-            if (dt.Rows[i]["PRICE_TIER"].ToString().Trim().Length > 100)
+            if (dt.Rows[i]["PRICE_TIER"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《PRICE_TIER》过长！", (i + 1))); return;
             }
-            if (dt.Rows[i]["LAN_Gateway"].ToString().Trim().Length > 50)
+            if (dt.Rows[i]["LAN_Gateway"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《LAN_Gateway》过长！", (i + 1))); return;
             }
-            if (dt.Rows[i]["Server IP"].ToString().Trim().Length > 50)
+            if (dt.Rows[i]["Server IP"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《Server IP》过长！", (i + 1))); return;
             }
-            if (dt.Rows[i]["Teamviewer"].ToString().Trim().Length > 50)
+            if (dt.Rows[i]["Teamviewer"].ToString().Trim().Length > 1000)
             {
                 Function.AlertBack(string.Format("第{0}行中《Teamviewer》过长！", (i + 1))); return;
+            }
+            if (!(dt.Rows[i]["是否可用"].ToString().Trim() == "可用" || dt.Rows[i]["是否可用"].ToString().Trim() == "不可用"))
+            {
+                Function.AlertBack(string.Format("第{0}行中《是否可用》的值必须为可用或不可用！", (i + 1))); return;
             }
 
 
@@ -333,7 +341,8 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
             info.CityName = cinfo.Name;
             info.Address = dt.Rows[i]["ADDRESS"].ToString();
             info.Tel = dt.Rows[i]["Tel"].ToString();
-            info.IsClosed = dt.Rows[i]["STATUS"].ToString().Trim() == "Opened" ? false : true;
+            //info.IsClosed = dt.Rows[i]["STATUS"].ToString().Trim() == "Opened" ? false : true;
+            info.IsClosed = dt.Rows[i]["是否可用"].ToString().Trim() == "可用" ? false : true;
             info.CustomerID = binfo.CustomerID;
             info.CustomerName = CustomersBLL.Get(binfo.CustomerID).Name;
             info.Email = dt.Rows[i]["EMAIL1"].ToString();
