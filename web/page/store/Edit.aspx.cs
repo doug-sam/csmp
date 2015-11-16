@@ -152,6 +152,7 @@ public partial class page_Store_Edit : _BaseData_Store_Edit
         if (GetInfo() == null)
         {
             info.AddDate = DateTime.Now;
+            info.GPS = "";
             if (info.CustomerName =="汉堡王"||info.BrandName=="汉堡王")
             {
                 Function.AlertRefresh("汉堡王店铺不能直接新增，请从数据导入页面导入。", "main");
@@ -193,7 +194,7 @@ public partial class page_Store_Edit : _BaseData_Store_Edit
                         BKStore.Tel = info.Tel;
                         BKStore.Email = info.Email;
                         BKStore.City = info.CityName;
-                        BKStore.StoreType = info.StoreType;
+                        //BKStore.StoreType = info.StoreType;
                         //BKStore.Status = info.IsClosed ? "Closed" : "Open";
                         BKStoreInfoBLL.Edit(BKStore);
                         Function.AlertRefresh("修改成功", "main");

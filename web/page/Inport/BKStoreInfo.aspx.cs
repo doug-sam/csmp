@@ -179,10 +179,10 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
         {
             Function.AlertBack("格式错误，表中第35列应为《WeiChatPay》"); return;
         }
-        if (dt.Columns[35].ColumnName.Trim() != "是否可用")
-        {
-            Function.AlertBack("格式错误，表中第36列应为《是否可用》"); return;
-        }
+        //if (dt.Columns[35].ColumnName.Trim() != "是否可用")
+        //{
+        //    Function.AlertBack("格式错误，表中第36列应为《是否可用》"); return;
+        //}
 
         
         
@@ -324,10 +324,10 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
             {
                 Function.AlertBack(string.Format("第{0}行中《Teamviewer》过长！", (i + 1))); return;
             }
-            if (!(dt.Rows[i]["是否可用"].ToString().Trim() == "可用" || dt.Rows[i]["是否可用"].ToString().Trim() == "不可用"))
-            {
-                Function.AlertBack(string.Format("第{0}行中《是否可用》的值必须为可用或不可用！", (i + 1))); return;
-            }
+            //if (!(dt.Rows[i]["是否可用"].ToString().Trim() == "可用" || dt.Rows[i]["是否可用"].ToString().Trim() == "不可用"))
+            //{
+            //    Function.AlertBack(string.Format("第{0}行中《是否可用》的值必须为可用或不可用！", (i + 1))); return;
+            //}
 
 
             info = new StoreInfo();
@@ -341,8 +341,9 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
             info.CityName = cinfo.Name;
             info.Address = dt.Rows[i]["ADDRESS"].ToString();
             info.Tel = dt.Rows[i]["Tel"].ToString();
-            //info.IsClosed = dt.Rows[i]["STATUS"].ToString().Trim() == "Opened" ? false : true;
-            info.IsClosed = dt.Rows[i]["是否可用"].ToString().Trim() == "可用" ? false : true;
+            info.IsClosed = dt.Rows[i]["STATUS"].ToString().Trim() == "Opened" ? false : true;
+            //info.IsClosed = dt.Rows[i]["是否可用"].ToString().Trim() == "可用" ? false : true;
+            //info.IsClosed = false;
             info.CustomerID = binfo.CustomerID;
             info.CustomerName = CustomersBLL.Get(binfo.CustomerID).Name;
             info.Email = dt.Rows[i]["EMAIL1"].ToString();
@@ -462,6 +463,10 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
                 {
                     list[i].ID = InfoExist.ID;
                     list[i].AddDate = InfoExist.AddDate;
+                    if (string.IsNullOrEmpty(InfoExist.GPS))
+                    {
+                        list[i].GPS = "";
+                    }
                     if (StoresBLL.Edit(list[i]))
                     {
                         FlagEdit++;
@@ -469,6 +474,7 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
                 }
                 else {
                     list[i].AddDate = DateTime.Now;
+                    list[i].GPS = "";
                     if (StoresBLL.Add(list[i]) > 0)
                     {
                         FlagAdd++;

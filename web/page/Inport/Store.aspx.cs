@@ -360,6 +360,10 @@ public partial class page_Inport_Store : _Sys_Inport
                 {
                     item.ID = InfoExist.ID;
                     item.AddDate = InfoExist.AddDate;
+                    if (string.IsNullOrEmpty(InfoExist.GPS))
+                    {
+                        item.GPS = "";
+                    }
                     if (StoresBLL.Edit(item))
                     {
                         FlagEdit++;
@@ -368,6 +372,7 @@ public partial class page_Inport_Store : _Sys_Inport
                 }
             }
             item.AddDate = DateTime.Now;
+            item.GPS = "";
             if (StoresBLL.Add(item) > 0)
             {
                 FlagAdd++;

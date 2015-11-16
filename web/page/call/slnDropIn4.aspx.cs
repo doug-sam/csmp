@@ -56,6 +56,18 @@ public partial class page_call_slnDropIn4 : _Call_Step
             DdlSln.Items.Insert(0, new ListItem("其它", "0"));
             DdlSln.Items.Insert(0, new ListItem("请选择", "-1"));
 
+            #region 查出最近一次上门记录现场工程师对二线的评价中的详情 ZQL2015.11.15添加
+            CallStepInfo onsitestepinfo = CallStepBLL.GetLast(info.ID, SysEnum.StepType.到达门店处理);
+            if (onsitestepinfo != null)
+            {
+                List<CommentInfo> commentInfoList = CommentBLL.GetList(" f_CallID = " + info.ID + " AND f_CallStepID=" + onsitestepinfo.ID + " AND f_IsDropInUserDoIt=1 AND f_ByMachine='APP' order by f_AddDate desc ");
+                if (commentInfoList.Count > 0)
+                {
+                    TxbDetails.Text = commentInfoList[0].Details;
+                }
+            }
+            #endregion
+
             #region 用户检查
             NotMyCallCheck(info.ID);
             #endregion

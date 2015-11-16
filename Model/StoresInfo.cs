@@ -87,6 +87,10 @@ namespace CSMP.Model
         /// 店铺类型
         /// </summary>
         public string StoreType { get; set; }
+        /// <summary>
+        /// 店铺地址的经纬度，  经度,纬度
+        /// </summary>
+        public string GPS { get; set; }
         
         /// <summary>
         /// 上次编辑时间

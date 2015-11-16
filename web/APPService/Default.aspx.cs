@@ -376,133 +376,133 @@ public partial class APPService_Default : System.Web.UI.Page
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    protected string MyOrder(JObject obj)
-    {
-        string userName = string.Empty;
-        string result = string.Empty;
-        try
-        {
-            userName = obj["userName"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"MyOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        userName = userName.Trim('"');
-        if (string.IsNullOrEmpty(userName))
-        {
-            result = "{\"code\":\"MyOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
-            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，解析JSON数据获取userName值为空\r\n", null);
-            return result;
-        }
-        UserInfo user = UserBLL.Get(userName);
-        if (user == null)
-        {
-            result = "{\"code\":\"MyOrder\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
-            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "不存在\r\n", null);
-            return result;
-        }
-        //WorkGroupInfo workGroup = WorkGroupBLL.Get(user.WorkGroupID);
-        List<CallInfo> callList = CallBLL.GetMyCallsForOnsiteEngineer((int)SysEnum.CallStateMain.处理中, user.ID, 0);
+    //protected string MyOrder(JObject obj)
+    //{
+    //    string userName = string.Empty;
+    //    string result = string.Empty;
+    //    try
+    //    {
+    //        userName = obj["userName"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"MyOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    userName = userName.Trim('"');
+    //    if (string.IsNullOrEmpty(userName))
+    //    {
+    //        result = "{\"code\":\"MyOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，解析JSON数据获取userName值为空\r\n", null);
+    //        return result;
+    //    }
+    //    UserInfo user = UserBLL.Get(userName);
+    //    if (user == null)
+    //    {
+    //        result = "{\"code\":\"MyOrder\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "不存在\r\n", null);
+    //        return result;
+    //    }
+    //    //WorkGroupInfo workGroup = WorkGroupBLL.Get(user.WorkGroupID);
+    //    List<CallInfo> callList = CallBLL.GetMyCallsForOnsiteEngineer((int)SysEnum.CallStateMain.处理中, user.ID, 0);
 
-        if (callList.Count > 0)
-        {
-            string callInfo = string.Empty;
-            for (int i = 0; i < callList.Count; i++)
-            {
-                if (i + 1 == callList.Count)
-                {
-                    string stateDetail = string.Empty;
-                    if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待工程师上门 || callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待第三方响应)
-                    {
-                        //待上门
-                        stateDetail = "0";
-                    }
-                    else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.到达门店处理)
-                    {
-                        //处理中
-                        stateDetail = "1";
-                    }
-                    else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.上门支持)
-                    {
-                        //已离场
-                        stateDetail = "2";
-                    }
-                    else {
-                        stateDetail = "";
-                    }
-                    KeyValueDictionary paramDic = new KeyValueDictionary();
-                    paramDic.Add("orderId", callList[i].No);
-                    paramDic.Add("gps", "");
-                    StoreInfo store = StoresBLL.Get(callList[i].StoreID);
-                    paramDic.Add("address",store==null?"":store.Address);
-                    paramDic.Add("customerName", callList[i].CustomerName);
-                    paramDic.Add("customerLogo", "");
-                    paramDic.Add("orderDescribe", callList[i].Details);
+    //    if (callList.Count > 0)
+    //    {
+    //        string callInfo = string.Empty;
+    //        for (int i = 0; i < callList.Count; i++)
+    //        {
+    //            if (i + 1 == callList.Count)
+    //            {
+    //                string stateDetail = string.Empty;
+    //                if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待工程师上门 || callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待第三方响应)
+    //                {
+    //                    //待上门
+    //                    stateDetail = "0";
+    //                }
+    //                else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.到达门店处理)
+    //                {
+    //                    //处理中
+    //                    stateDetail = "1";
+    //                }
+    //                else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.上门支持)
+    //                {
+    //                    //已离场
+    //                    stateDetail = "2";
+    //                }
+    //                else {
+    //                    stateDetail = "";
+    //                }
+    //                KeyValueDictionary paramDic = new KeyValueDictionary();
+    //                paramDic.Add("orderId", callList[i].No);
+    //                paramDic.Add("gps", "");
+    //                StoreInfo store = StoresBLL.Get(callList[i].StoreID);
+    //                paramDic.Add("address",store==null?"":store.Address);
+    //                paramDic.Add("customerName", callList[i].CustomerName);
+    //                paramDic.Add("customerLogo", "");
+    //                paramDic.Add("orderDescribe", callList[i].Details);
 
-                    paramDic.Add("state", stateDetail);
-                    paramDic.Add("desc", callList[i].Details);
-                    callInfo = WebUtil.BuildQueryJson(paramDic);
-                    if (callInfo.EndsWith(","))
-                    {
-                        callInfo = callInfo.Remove(callInfo.Length - 1);
-                    }
-                    callInfo = "{" + callInfo + "}";
-                    result += callInfo;
-                }
-                else
-                {
-                    string stateDetail = string.Empty;
-                    if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待工程师上门 || callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待第三方响应)
-                    {
-                        //待上门
-                        stateDetail = "0";
-                    }
-                    else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.到达门店处理)
-                    {
-                        //处理中
-                        stateDetail = "1";
-                    }
-                    else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.上门支持)
-                    {
-                        //已离场
-                        stateDetail = "2";
-                    }
-                    else
-                    {
-                        stateDetail = "";
-                    }
-                    KeyValueDictionary paramDic = new KeyValueDictionary();
-                    paramDic.Add("orderId", callList[i].No);
-                    paramDic.Add("gps", "");
-                    StoreInfo store = StoresBLL.Get(callList[i].StoreID);
-                    paramDic.Add("address", store == null ? "" : store.Address);
-                    paramDic.Add("customerName", callList[i].CustomerName);
-                    paramDic.Add("customerLogo", "");
-                    paramDic.Add("orderDescribe", callList[i].Details);
-                    paramDic.Add("state", stateDetail);
-                    paramDic.Add("desc", callList[i].Details);
-                    callInfo = WebUtil.BuildQueryJson(paramDic);
-                    if (callInfo.EndsWith(","))
-                    {
-                        callInfo = callInfo.Remove(callInfo.Length - 1);
-                    }
-                    callInfo = "{" + callInfo + "},";
-                    result += callInfo;
-                }
-            }
-            result = "{\"code\":\"MyOrder\",\"list\":[" + result + "],\"desc\":\"\"}";
-            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "我的工单为：" + result + "\r\n", null);
-        }
-        else
-        {
-            result = "{\"code\":\"MyOrder\",\"list\":[],\"desc\":\"\"}";
-            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "我的工单为空\r\n", null);
-        }
-        return result;
-    }
+    //                paramDic.Add("state", stateDetail);
+    //                paramDic.Add("desc", callList[i].Details);
+    //                callInfo = WebUtil.BuildQueryJson(paramDic);
+    //                if (callInfo.EndsWith(","))
+    //                {
+    //                    callInfo = callInfo.Remove(callInfo.Length - 1);
+    //                }
+    //                callInfo = "{" + callInfo + "}";
+    //                result += callInfo;
+    //            }
+    //            else
+    //            {
+    //                string stateDetail = string.Empty;
+    //                if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待工程师上门 || callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待第三方响应)
+    //                {
+    //                    //待上门
+    //                    stateDetail = "0";
+    //                }
+    //                else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.到达门店处理)
+    //                {
+    //                    //处理中
+    //                    stateDetail = "1";
+    //                }
+    //                else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.上门支持)
+    //                {
+    //                    //已离场
+    //                    stateDetail = "2";
+    //                }
+    //                else
+    //                {
+    //                    stateDetail = "";
+    //                }
+    //                KeyValueDictionary paramDic = new KeyValueDictionary();
+    //                paramDic.Add("orderId", callList[i].No);
+    //                paramDic.Add("gps", "");
+    //                StoreInfo store = StoresBLL.Get(callList[i].StoreID);
+    //                paramDic.Add("address", store == null ? "" : store.Address);
+    //                paramDic.Add("customerName", callList[i].CustomerName);
+    //                paramDic.Add("customerLogo", "");
+    //                paramDic.Add("orderDescribe", callList[i].Details);
+    //                paramDic.Add("state", stateDetail);
+    //                paramDic.Add("desc", callList[i].Details);
+    //                callInfo = WebUtil.BuildQueryJson(paramDic);
+    //                if (callInfo.EndsWith(","))
+    //                {
+    //                    callInfo = callInfo.Remove(callInfo.Length - 1);
+    //                }
+    //                callInfo = "{" + callInfo + "},";
+    //                result += callInfo;
+    //            }
+    //        }
+    //        result = "{\"code\":\"MyOrder\",\"list\":[" + result + "],\"desc\":\"\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "我的工单为：" + result + "\r\n", null);
+    //    }
+    //    else
+    //    {
+    //        result = "{\"code\":\"MyOrder\",\"list\":[],\"desc\":\"\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "我的工单为空\r\n", null);
+    //    }
+    //    return result;
+    //}
     #endregion
 
     /// <summary>
@@ -570,8 +570,8 @@ public partial class APPService_Default : System.Web.UI.Page
                 }
                 KeyValueDictionary paramDic = new KeyValueDictionary();
                 paramDic.Add("orderId", dr["f_No"].ToString());
-                paramDic.Add("gps", "");
-                paramDic.Add("address", dr["f_Address"].ToString());
+                paramDic.Add("gps", dr["f_GPS"].ToString());
+                paramDic.Add("address", DeleteSpecialChar(dr["f_Address"].ToString()));
                 paramDic.Add("customerName", dr["f_CustomerName"].ToString());
                 paramDic.Add("productName", dr["f_BrandName"].ToString());
                 paramDic.Add("customerLogo", "");
@@ -579,6 +579,17 @@ public partial class APPService_Default : System.Web.UI.Page
                 callDetails = DeleteSpecialChar(callDetails);
                 paramDic.Add("orderDescribe", callDetails);
                 paramDic.Add("state", stateDetail);
+                //到期时间
+                string slaDateEndStr =string.Empty;
+                if (dr["f_SLADateEnd"] != null && !string.IsNullOrEmpty(dr["f_SLADateEnd"].ToString()))
+                {
+                    DateTime slaDateEnd = Convert.ToDateTime(dr["f_SLADateEnd"].ToString());
+                    if (slaDateEnd.Year != 1970)
+                    {
+                        slaDateEndStr = slaDateEnd.ToString("yyyy-MM-dd HH:mm");
+                    }
+                }
+                paramDic.Add("SLA", slaDateEndStr);
                 paramDic.Add("desc", callDetails);
 
 
@@ -679,15 +690,36 @@ public partial class APPService_Default : System.Web.UI.Page
                    
                     KeyValueDictionary paramDic = new KeyValueDictionary();
                     paramDic.Add("orderId", callList[i].No);
-                    paramDic.Add("gps", "");
                     StoreInfo store = StoresBLL.Get(callList[i].StoreID);
-                    paramDic.Add("address", store == null ? "" : store.Address);
+                    paramDic.Add("gps", store == null ? "" : store.GPS);
+                    paramDic.Add("address", store == null ? "" : DeleteSpecialChar(store.Address));
                     paramDic.Add("customerName", callList[i].CustomerName);
                     paramDic.Add("productName", callList[i].BrandName);
                     paramDic.Add("customerLogo", "");
                     string callDetails = callList[i].Details;
                     callDetails = DeleteSpecialChar(callDetails);
                     paramDic.Add("orderDescribe", callDetails);
+                    string stateMain = string.Empty;
+                    if (callList[i].StateMain == 3)
+                    {
+                        stateMain = "0";
+                    }
+                    if (callList[i].StateMain == 4)
+                    {
+                        stateMain = "1";
+                    }
+                    paramDic.Add("state", stateMain);
+                    //到期时间
+                    string slaDateEndStr = string.Empty;
+                    if (callList[i].SLADateEnd != null)
+                    {
+                        DateTime slaDateEnd = Convert.ToDateTime(callList[i].SLADateEnd);
+                        if (slaDateEnd.Year != 1970)
+                        {
+                            slaDateEndStr = slaDateEnd.ToString("yyyy-MM-dd HH:mm");
+                        }
+                    }
+                    paramDic.Add("SLA", slaDateEndStr);
                     paramDic.Add("desc", callDetails);
                     callInfo = WebUtil.BuildQueryJson(paramDic);
                     if (callInfo.EndsWith(","))
@@ -701,15 +733,36 @@ public partial class APPService_Default : System.Web.UI.Page
                 {
                     KeyValueDictionary paramDic = new KeyValueDictionary();
                     paramDic.Add("orderId", callList[i].No);
-                    paramDic.Add("gps", "");
                     StoreInfo store = StoresBLL.Get(callList[i].StoreID);
-                    paramDic.Add("address", store == null ? "" : store.Address);
-                    //paramDic.Add("customerName", callList[i].CustomerName);
-                    paramDic.Add("customerName", callList[i].BrandName);
+                    paramDic.Add("gps", store == null ? "" : store.GPS);
+                    paramDic.Add("address", store == null ? "" : DeleteSpecialChar(store.Address));
+                    paramDic.Add("customerName", callList[i].CustomerName);
+                    paramDic.Add("productName", callList[i].BrandName);
                     paramDic.Add("customerLogo", "");
                     string callDetails = callList[i].Details;
                     callDetails = DeleteSpecialChar(callDetails);
                     paramDic.Add("orderDescribe", callDetails);
+                    string stateMain = string.Empty;
+                    if (callList[i].StateMain == 3)
+                    {
+                        stateMain = "0";
+                    }
+                    if (callList[i].StateMain == 4)
+                    {
+                        stateMain = "1";
+                    }
+                    paramDic.Add("state", stateMain);
+                    //到期时间
+                    string slaDateEndStr = string.Empty;
+                    if (callList[i].SLADateEnd != null)
+                    {
+                        DateTime slaDateEnd = Convert.ToDateTime(callList[i].SLADateEnd);
+                        if (slaDateEnd.Year != 1970)
+                        {
+                            slaDateEndStr = slaDateEnd.ToString("yyyy-MM-dd HH:mm");
+                        }
+                    }
+                    paramDic.Add("SLA", slaDateEndStr);
                     paramDic.Add("desc", callDetails);
                     callInfo = WebUtil.BuildQueryJson(paramDic);
                     if (callInfo.EndsWith(","))
@@ -775,14 +828,27 @@ public partial class APPService_Default : System.Web.UI.Page
         KeyValueDictionary paramDic = new KeyValueDictionary();
         paramDic.Add("code", "OrderDetail");
         paramDic.Add("orderId", callNo);
-        paramDic.Add("gps", "");
+        
         StoreInfo store = StoresBLL.Get(callInfo.StoreID);
-        paramDic.Add("address", store == null ? "" : store.Address);
+        paramDic.Add("gps", store == null ? "" : store.GPS);
+        paramDic.Add("address", store == null ? "" : DeleteSpecialChar(store.Address));
         
 
         paramDic.Add("customerName", callInfo.CustomerName);
         paramDic.Add("productName", callInfo.BrandName);
         paramDic.Add("customerLogo", "");
+
+        //到期时间
+        string slaDateEndStr = string.Empty;
+        if (callInfo.SLADateEnd != null)
+        {
+            DateTime slaDateEnd = Convert.ToDateTime(callInfo.SLADateEnd);
+            if (slaDateEnd.Year != 1970)
+            {
+                slaDateEndStr = slaDateEnd.ToString("yyyy-MM-dd HH:mm");
+            }
+        }
+        paramDic.Add("SLA", slaDateEndStr);
         string callDetails = DeleteSpecialChar(callInfo.Details);
         paramDic.Add("orderDescribe", callDetails);
         CallStepInfo callstep = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.上门安排);
@@ -893,6 +959,12 @@ public partial class APPService_Default : System.Web.UI.Page
             //已完成
             stateDetail = "3";
         }
+        else if (callInfo.StateMain == 4)
+        {
+
+            //已关闭
+            stateDetail = "4";
+        }
         else
         {
             stateDetail = "2";
@@ -907,250 +979,250 @@ public partial class APPService_Default : System.Web.UI.Page
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    protected string SearchOrder(JObject obj)
-    {
-        string userName = string.Empty;
-        string result = string.Empty;
-        string state = string.Empty;
-        int stateMain = 0;
-        int stateDetail = 0;
-        string getWorkgroup = string.Empty;
-        string customName = string.Empty;
-        string brandName = string.Empty;
-        int userID = 0;
-        int workgroupID = 0;
+    //protected string SearchOrder(JObject obj)
+    //{
+    //    string userName = string.Empty;
+    //    string result = string.Empty;
+    //    string state = string.Empty;
+    //    int stateMain = 0;
+    //    int stateDetail = 0;
+    //    string getWorkgroup = string.Empty;
+    //    string customName = string.Empty;
+    //    string brandName = string.Empty;
+    //    int userID = 0;
+    //    int workgroupID = 0;
 
-        try
-        {
-            userName = obj["userName"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        userName = userName.Trim('"');
-        if (string.IsNullOrEmpty(userName))
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取userName值为空\r\n", null);
-            return result;
-        }
-        UserInfo user = UserBLL.Get(userName);
-        if (user == null)
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
-            Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "不存在\r\n", null);
-            return result;
-        }
+    //    try
+    //    {
+    //        userName = obj["userName"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    userName = userName.Trim('"');
+    //    if (string.IsNullOrEmpty(userName))
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取userName值为空\r\n", null);
+    //        return result;
+    //    }
+    //    UserInfo user = UserBLL.Get(userName);
+    //    if (user == null)
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"用户：" + userName + "不存在\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP MyOrder接口被调用，用户：" + userName + "不存在\r\n", null);
+    //        return result;
+    //    }
 
-        try
-        {
-            state = obj["state"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取state值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        state = state.Trim('"');
-        if (state == "0")
-        {
-            //因为待分配分两种，SysEnum.CallStateDetails.等待工程师上门和SysEnum.CallStateDetails.等待第三方响应
-            stateMain = 2;
-            stateDetail=100;
+    //    try
+    //    {
+    //        state = obj["state"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取state值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    state = state.Trim('"');
+    //    if (state == "0")
+    //    {
+    //        //因为待分配分两种，SysEnum.CallStateDetails.等待工程师上门和SysEnum.CallStateDetails.等待第三方响应
+    //        stateMain = 2;
+    //        stateDetail=100;
     
-        }
-        else if (state == "1")
-        {
-            stateMain = 2;
-            stateDetail = (int)SysEnum.CallStateDetails.到达门店处理;
-        }
-        else if (state == "2")
-        {
-            stateMain = 2;
-            stateDetail = (int)SysEnum.CallStateDetails.上门支持;
-        }
-        else if (state == "3")
-        {
-            stateMain = 3;
+    //    }
+    //    else if (state == "1")
+    //    {
+    //        stateMain = 2;
+    //        stateDetail = (int)SysEnum.CallStateDetails.到达门店处理;
+    //    }
+    //    else if (state == "2")
+    //    {
+    //        stateMain = 2;
+    //        stateDetail = (int)SysEnum.CallStateDetails.上门支持;
+    //    }
+    //    else if (state == "3")
+    //    {
+    //        stateMain = 3;
             
-        }
-        else {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取state值为" + state + "系统中不存在该状态\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值为" + state + "系统中不存在该状态，错误原因：" + result  + "\r\n", null);
-            return result;
-        }
+    //    }
+    //    else {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取state值为" + state + "系统中不存在该状态\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值为" + state + "系统中不存在该状态，错误原因：" + result  + "\r\n", null);
+    //        return result;
+    //    }
 
-        try
-        {
-            customName = obj["companyName"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取companyName值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取companyName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        customName = customName.Trim('"');
-        customName = customName.Trim();
+    //    try
+    //    {
+    //        customName = obj["companyName"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取companyName值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取companyName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    customName = customName.Trim('"');
+    //    customName = customName.Trim();
        
         
-        try
-        {
-            brandName = obj["productName"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取brandName值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取brandName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        brandName = brandName.Trim('"');
-        brandName = brandName.Trim();
+    //    try
+    //    {
+    //        brandName = obj["productName"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取brandName值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取brandName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    brandName = brandName.Trim('"');
+    //    brandName = brandName.Trim();
 
-        try
-        {
-            brandName = obj["productName"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取brandName值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取brandName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        brandName = brandName.Trim('"');
-        brandName = brandName.Trim();
+    //    try
+    //    {
+    //        brandName = obj["productName"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取brandName值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取brandName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    brandName = brandName.Trim('"');
+    //    brandName = brandName.Trim();
 
-        try
-        {
-            getWorkgroup = obj["all"].ToString();
-        }
-        catch (Exception ex)
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取all值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取all值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
-            return result;
-        }
-        getWorkgroup = getWorkgroup.Trim('"');
-        getWorkgroup = getWorkgroup.Trim();
-        if (string.IsNullOrEmpty(getWorkgroup))
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取getWorkgroup值为空\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取getWorkgroup值为空\r\n", null);
-            return result;
-        }
-        if (getWorkgroup == "0")
-        {
-            userID = user.ID;
-        }
-        else {
+    //    try
+    //    {
+    //        getWorkgroup = obj["all"].ToString();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取all值时错误\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取all值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+    //        return result;
+    //    }
+    //    getWorkgroup = getWorkgroup.Trim('"');
+    //    getWorkgroup = getWorkgroup.Trim();
+    //    if (string.IsNullOrEmpty(getWorkgroup))
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取getWorkgroup值为空\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取getWorkgroup值为空\r\n", null);
+    //        return result;
+    //    }
+    //    if (getWorkgroup == "0")
+    //    {
+    //        userID = user.ID;
+    //    }
+    //    else {
 
-            workgroupID = user.WorkGroupID;
-        }
+    //        workgroupID = user.WorkGroupID;
+    //    }
 
 
-        List<CallInfo> callList = CallBLL.GetMyCallsForOnsiteEngineer(stateMain, stateDetail, userID, workgroupID, customName, brandName);
+    //    List<CallInfo> callList = CallBLL.GetMyCallsForOnsiteEngineer(stateMain, stateDetail, userID, workgroupID, customName, brandName);
 
-        if (callList.Count > 0)
-        {
-            string callInfo = string.Empty;
-            for (int i = 0; i < callList.Count; i++)
-            {
-                if (i + 1 == callList.Count)
-                {
-                    //string callStateDetail = string.Empty;
-                    //if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待工程师上门 || callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待第三方响应)
-                    //{
-                    //    //待上门
-                    //    callStateDetail = "0";
-                    //}
-                    //else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.到达门店处理)
-                    //{
-                    //    //处理中
-                    //    callStateDetail = "1";
-                    //}
-                    //else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.上门支持)
-                    //{
-                    //    //已离场
-                    //    callStateDetail = "2";
-                    //}
-                    //else
-                    //{
-                    //    callStateDetail = "";
-                    //}
-                    KeyValueDictionary paramDic = new KeyValueDictionary();
-                    paramDic.Add("orderId", callList[i].No);
-                    paramDic.Add("gps", "");
-                    StoreInfo store = StoresBLL.Get(callList[i].StoreID);
-                    paramDic.Add("address", store == null ? "" : store.Address);
-                    paramDic.Add("customerName", callList[i].CustomerName);
-                    paramDic.Add("customerLogo", "");
-                    paramDic.Add("orderDescribe", callList[i].Details);
+    //    if (callList.Count > 0)
+    //    {
+    //        string callInfo = string.Empty;
+    //        for (int i = 0; i < callList.Count; i++)
+    //        {
+    //            if (i + 1 == callList.Count)
+    //            {
+    //                //string callStateDetail = string.Empty;
+    //                //if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待工程师上门 || callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待第三方响应)
+    //                //{
+    //                //    //待上门
+    //                //    callStateDetail = "0";
+    //                //}
+    //                //else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.到达门店处理)
+    //                //{
+    //                //    //处理中
+    //                //    callStateDetail = "1";
+    //                //}
+    //                //else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.上门支持)
+    //                //{
+    //                //    //已离场
+    //                //    callStateDetail = "2";
+    //                //}
+    //                //else
+    //                //{
+    //                //    callStateDetail = "";
+    //                //}
+    //                KeyValueDictionary paramDic = new KeyValueDictionary();
+    //                paramDic.Add("orderId", callList[i].No);
+    //                paramDic.Add("gps", "");
+    //                StoreInfo store = StoresBLL.Get(callList[i].StoreID);
+    //                paramDic.Add("address", store == null ? "" : store.Address);
+    //                paramDic.Add("customerName", callList[i].CustomerName);
+    //                paramDic.Add("customerLogo", "");
+    //                paramDic.Add("orderDescribe", callList[i].Details);
 
-                    //paramDic.Add("state", callStateDetail);
-                    paramDic.Add("desc", callList[i].Details);
-                    callInfo = WebUtil.BuildQueryJson(paramDic);
-                    if (callInfo.EndsWith(","))
-                    {
-                        callInfo = callInfo.Remove(callInfo.Length - 1);
-                    }
-                    callInfo = "{" + callInfo + "}";
-                    result += callInfo;
-                }
-                else
-                {
-                    //string callStateDetail = string.Empty;
-                    //if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待工程师上门 || callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待第三方响应)
-                    //{
-                    //    //待上门
-                    //    callStateDetail = "0";
-                    //}
-                    //else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.到达门店处理)
-                    //{
-                    //    //处理中
-                    //    callStateDetail = "1";
-                    //}
-                    //else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.上门支持)
-                    //{
-                    //    //已离场
-                    //    callStateDetail = "2";
-                    //}
-                    //else
-                    //{
-                    //    callStateDetail = "";
-                    //}
-                    KeyValueDictionary paramDic = new KeyValueDictionary();
-                    paramDic.Add("orderId", callList[i].No);
-                    paramDic.Add("gps", "");
-                    StoreInfo store = StoresBLL.Get(callList[i].StoreID);
-                    paramDic.Add("address", store == null ? "" : store.Address);
-                    paramDic.Add("customerName", callList[i].CustomerName);
-                    paramDic.Add("customerLogo", "");
-                    paramDic.Add("orderDescribe", callList[i].Details);
-                    //paramDic.Add("state", callStateDetail);
-                    paramDic.Add("desc", callList[i].Details);
-                    callInfo = WebUtil.BuildQueryJson(paramDic);
-                    if (callInfo.EndsWith(","))
-                    {
-                        callInfo = callInfo.Remove(callInfo.Length - 1);
-                    }
-                    callInfo = "{" + callInfo + "},";
-                    result += callInfo;
-                }
-            }
-            result = "{\"code\":\"SearchOrder\",\"list\":[" + result + "],\"desc\":\"\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，用户：" + userName + "工单查询列表为：" + result + "\r\n", null);
-        }
-        else
-        {
-            result = "{\"code\":\"SearchOrder\",\"list\":[],\"desc\":\"\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，用户：" + userName + "工单查询列表为空\r\n", null);
-        }
-        return result;
-    }
+    //                //paramDic.Add("state", callStateDetail);
+    //                paramDic.Add("desc", callList[i].Details);
+    //                callInfo = WebUtil.BuildQueryJson(paramDic);
+    //                if (callInfo.EndsWith(","))
+    //                {
+    //                    callInfo = callInfo.Remove(callInfo.Length - 1);
+    //                }
+    //                callInfo = "{" + callInfo + "}";
+    //                result += callInfo;
+    //            }
+    //            else
+    //            {
+    //                //string callStateDetail = string.Empty;
+    //                //if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待工程师上门 || callList[i].StateDetail == (int)SysEnum.CallStateDetails.等待第三方响应)
+    //                //{
+    //                //    //待上门
+    //                //    callStateDetail = "0";
+    //                //}
+    //                //else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.到达门店处理)
+    //                //{
+    //                //    //处理中
+    //                //    callStateDetail = "1";
+    //                //}
+    //                //else if (callList[i].StateDetail == (int)SysEnum.CallStateDetails.上门支持)
+    //                //{
+    //                //    //已离场
+    //                //    callStateDetail = "2";
+    //                //}
+    //                //else
+    //                //{
+    //                //    callStateDetail = "";
+    //                //}
+    //                KeyValueDictionary paramDic = new KeyValueDictionary();
+    //                paramDic.Add("orderId", callList[i].No);
+    //                paramDic.Add("gps", "");
+    //                StoreInfo store = StoresBLL.Get(callList[i].StoreID);
+    //                paramDic.Add("address", store == null ? "" : store.Address);
+    //                paramDic.Add("customerName", callList[i].CustomerName);
+    //                paramDic.Add("customerLogo", "");
+    //                paramDic.Add("orderDescribe", callList[i].Details);
+    //                //paramDic.Add("state", callStateDetail);
+    //                paramDic.Add("desc", callList[i].Details);
+    //                callInfo = WebUtil.BuildQueryJson(paramDic);
+    //                if (callInfo.EndsWith(","))
+    //                {
+    //                    callInfo = callInfo.Remove(callInfo.Length - 1);
+    //                }
+    //                callInfo = "{" + callInfo + "},";
+    //                result += callInfo;
+    //            }
+    //        }
+    //        result = "{\"code\":\"SearchOrder\",\"list\":[" + result + "],\"desc\":\"\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，用户：" + userName + "工单查询列表为：" + result + "\r\n", null);
+    //    }
+    //    else
+    //    {
+    //        result = "{\"code\":\"SearchOrder\",\"list\":[],\"desc\":\"\"}";
+    //        Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，用户：" + userName + "工单查询列表为空\r\n", null);
+    //    }
+    //    return result;
+    //}
     #endregion
 
     /// <summary>
@@ -1166,7 +1238,8 @@ public partial class APPService_Default : System.Web.UI.Page
         string getWorkgroup = string.Empty;
         string customName = string.Empty;
         string brandName = string.Empty;
-        
+        string errorStartTime = string.Empty;
+        string errorEndTime = string.Empty;
         try
         {
             userName = obj["userName"].ToString();
@@ -1229,34 +1302,71 @@ public partial class APPService_Default : System.Web.UI.Page
             Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值为" + state + "系统中不存在该状态，错误原因：" + result + "\r\n", null);
             return result;
         }
+        #region 注释掉获取客户、品牌信息
+        //try
+        //{
+        //    customName = obj["companyName"].ToString();
+        //}
+        //catch (Exception ex)
+        //{
+        //    result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取companyName值时错误\"}";
+        //    Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取companyName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+        //    return result;
+        //}
+        //customName = customName.Trim('"');
+        //customName = customName.Trim();
 
+
+        //try
+        //{
+        //    brandName = obj["productName"].ToString();
+        //}
+        //catch (Exception ex)
+        //{
+        //    result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取brandName值时错误\"}";
+        //    Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取brandName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+        //    return result;
+        //}
+        //brandName = brandName.Trim('"');
+        //brandName = brandName.Trim();
+        #endregion
         try
         {
-            customName = obj["companyName"].ToString();
+            errorStartTime = obj["startTime"].ToString();
         }
         catch (Exception ex)
         {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取companyName值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取companyName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取startTime值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取startTime值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
             return result;
         }
-        customName = customName.Trim('"');
-        customName = customName.Trim();
-
+        errorStartTime = errorStartTime.Trim('"');
+        errorStartTime = errorStartTime.Trim();
+        if (string.IsNullOrEmpty(errorStartTime))
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"startTime值不能为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，startTime值为空，错误原因为\r\n", null);
+            return result;
+        }
 
         try
         {
-            brandName = obj["productName"].ToString();
+            errorEndTime = obj["endTime"].ToString();
         }
         catch (Exception ex)
         {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取brandName值时错误\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取brandName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取endTime值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取endTime值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
             return result;
         }
-        brandName = brandName.Trim('"');
-        brandName = brandName.Trim();
-
+        errorEndTime = errorEndTime.Trim('"');
+        errorEndTime = errorEndTime.Trim();
+        if (string.IsNullOrEmpty(errorEndTime))
+        {
+            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"endTime值不能为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，endTime值为空，错误原因为\r\n", null);
+            return result;
+        }
 
         try
         {
@@ -1286,7 +1396,7 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         DataTable dt = new DataTable();
         string spReturnValue =string.Empty;
-        dt = CallBLL.GetMyCallsForOnsiteEngineerBySp(userName, state, getWorkgroup, customName, brandName, out  spReturnValue);
+        dt = CallBLL.GetMyCallsForOnsiteEngineerBySp(userName, state, getWorkgroup, customName, brandName,errorStartTime,errorEndTime, out  spReturnValue);
         //List<CallInfo> callList = CallBLL.GetMyCallsForOnsiteEngineer(stateMain, stateDetail, userID, workgroupID, customName, brandName);
         if (spReturnValue == "not binding")
         {
@@ -1302,14 +1412,25 @@ public partial class APPService_Default : System.Web.UI.Page
             {
                 KeyValueDictionary paramDic = new KeyValueDictionary();
                 paramDic.Add("orderId", dr["f_No"].ToString());
-                paramDic.Add("gps", "");
-                paramDic.Add("address", dr["f_Address"].ToString());
+                paramDic.Add("gps", dr["f_GPS"].ToString());
+                paramDic.Add("address", DeleteSpecialChar(dr["f_Address"].ToString()));
                 paramDic.Add("customerName", dr["f_CustomerName"].ToString());
                 paramDic.Add("productName", dr["f_BrandName"].ToString());
                 paramDic.Add("customerLogo", "");
                 string callDetails = DeleteSpecialChar(dr["f_Details"].ToString());
                 paramDic.Add("orderDescribe", callDetails);
                 //paramDic.Add("state", callStateDetail);
+                //到期时间
+                string slaDateEndStr = string.Empty;
+                if (dr["f_SLADateEnd"] != null && !string.IsNullOrEmpty(dr["f_SLADateEnd"].ToString()))
+                {
+                    DateTime slaDateEnd = Convert.ToDateTime(dr["f_SLADateEnd"].ToString());
+                    if (slaDateEnd.Year != 1970)
+                    {
+                        slaDateEndStr = slaDateEnd.ToString("yyyy-MM-dd HH:mm");
+                    }
+                }
+                paramDic.Add("SLA", slaDateEndStr);
                 paramDic.Add("desc", callDetails);
                 callInfo = WebUtil.BuildQueryJson(paramDic);
                 if (callInfo.EndsWith(","))

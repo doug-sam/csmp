@@ -71,6 +71,7 @@
     <Compile Include="DataValidator.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="DateTimeHelper.cs" />
+    <Compile Include="GetGPSInfo.cs" />
     <Compile Include="Hz2Py.cs" />
     <Compile Include="ImgHelper.cs" />
     <Compile Include="JSONHelper.cs" />

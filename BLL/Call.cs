@@ -110,10 +110,10 @@ namespace CSMP.BLL
         /// <param name="BrandName"></param>
         /// <param name="returnValue"></param>
         /// <returns></returns>
-        public static DataTable GetMyCallsForOnsiteEngineerBySp(string userName, string state, string getGroup, string CustomeName, string BrandName, out string returnValue)
+        public static DataTable GetMyCallsForOnsiteEngineerBySp(string userName, string state, string getGroup, string CustomeName, string BrandName,string errorStartTime,string errorEndTime, out string returnValue)
         {
             //ZQL 20151013 为APP接口编写,调用存储过程实现
-            return dal.GetMyCallsForOnsiteEngineerBySp(userName, state, getGroup, CustomeName, BrandName, out returnValue);
+            return dal.GetMyCallsForOnsiteEngineerBySp(userName, state, getGroup, CustomeName, BrandName, errorStartTime, errorEndTime, out returnValue);
         }
         /// <summary>
         /// 获取当前用户所有负责的追call

@@ -359,7 +359,7 @@ namespace CSMP.DAL
             strSQLCount.Append("SELECT COUNT(1) FROM sys_Calls ");
             strSQLCount.Append(" inner join ");
             strSQLCount.Append(" (select f_MajorUserID,f_MajorUserName,CallStep.f_CallID  from sys_CallStep CallStep,(select f_CallID ,max(f_StepIndex) as maxid from sys_CallStep where f_StepType=3 and f_AddDate> DATEADD(MM,-12,GETDATE()) group by f_callid) MAXIndexCallStep where CallStep.f_callid=MAXIndexCallStep.f_CallID and CallStep.f_StepIndex=MAXIndexCallStep.maxid and f_MajorUserID =" + UserID + ") sysCallStep ");
-            strSQLCount.Append(" on sys_Calls.ID = sysCallStep.f_CallID where f_StateMain = 3 and f_CreateDate>DATEADD(MM,-6,GETDATE()) ");
+            strSQLCount.Append(" on sys_Calls.ID = sysCallStep.f_CallID where (f_StateMain = 3 or f_StateMain = 4 ) and f_CreateDate>DATEADD(MM,-6,GETDATE()) ");
             using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQLCount.ToString(), null))
             count =  Convert.ToInt32(SqlHelper.ExecuteScalar(SqlHelper.SqlconnString, CommandType.Text, strSQLCount.ToString(), null));
             pageCount = count / pageSize;
@@ -389,7 +389,7 @@ namespace CSMP.DAL
             strSQL.Append("SELECT TOP " + top1 + " A.* FROM (");
             strSQL.Append("SELECT TOP "+top2+ALL_PARM+"  FROM sys_Calls inner join ");
             strSQL.Append(" (select f_MajorUserID,f_MajorUserName,CallStep.f_CallID  from sys_CallStep CallStep,(select f_CallID ,max(f_StepIndex) as maxid from sys_CallStep where f_StepType=3 and f_AddDate> DATEADD(MM,-6,GETDATE()) group by f_callid) MAXIndexCallStep where CallStep.f_callid=MAXIndexCallStep.f_CallID and CallStep.f_StepIndex=MAXIndexCallStep.maxid and f_MajorUserID =" + UserID + ") sysCallStep ");
-            strSQL.Append(" on sys_Calls.ID = sysCallStep.f_CallID where f_StateMain = 3 and f_CreateDate>DATEADD(MM,-6,GETDATE()) ORDER BY sys_Calls.f_CreateDate DESC ");
+            strSQL.Append(" on sys_Calls.ID = sysCallStep.f_CallID where (f_StateMain = 3 or f_StateMain = 4 ) and f_CreateDate>DATEADD(MM,-6,GETDATE()) ORDER BY sys_Calls.f_CreateDate DESC ");
             strSQL.Append(") A ORDER BY  A.f_CreateDate ASC");
             strSQL.Append(" ) B ORDER BY B.f_CreateDate DESC");
 
@@ -472,17 +472,19 @@ namespace CSMP.DAL
         /// <param name="BrandName"></param>
         /// <param name="returnValue"></param>
         /// <returns></returns>
-        public DataTable GetMyCallsForOnsiteEngineerBySp(string userName, string state, string getGroup, string CustomeName, string BrandName,out string returnValue)
+        public DataTable GetMyCallsForOnsiteEngineerBySp(string userName, string state, string getGroup, string CustomeName, string BrandName, string errorStartTime, string errorEndTime, out string returnValue)
         {
             StoreProcedure sp = new StoreProcedure("sp_APP_OrderSearch");//类的对象
-            Object[] paraValues = new object[6];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
+            Object[] paraValues = new object[8];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
 
             paraValues[0] = userName;//从第二个参数开始赋值
             paraValues[1] = CustomeName;
             paraValues[2] = BrandName;
             paraValues[3] = state;
-            paraValues[4] = getGroup;
-            paraValues[5] = "";
+            paraValues[4] = errorStartTime;
+            paraValues[5] = errorEndTime;
+            paraValues[6] = getGroup;
+            paraValues[7] = "";
             object[] output = new object[1];
             DataTable dt = new DataTable() ;
             dt=sp.ExecuteDataTable(out output, paraValues);
