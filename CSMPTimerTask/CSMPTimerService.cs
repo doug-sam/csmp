@@ -43,6 +43,10 @@ namespace CSMPTimerTask
             //}
             Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务服务启动\r\n", null);
             ThreadPool.QueueUserWorkItem(new WaitCallback(DoTimerTask));
+            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务服务启动,汉堡王任务线程启动完成。\r\n", null);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DoLeftMenuTimerTask));
+            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务服务启动,左侧菜单任务线程启动完成。\r\n", null);
             //taskTimer.Interval = taskTime * 60 * 1000;  //设置计时器事件间隔执行时间,毫秒数1s=1000ms
             //taskTimer.Elapsed += new System.Timers.ElapsedEventHandler(taskTimer_Elapsed);
             //taskTimer.Enabled = true;
@@ -511,6 +515,44 @@ namespace CSMPTimerTask
                 }
             }
             
+        }
+
+        /// <summary>
+        /// 定时调用左侧菜单写数据到缓存的任务
+        /// </summary>
+        /// <param name="stateInfo"></param>
+        private void DoLeftMenuTimerTask(Object stateInfo)
+        {
+            while (true)
+            {
+                Logger.GetLogger(this.GetType()).Info("CSMP左侧菜单数据缓存读写任务执行循环1次\r\n", null);
+                try
+                {
+                    string startTime = ConfigHelper.GetAppendSettingValue("LeftMenuTaskTime");
+                    if (DateTime.Now.ToString("HH:mm") == startTime.Trim())
+                    {
+                        Logger.GetLogger(this.GetType()).Info("CSMP左侧菜单数据缓存读写任务凌晨2点执行！！！\r\n", null);
+                        try {
+                            
+                            string urlStr = "http://124.74.9.202:820/LeftMenu/DataCacheStartService.aspx";
+                            WebUtil.DoPost(urlStr, "param=LeftMenu", 1);
+                           
+                            Logger.GetLogger(this.GetType()).Info("CSMP左侧菜单数据缓存读写任务凌晨2点执行完成\r\n", null);
+                        }
+                        catch (Exception ex){
+                            Logger.GetLogger(this.GetType()).Info("CSMP左侧菜单数据缓存读写任务凌晨2点执行错误"+ex.Message+"\r\n", null);
+                        }
+                        
+                        Thread.Sleep(5 * 60 * 1000);
+                    }
+
+                }
+                finally
+                {
+                    Thread.Sleep(1 * 60 * 1000);
+                }
+
+            }
         }
     }
 }

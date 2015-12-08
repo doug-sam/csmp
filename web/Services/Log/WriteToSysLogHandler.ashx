@@ -4,6 +4,7 @@ using System;
 using System.Web;
 using CSMP.BLL;
 using CSMP.Model;
+using Tool;
 
 public class WriteToSysLogHandler : IHttpHandler {
     
@@ -20,6 +21,7 @@ public class WriteToSysLogHandler : IHttpHandler {
         linfo.SendEmail = false;
         linfo.Serious = 0;
         linfo.UserName = UserBLL.GetCurrentEmployeeName();
+        Logger.GetLogger(this.GetType()).Info("开始处理log，点击外呼记录日志，日志详情：" + msg + "，操作人：" + linfo.UserName + "\r\n", null);
         LogBLL.Add(linfo);        
         context.Response.ContentType = "text/plain";
         context.Response.Write(result);

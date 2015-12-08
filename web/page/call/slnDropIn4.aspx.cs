@@ -315,6 +315,10 @@ public partial class page_call_slnDropIn4 : _Call_Step
             }
             #endregion
 
+            #region 当已完成时删除跑马灯表中的记录 2015.11.18 ZQL加
+            MarqueeMessageBLL.Delete(cinfo.No);
+            #endregion
+
             if (CbSendZara.Visible &&(CbSendZara.Checked || (int)SysEnum.CallStateMain.已完成 == cinfo.StateMain))
             {
                 APImsg += CallStepActionBLL.StepDropInSlove(cinfo, sinfo);

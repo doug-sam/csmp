@@ -43,6 +43,25 @@ public partial class page_CallStep_listview : BasePage
                 Response.End(); return;
             }
             List<CallStepInfo> list = CallStepBLL.GetListJoin(info);
+            #region 加在离场步骤显示APP现场签到的提交的工作记录详情 ZQL 2015.11.16
+            List<CommentInfo> commentInfoList = CommentBLL.GetList(" f_CallID = " + info.ID + "  AND f_IsDropInUserDoIt=1 AND f_ByMachine='APP' order by f_AddDate asc ");
+            if (commentInfoList.Count > 0) 
+            {
+                int count = 0;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].StepName.Trim() == "上门支持")
+                    {
+                        if (count < commentInfoList.Count)
+                        {
+                            list[i].Details += commentInfoList[count].Details;
+                            count++;
+                        }
+                    }
+                }
+            }
+            
+            #endregion 
             GridView1.DataSource = list;
             GridView1.DataBind();
             if (list.Count > 0)

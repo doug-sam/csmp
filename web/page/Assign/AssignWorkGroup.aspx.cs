@@ -69,7 +69,7 @@ public partial class page_Assign_AssignWorkGroup : _Call_Assign
         CallInfo info = GetInfo();
 
         AssignInfo asinfo = new AssignInfo();
-        AssignInfo asold = AssignBLL.GetMax(info.ID);
+        AssignInfo asold = AssignBLL.GetZhuanPaiMax(info.ID);
         asinfo.AddDate = DateTime.Now;
         asinfo.CallID = info.ID;
         asinfo.UseID = TargetUserInfo.ID;

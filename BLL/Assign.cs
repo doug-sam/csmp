@@ -49,6 +49,24 @@ namespace CSMP.BLL
         {
             return dal.GetMax(CallID);
         }
+        /// <summary>
+        /// 获取转派操作的
+        /// </summary>
+        /// <param name="CallID"></param>
+        /// <returns></returns>
+        public static AssignInfo GetZhuanPaiMax(int CallID)
+        {
+            return dal.GetZhuanPaiMax(CallID);
+        }
+        /// <summary>
+        /// 获取更换现场工程师
+        /// </summary>
+        /// <param name="CallID"></param>
+        /// <returns></returns>
+        public static AssignInfo GetChangeEngineerMax(int CallID)
+        {
+            return dal.GetChangeEngineerMax(CallID);
+        }
 
         public static List<AssignInfo> GetList(int CallID)
         {

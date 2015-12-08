@@ -210,6 +210,10 @@ public partial class page_CallStep_ThirdParty : _Call_Sln1
                 }
             }
             #endregion
+
+            #region 当已完成时删除跑马灯表中的记录 2015.11.18 ZQL加
+            MarqueeMessageBLL.Delete(cinfo.No);
+            #endregion
             string js = "top.ReloadLeft();alert('成功记录" + APImsg + "');location.href='/page/call/";
             switch (cinfo.StateMain)
             {

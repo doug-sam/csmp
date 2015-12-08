@@ -33,6 +33,15 @@ public class GetCallCount : IHttpHandler,IRequiresSessionState //就是这样显
             list.Add(Tracelist.Count.ToString());    
         }
         list.Add(CSMP.BLL.CustomerRequestBLL.GetConut(CurrentUser.WorkGroupID).ToString());
+
+        List<MarqueeMessage> messageList = MarqueeMessageBLL.GetByMaintaimUserID(CurrentUser.ID);
+        if (messageList.Count > 0)
+        {
+            list.Add("有提醒" + messageList.Count+ "条");
+        }
+        else {
+            list.Add("无提醒");
+        }
         context.Response.Write(string.Join("|", list.ToArray()));
     }
  

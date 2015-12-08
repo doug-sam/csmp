@@ -20,8 +20,9 @@ public partial class page_Assign_list : System.Web.UI.UserControl
     {
         if (!IsPostBack)
         {
-            GridView1.DataSource = AssignBLL.GetList(CallID);
-        GridView1.DataBind();
+            GridView1.DataSource = AssignBLL.GetList(" f_CallID=" + CallID + " AND f_AssignType=0 order by id asc ");
+            //GridView1.DataSource = AssignBLL.GetList(CallID);
+            GridView1.DataBind();
         }
 
     }

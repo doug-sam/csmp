@@ -65,6 +65,10 @@
         <div id="title">
             <div id="logo">
             </div>
+            <%--<div>
+                <marquee scrollamount='3' scrolldelay='1' direction= 'Left' width='300' id='helpor_APP' height='20' onmouseover='helpor_APP.stop()' onmouseout='helpor_APP.start()' Author:redriver> 
+                </marquee> 
+            </div>--%>
             <!-- end of logo-->
             <div id="header_right">
                 <div id="tail_menu" align="right" style="font-size: 14px; line-height: 22px; height: 62px;
@@ -98,7 +102,7 @@
                         </li>
                         <li>
                           |<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=378862252&site=qq&menu=yes">
-            <img border="0" src="http://wpa.qq.com/pa?p=2:378862252:41" alt="问题反馈.系统问题反馈，上海-段卓雅" title="问题反馈.系统问题反馈，上海-段卓雅"></a>
+                    <img border="0" src="http://wpa.qq.com/pa?p=2:378862252:41" alt="问题反馈.系统问题反馈，上海-段卓雅" title="问题反馈.系统问题反馈，上海-段卓雅"></a>
                         </li>
                     </ul>
                 </div>
@@ -109,5 +113,44 @@
         
     </div>
 
+    <script language="javascript">
+//        function UpdateAPPMessage() {
+//            var arr = new Array();
+//            var message = '';
+//            $.get("/page/call/JS/GetAPPMessage.ashx", function(result) {
+//                arr = result.split("|");
+//                for (var i = 0; i < arr.length; i++) {
+//                    message += (arr[i] + '&nbsp&nbsp&nbsp&nbsp&nbsp');
+//                    //$("#helpor_APP").html(arr[i]);
+//                    //停顿3s钟后
+//                    //sleep(3000);
+//                }
+//                $("#helpor_APP").html(message);
 
+//            });
+//        }
+
+//        function sleep(numberMillis) {
+//            var now = new Date();
+//            var exitTime = now.getTime() + numberMillis;
+//            while (true) {
+//                now = new Date();
+//                if (now.getTime() > exitTime)
+//                    return;
+//            }
+//        }
+        
+
+//        var APPMessageTimeSpan = 30;
+//        function APPMessageTimer_Trick() {
+//            if (APPMessageTimeSpan == 0) {
+//                UpdateAPPMessage();
+//                APPMessageTimeSpan = 30;
+//                return;
+//            }
+//            APPMessageTimeSpan--;
+//        }
+
+//        setInterval("APPMessageTimer_Trick()", 1000);
+    </script>
 </asp:Content>

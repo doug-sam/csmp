@@ -105,8 +105,8 @@ public partial class menu : BasePage
                 LiteralPMMC.Visible = GroupBLL.PowerCheck((int)PowerInfo.P5_Report.PM_月报修统计故障);
                 LiteralPMDTDB.Visible = GroupBLL.PowerCheck((int)PowerInfo.P5_Report.PM_日期段统计品牌);
                 LiteralPMDTDC.Visible = GroupBLL.PowerCheck((int)PowerInfo.P5_Report.PM_日期段统计故障);
-               
 
+                LiteralAPP.Visible = GroupBLL.PowerCheck((int)PowerInfo.P5_Report.APP使用情况报表);
                 //bool showCustomReport = false;
                 //string username = CurrentUser.Name;
                 //if (CurrentUser.Name == "LVMH" || CurrentUser.Name == "admin")

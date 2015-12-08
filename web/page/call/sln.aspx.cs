@@ -63,7 +63,7 @@ public partial class page_call_sln : _Call_Step
             CallState1.CallID = info.ID;
             CheckStatus(info);
             GetAniDnis4Outbound(info.StoreID);
-
+            Logger.GetLogger(this.GetType()).Info("开始处理log，开始处理页面加载，callNo=" + info.No + "，操作人：" + CurrentUser.Name.ToString() + "\r\n", null);
         }
     }
 
@@ -189,6 +189,7 @@ public partial class page_call_sln : _Call_Step
 
         CallInfo cinfo = GetInfo();
         CheckStatus(cinfo);
+        Logger.GetLogger(this.GetType()).Info("开始处理log，点击开始处理按钮，callNo=" + cinfo.No + "，操作人：" + CurrentUser.Name.ToString() + "，录音ID：" + callbackrecordid + "\r\n", null);
 
         CallStepInfo sinfo = new CallStepInfo();
         sinfo.StepType = (int)SysEnum.StepType.开始处理;

@@ -239,6 +239,33 @@ namespace CSMP.DAL
 
             return SqlHelper.ExecuteNonQueryByTran(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), parms);
         }
+        /// <summary>
+        ///APP修改密码,使用存储过程
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public string ChangePWDBySP(string userName, string oldPassword, string newPassword)
+        {
+            StoreProcedure sp = new StoreProcedure("sp_APP_ChangePWD");//类的对象
+            Object[] paraValues = new object[4];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
+
+            paraValues[0] = userName;//从第二个参数开始赋值
+            paraValues[1] = oldPassword;
+            paraValues[2] = newPassword;
+            paraValues[3] = "";
+            object[] output;
+            sp.ExecProcOutput(out  output, 2, paraValues);
+            if (output != null)
+            {
+                return output[1].ToString();
+            }
+            else
+            {
+                return "";
+            }
+        }
 
         /// <summary>
         /// 删除Member

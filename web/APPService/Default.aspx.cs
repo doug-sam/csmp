@@ -132,10 +132,9 @@ public partial class APPService_Default : System.Web.UI.Page
                 case "TodayClock":
                     result = TodayClock(obj);
                     break;
-                //case "SPSignIn":
-                //    result = SPSignIn(obj);
-                //    break;
-                    
+                case "ChangePWD":
+                    result=ChangePWD(obj);
+                    break;
                     
                 default:
                     result = "{\"code\":\"Unknown\",\"result\":\"102\",\"desc\":\"param值中的参数无效\"}";
@@ -312,16 +311,16 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         WorkGroupInfo workGroup = WorkGroupBLL.Get(user.WorkGroupID);
         List<UserInfo> userList = UserBLL.GetList(workGroup.ID, "%现场工程师%");
-        if (userList != null)
-        {
-            foreach (UserInfo item in userList)
-            {
-                if (item.Code == userName)
-                {
-                    userList.Remove(item); break;
-                }
-            }
-        }
+        //if (userList != null)
+        //{
+        //    foreach (UserInfo item in userList)
+        //    {
+        //        if (item.Code == userName)
+        //        {
+        //            userList.Remove(item); break;
+        //        }
+        //    }
+        //}
         if (userList.Count > 0)
         {
             string coUsers = string.Empty;
@@ -797,6 +796,7 @@ public partial class APPService_Default : System.Web.UI.Page
         string singInTime = string.Empty;
         string signOutTime = string.Empty;
         string picUrlList =string.Empty;
+        string majorUserName = string.Empty;
         //工程师评价的说明desc
         string recordDesc = string.Empty;
         try
@@ -858,7 +858,15 @@ public partial class APPService_Default : System.Web.UI.Page
         else {
             accessTime = "";
         }
+        if (callstep!=null)
+        {
+            majorUserName = callstep.MajorUserName;
+        }
+        else {
+            majorUserName = "";
+        }
         paramDic.Add("acceptTime", accessTime);
+        paramDic.Add("majorUserName", majorUserName);
         callstep = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.上门准备);
         paramDic.Add("maintaimUserName", callInfo.MaintaimUserName);
         if (callstep == null)
@@ -901,7 +909,8 @@ public partial class APPService_Default : System.Web.UI.Page
             recordDesc = commentInfoList[0].Details;
         }
         
-        List<AttachmentInfo> urlList = AttachmentBLL.GetList(callInfo.ID, AttachmentInfo.EUserFor.Call);
+        //List<AttachmentInfo> urlList = AttachmentBLL.GetList(callInfo.ID, AttachmentInfo.EUserFor.Call);
+        List<AttachmentInfo> urlList = AttachmentBLL.GetList(" f_CallID=" + callInfo.ID + " AND f_Title='APP上传的图片列表'");
         if (urlList.Count > 0)
         {
             string url = string.Empty;
@@ -1298,9 +1307,10 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         else
         {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取state值为" + state + "系统中不存在该状态\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值为" + state + "系统中不存在该状态，错误原因：" + result + "\r\n", null);
-            return result;
+            state = "";
+            //result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"解析JSON数据获取state值为" + state + "系统中不存在该状态\"}";
+            //Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，解析JSON数据获取state值为" + state + "系统中不存在该状态，错误原因：" + result + "\r\n", null);
+            //return result;
         }
         #region 注释掉获取客户、品牌信息
         //try
@@ -1342,12 +1352,12 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         errorStartTime = errorStartTime.Trim('"');
         errorStartTime = errorStartTime.Trim();
-        if (string.IsNullOrEmpty(errorStartTime))
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"startTime值不能为空\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，startTime值为空，错误原因为\r\n", null);
-            return result;
-        }
+        //if (string.IsNullOrEmpty(errorStartTime))
+        //{
+        //    result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"startTime值不能为空\"}";
+        //    Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，startTime值为空，错误原因为\r\n", null);
+        //    return result;
+        //}
 
         try
         {
@@ -1361,12 +1371,12 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         errorEndTime = errorEndTime.Trim('"');
         errorEndTime = errorEndTime.Trim();
-        if (string.IsNullOrEmpty(errorEndTime))
-        {
-            result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"endTime值不能为空\"}";
-            Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，endTime值为空，错误原因为\r\n", null);
-            return result;
-        }
+        //if (string.IsNullOrEmpty(errorEndTime))
+        //{
+        //    result = "{\"code\":\"SearchOrder\",\"result\":\"0\",\"desc\":\"endTime值不能为空\"}";
+        //    Logger.GetLogger(this.GetType()).Info("APP SearchOrder接口被调用，endTime值为空，错误原因为\r\n", null);
+        //    return result;
+        //}
 
         try
         {
@@ -1553,7 +1563,7 @@ public partial class APPService_Default : System.Web.UI.Page
                 sinfo.IsSolved = false;
                 sinfo.SolutionID = 0;
                 sinfo.SolutionName = "";
-                sinfo.Details = "工程师使用APP签到";
+                sinfo.Details = "工程师使用APP签到；";
 
                 sinfo.MajorUserID = user.ID;
                 sinfo.MajorUserName = user.Name;
@@ -1561,6 +1571,27 @@ public partial class APPService_Default : System.Web.UI.Page
                 callInfo.StateDetail = (int)SysEnum.CallStateDetails.到达门店处理;
                 if (CallStepBLL.AddCallStep_UpdateCall(callInfo, sinfo))
                 {
+                    #region 插入一条记录到跑马灯
+                    MarqueeMessage mInfo = new MarqueeMessage();
+                    mInfo.No = callInfo.No;
+                    mInfo.MaintainUserID = callInfo.MaintainUserID;
+                    mInfo.MaintainUserName = callInfo.MaintaimUserName.Trim();
+                    mInfo.MajorUserID = user.ID;
+                    mInfo.MajorUserName = user.Code.Trim();
+                    mInfo.Content = DateTime.Now.ToString("yyyy-MM-dd HH:mm") + " APP操作到场签到";
+                    mInfo.IsRead = false;
+                    MarqueeMessageBLL.AddBySP(mInfo);
+
+                    MarqueeMessageReport mInfoReport = new MarqueeMessageReport();
+                    mInfoReport.No = callInfo.No;
+                    mInfoReport.MaintainUserID = callInfo.MaintainUserID;
+                    mInfoReport.MaintainUserName = callInfo.MaintaimUserName.Trim();
+                    mInfoReport.MajorUserID = user.ID;
+                    mInfoReport.MajorUserName = user.Code.Trim();
+                    mInfoReport.ActionTime = DateTime.Now;
+                    mInfoReport.Content = "到场签到";
+                    MarqueeMessageReportBLL.Add(mInfoReport);
+                    #endregion
                     result = "{\"code\":\"AssignOrder\",\"result\":\"1\",\"desc\":\"\"}";
                     Logger.GetLogger(this.GetType()).Info("APP AssignOrder接口被调用，工程师："+userName+"签到成功,单号："+callNo+"。\r\n", null);
                     return result;
@@ -1594,7 +1625,7 @@ public partial class APPService_Default : System.Web.UI.Page
                 sinfo.CallID = callInfo.ID;
                 sinfo.StepIndex = CallStepBLL.GetMaxStepIndex(callInfo.ID) + 1;
                 sinfo.DateBegin = sinfo.DateEnd = DateTime.Now;
-                sinfo.Details = "工程师使用APP离场";
+                sinfo.Details = "工程师使用APP离场；";
                 sinfo.StepName = SysEnum.CallStateDetails.上门支持.ToString();
                 sinfo.IsSolved = false;
                 
@@ -1604,6 +1635,27 @@ public partial class APPService_Default : System.Web.UI.Page
                 callInfo.StateDetail = (int)SysEnum.CallStateDetails.上门支持;
                 if (CallStepBLL.AddCallStep_UpdateCall(callInfo, sinfo))
                 {
+                    #region 插入一条记录到跑马灯
+                    MarqueeMessage mInfo = new MarqueeMessage();
+                    mInfo.No = callInfo.No;
+                    mInfo.MaintainUserID = callInfo.MaintainUserID;
+                    mInfo.MaintainUserName = callInfo.MaintaimUserName.Trim();
+                    mInfo.MajorUserID = user.ID;
+                    mInfo.MajorUserName = user.Code.Trim();
+                    mInfo.Content = DateTime.Now.ToString("yyyy-MM-dd HH:mm") + " APP操作离场";
+                    mInfo.IsRead = false;
+                    MarqueeMessageBLL.AddBySP(mInfo);
+
+                    MarqueeMessageReport mInfoReport = new MarqueeMessageReport();
+                    mInfoReport.No = callInfo.No;
+                    mInfoReport.MaintainUserID = callInfo.MaintainUserID;
+                    mInfoReport.MaintainUserName = callInfo.MaintaimUserName.Trim();
+                    mInfoReport.MajorUserID = user.ID;
+                    mInfoReport.MajorUserName = user.Code.Trim();
+                    mInfoReport.ActionTime = DateTime.Now;
+                    mInfoReport.Content = "离场";
+                    MarqueeMessageReportBLL.Add(mInfoReport);
+                    #endregion
                     result = "{\"code\":\"AssignOrder\",\"result\":\"1\",\"desc\":\"\"}";
                     Logger.GetLogger(this.GetType()).Info("APP AssignOrder接口被调用，工程师："+userName+"离场成功,单号："+callNo+"。\r\n", null);
                     return result;
@@ -1671,7 +1723,7 @@ public partial class APPService_Default : System.Web.UI.Page
                 Logger.GetLogger(this.GetType()).Info("APP AssignOrder接口被调用，该工单没有上门安排记录。\r\n", null);
                 return result;
             }
-            if (oldcsinfo.StepName.Trim() != SysEnum.CallStateDetails.等待工程师上门.ToString())
+            if (oldcsinfo.StepName.Trim() != SysEnum.CallStateDetails.等待工程师上门.ToString().Trim()&&oldcsinfo.StepName.Trim() !=  SysEnum.CallStateDetails.等待第三方响应.ToString().Trim())
             {
                 result = "{\"code\":\"AssignOrder\",\"result\":\"0\",\"desc\":\"该工单不符合重新指派工程师上门的条件！\"}";
                 Logger.GetLogger(this.GetType()).Info("APP AssignOrder接口被调用，该工单不符合重新指派工程师上门的条件！\r\n", null);
@@ -1686,7 +1738,7 @@ public partial class APPService_Default : System.Web.UI.Page
 
            
             AssignInfo asinfo = new AssignInfo();
-            AssignInfo asold = AssignBLL.GetMax(oldcsinfo.CallID);
+            AssignInfo asold = AssignBLL.GetChangeEngineerMax(oldcsinfo.CallID);
             asinfo.AddDate = DateTime.Now;
             asinfo.CallID = oldcsinfo.CallID;
             asinfo.UseID = newEngineer.ID;
@@ -1732,6 +1784,27 @@ public partial class APPService_Default : System.Web.UI.Page
             if (CallStepBLL.Add(newcsinfo) > 0)
             {
                 AssignBLL.Add(asinfo);
+                #region 插入一条记录到跑马灯
+                MarqueeMessage mInfo = new MarqueeMessage();
+                mInfo.No = callInfo.No;
+                mInfo.MaintainUserID = callInfo.MaintainUserID;
+                mInfo.MaintainUserName = callInfo.MaintaimUserName.Trim();
+                mInfo.MajorUserID = user.ID;
+                mInfo.MajorUserName = user.Code.Trim();
+                mInfo.Content = DateTime.Now.ToString("yyyy-MM-dd HH:mm") + " APP操作更换现场工程师";
+                mInfo.IsRead = false;
+                MarqueeMessageBLL.AddBySP(mInfo);
+
+                MarqueeMessageReport mInfoReport = new MarqueeMessageReport();
+                mInfoReport.No = callInfo.No;
+                mInfoReport.MaintainUserID = callInfo.MaintainUserID;
+                mInfoReport.MaintainUserName = callInfo.MaintaimUserName.Trim();
+                mInfoReport.MajorUserID = user.ID;
+                mInfoReport.MajorUserName = user.Code.Trim();
+                mInfoReport.ActionTime = DateTime.Now;
+                mInfoReport.Content = "更换现场工程师";
+                MarqueeMessageReportBLL.Add(mInfoReport);
+                #endregion
                 result = "{\"code\":\"AssignOrder\",\"result\":\"1\",\"desc\":\"\"}";
                 Logger.GetLogger(this.GetType()).Info("APP AssignOrder接口被调用，工程师：" + userName + "操作更换现场工程师成功,单号：" + callNo + "。\r\n", null);
                 return result;
@@ -1875,6 +1948,16 @@ public partial class APPService_Default : System.Web.UI.Page
         }
         desc = desc.Trim('"');
 
+        if (desc.Length > 50)
+        {
+
+            result = "{\"code\":\"WorkRecord\",\"result\":\"0\",\"desc\":\"desc值长度过长\"}";
+            Logger.GetLogger(this.GetType()).Info("APP WorkRecord接口被调用，desc值长度过长\r\n", null);
+            return result;
+
+        }
+
+
         CallStepInfo stepinfo = CallStepBLL.GetLast(callInfo.ID, SysEnum.StepType.到达门店处理);
         if (stepinfo == null)
         {
@@ -1903,6 +1986,27 @@ public partial class APPService_Default : System.Web.UI.Page
         info.SupportUserID = callInfo.MaintainUserID;
         info.WorkGroupID = user.WorkGroupID;
         info.ID = CommentBLL.Add(info);
+        #region 插入一条记录到跑马灯
+        MarqueeMessage mInfo = new MarqueeMessage();
+        mInfo.No = callInfo.No;
+        mInfo.MaintainUserID = callInfo.MaintainUserID;
+        mInfo.MaintainUserName = callInfo.MaintaimUserName.Trim();
+        mInfo.MajorUserID = user.ID;
+        mInfo.MajorUserName = user.Code.Trim();
+        mInfo.Content = DateTime.Now.ToString("yyyy-MM-dd HH:mm")+" APP提交工作记录";
+        mInfo.IsRead = false;
+        MarqueeMessageBLL.AddBySP(mInfo);
+
+        MarqueeMessageReport mInfoReport = new MarqueeMessageReport();
+        mInfoReport.No = callInfo.No;
+        mInfoReport.MaintainUserID = callInfo.MaintainUserID;
+        mInfoReport.MaintainUserName = callInfo.MaintaimUserName.Trim();
+        mInfoReport.MajorUserID = user.ID;
+        mInfoReport.MajorUserName = user.Code.Trim();
+        mInfoReport.ActionTime = DateTime.Now;
+        mInfoReport.Content = "提交工作记录";
+        MarqueeMessageReportBLL.Add(mInfoReport);
+        #endregion
         if (info.ID > 0)
         {
             result = "{\"code\":\"WorkRecord\",\"result\":\"1\",\"desc\":\"\"}";
@@ -2003,7 +2107,7 @@ public partial class APPService_Default : System.Web.UI.Page
         info.Addtime = DateTime.Now;
         info.CallID = callInfo.ID;
         info.CallStepID = 0;
-        info.ContentType = "";
+        info.ContentType = "image";
         info.DirID = 0;
         info.Ext = "";
         info.UserID = user.ID;
@@ -2018,6 +2122,17 @@ public partial class APPService_Default : System.Web.UI.Page
         info.ID = AttachmentBLL.Add(info);
         if (info.ID > 0)
         {
+            #region 插入一条记录到跑马灯
+            MarqueeMessage mInfo = new MarqueeMessage();
+            mInfo.No = callInfo.No;
+            mInfo.MaintainUserID = callInfo.MaintainUserID;
+            mInfo.MaintainUserName = callInfo.MaintaimUserName.Trim();
+            mInfo.MajorUserID = user.ID;
+            mInfo.MajorUserName = user.Code.Trim();
+            mInfo.Content = DateTime.Now.ToString("yyyy-MM-dd HH:mm") + " APP操作上传图片";
+            mInfo.IsRead = false;
+            MarqueeMessageBLL.AddBySP(mInfo);
+            #endregion
             result = "{\"code\":\"UploadImageUrl\",\"result\":\"1\",\"desc\":\"\"}";
             Logger.GetLogger(this.GetType()).Info("APP UploadImageUrl接口被调用，保存url连接成功\r\n", null);
             return result;
@@ -2932,6 +3047,89 @@ public partial class APPService_Default : System.Web.UI.Page
             Logger.GetLogger(this.GetType()).Info("APP SignIn接口被调用，解析JSON数据获取oper值为" + oper + "，没有对应的值\r\n", null);
             return result;
         }
+    }
+    /// <summary>
+    /// 修改密码
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    protected string ChangePWD(JObject obj)
+    {
+        string userName = string.Empty;
+        string result = string.Empty;
+        string oldPassword = string.Empty;
+        string newPassword = string.Empty;
+        try
+        {
+            userName = obj["userName"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"ChangePWD\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，解析JSON数据获取userName值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        userName = userName.Trim('"');
+        if (string.IsNullOrEmpty(userName))
+        {
+            result = "{\"code\":\"ChangePWD\",\"result\":\"0\",\"desc\":\"解析JSON数据获取userName值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，解析JSON数据获取userName值为空\r\n", null);
+            return result;
+        }
+
+        try
+        {
+            oldPassword = obj["oldPassword"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"ChangePWD\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oldPassword值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，解析JSON数据获取oldPassword值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        oldPassword = oldPassword.Trim('"');
+        if (string.IsNullOrEmpty(oldPassword))
+        {
+            result = "{\"code\":\"ChangePWD\",\"result\":\"0\",\"desc\":\"解析JSON数据获取oldPassword值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，解析JSON数据获取oldPassword值为空\r\n", null);
+            return result;
+        }
+
+        try
+        {
+            newPassword = obj["newPassword"].ToString();
+        }
+        catch (Exception ex)
+        {
+            result = "{\"code\":\"ChangePWD\",\"result\":\"0\",\"desc\":\"解析JSON数据获取newPassword值时错误\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，解析JSON数据获取newPassword值错误，错误原因为" + result + "异常：" + ex.Message + "\r\n", null);
+            return result;
+        }
+        newPassword = newPassword.Trim('"');
+        if (string.IsNullOrEmpty(newPassword))
+        {
+            result = "{\"code\":\"ChangePWD\",\"result\":\"0\",\"desc\":\"解析JSON数据获取newPassword值为空\"}";
+            Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，解析JSON数据获取newPassword值为空\r\n", null);
+            return result;
+        }
+
+        result = UserBLL.ChangePWDBySP(userName, oldPassword.ToLower(), newPassword.ToLower());
+        switch (result)
+        {
+            case "success":
+                result = "{\"code\":\"ChangePWD\",\"result\":\"1\",\"desc\":\"\"}";
+                Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，用户：" + userName + " 密码修改成功\r\n", null);
+                break;
+            case "not binding":
+                result = "{\"code\":\"ChangePWD\",\"result\":\"0\",\"desc\":\"该用户不存在\"}";
+                Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，用户：" + userName + " 不存在\r\n", null);
+                break;
+            case "wrong oldPassword":
+                result = "{\"code\":\"ChangePWD\",\"result\":\"0\",\"desc\":\"原密码错误，密码修改失败\"}";
+                Logger.GetLogger(this.GetType()).Info("APP ChangePWD接口被调用，用户：" + userName + "修改密码时，原密码错误！\r\n", null);
+                break;
+        }
+        return result;
     }
 
     /// <summary>

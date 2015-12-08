@@ -218,6 +218,21 @@ public partial class page_call_Close : _Call_Close
         //}
         #endregion
 
+        #region 读写缓存
+        try
+        {
+            List<LeftMenuData> list = CacheManage.GetSearch("leftMenuKey") as List<LeftMenuData>;
+            //UserInfo currentUser = UserBLL.Get(845);
+            int index = list.FindIndex(s => s.UserID == CurrentUserID);
+            list[index].Closed += 1;
+            list[index].Complete -= 1;
+            CacheManage.InsertCache("leftMenuKey", list);
+        }
+        catch { 
+        
+        }
+        #endregion
+
         return Result;
 
     }

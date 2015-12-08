@@ -20,7 +20,10 @@
             onclick="BtnCacheAdd_Click" />&nbsp&nbsp&nbsp
         <asp:Button ID="BtnCacheMinus" runat="server" Text="内存数据减1" 
             onclick="BtnCacheMinus_Click" />&nbsp&nbsp&nbsp
-        <asp:Button ID="BtnShowCache" runat="server" Text="显示内存数据" />
+        <asp:Button ID="BtnShowCache" runat="server" Text="显示内存数据" 
+            onclick="BtnShowCache_Click" />&nbsp&nbsp&nbsp
+        <asp:Button ID="postCachePage" runat="server" Text="访问写数据到内存的网页" 
+            onclick="postCachePage_Click" />
     </div>
     </form>
 </body>

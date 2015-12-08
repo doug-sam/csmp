@@ -94,6 +94,8 @@
     <Compile Include="Log.cs" />
     <Compile Include="loginlog.cs" />
     <Compile Include="Manufacturer.cs" />
+    <Compile Include="MarqueeMessage.cs" />
+    <Compile Include="MarqueeMessageReport.cs" />
     <Compile Include="OperationRec.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="PunchIn.cs" />

@@ -95,6 +95,18 @@ namespace CSMP.BLL
         }
 
         /// <summary>
+        /// APP修改密码,使用存储过程
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public static string ChangePWDBySP(string userName, string oldPassword, string newPassword)
+        {
+            return dal.ChangePWDBySP(userName, oldPassword, newPassword);
+        }
+
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="id">id</param>
@@ -235,6 +247,7 @@ namespace CSMP.BLL
             }
             return Md5ID;
         }
+        
 
 
 

@@ -121,6 +121,38 @@ namespace CSMP.DAL
                 return GetByDataReader(rdr);
             }
         }
+        /// <summary>
+        /// 获取做转派操作
+        /// </summary>
+        /// <param name="CallID"></param>
+        /// <returns></returns>
+        public AssignInfo GetZhuanPaiMax(int CallID)
+        {
+            StringBuilder strSQL = new StringBuilder();
+            strSQL.Append("select top 1 ").Append(ALL_PARM).Append(FROM_TABLE).Append(" where f_CallID=").Append(CallID).Append("  AND f_AssignType=0 order By ID desc ");
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null))
+            {
+                if (!rdr.Read()) return null;
+
+                return GetByDataReader(rdr);
+            }
+        }
+        /// <summary>
+        /// 获取更换现场工程师
+        /// </summary>
+        /// <param name="CallID"></param>
+        /// <returns></returns>
+        public AssignInfo GetChangeEngineerMax(int CallID)
+        {
+            StringBuilder strSQL = new StringBuilder();
+            strSQL.Append("select top 1 ").Append(ALL_PARM).Append(FROM_TABLE).Append(" where f_CallID=").Append(CallID).Append("  AND f_AssignType=1 order By ID desc ");
+            using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQL.ToString(), null))
+            {
+                if (!rdr.Read()) return null;
+
+                return GetByDataReader(rdr);
+            }
+        }
 
         public List<AssignInfo> GetList(int CallID)
         {

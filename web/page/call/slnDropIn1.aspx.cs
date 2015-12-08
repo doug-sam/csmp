@@ -247,11 +247,12 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
         {
             if (CallStepActionBLL.ActionInfo.IsYUM(cinfo))
             {
-                if (string.IsNullOrEmpty(cinfo.CallNo3))
-                {
-                    Function.AlertMsg("系统没有对方扩展单号记录。请先填写");
-                    return;
-                }
+                //YUM先禁用这一步 2015.11.19
+                //if (string.IsNullOrEmpty(cinfo.CallNo3))
+                //{
+                //    Function.AlertMsg("系统没有对方扩展单号记录。请先填写");
+                //    return;
+                //}
             }
         }
         if (CallStepBLL.AddCallStep_UpdateCall(cinfo, sinfo))

@@ -78,7 +78,8 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="查看">
                 <ItemTemplate>
-                    <a target="_blank" href='ViewImg.aspx?ID=<%#Eval("ID") %>'><img src="/images/view.gif" /></a>
+                    <%--<a target="_blank" href='ViewImg.aspx?ID=<%#Eval("ID") %>'><img src="/images/view.gif" /></a>--%>
+                    <%#GetViewUrl(Eval("ID").ToString(), Eval("Title").ToString(), Eval("FilePath").ToString(), Eval("CallID").ToString())%>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>

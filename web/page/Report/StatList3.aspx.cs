@@ -653,8 +653,8 @@ public partial class page_call_StatList3 : _Report_ReportF
                 double taketime = Math.Round((item.FinishDate - item.ErrorDate).TotalHours, 2);
                 dr["用时"] = taketime > 0 ? taketime : 0;
             }
-
-            listAssign = AssignBLL.GetList(item.ID);
+            listAssign = AssignBLL.GetList(" f_CallID=" + item.ID + " AND f_AssignType=0 order by id asc ");
+            //listAssign = AssignBLL.GetList(item.ID);
             if (null == listAssign || listAssign.Count == 0)
             {
                 dr["第一次接单的二线人员"] = item.MaintaimUserName;

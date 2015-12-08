@@ -61,7 +61,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <div style="width: 175px; overflow: hidden;">
+    <div id="menuInfo" style="width: 175px; overflow-y:auto;overflow-x:hidden;">
         <asp:Panel ID="PCall" runat="server">
             <div class="MeunContainer" id="div1">
                 <div class="MeunFirst" onclick="expand(this.parentElement.id)">
@@ -238,65 +238,68 @@
                      <asp:Literal ID="LReportO" runat="server" Visible="false">
                         <li><a href="/page/Report/StatO.aspx" target="main">D、城市报修占比</a></li>
                     </asp:Literal>
-                        <asp:Literal ID="LReportJ" runat="server">
-                    <li><a href="/page/Report/MonthCount.aspx" target="main">E、月报修总量趋势</a></li>
-                        </asp:Literal>
-                       <asp:Literal ID="LReportC" runat="server">
-                    <li><a href="/page/Report/Hour.aspx" target="main">F、时段报修趋势</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LReportN" runat="server">
-                    <li><a href="/page/Report/StatN.aspx" target="main">G、品牌pending分析</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LReportF" runat="server">
-                    <li><a href="/page/Report/StatListDefault.aspx" target="main">H、明细数据</a></li>
-                        </asp:Literal>
+                    <asp:Literal ID="LReportJ" runat="server">
+                        <li><a href="/page/Report/MonthCount.aspx" target="main">E、月报修总量趋势</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LReportC" runat="server">
+                        <li><a href="/page/Report/Hour.aspx" target="main">F、时段报修趋势</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LReportN" runat="server">
+                        <li><a href="/page/Report/StatN.aspx" target="main">G、品牌pending分析</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LReportF" runat="server">
+                        <li><a href="/page/Report/StatListDefault.aspx" target="main">H、明细数据</a></li>
+                    </asp:Literal>
                     <asp:Literal ID="LEmailRecord" runat="server">
                         <li><a href="/page/EmailRecord/List.aspx" target="main">I、派工邮件统计</a></li>
                     </asp:Literal>
-                      <asp:Literal ID="LPunchIn" runat="server">
+                    <asp:Literal ID="LPunchIn" runat="server">
                         <li><a href="/page/PunchIn/List.aspx" target="main">J、考勤管理</a></li>
                     </asp:Literal>
-                        <asp:Literal ID="LReportH" runat="server">
-                    <li><a href="/page/Report/BrandSolvedBy.aspx" target="main">K、服务方式分析</a></li>
-                        </asp:Literal>
-                        
-                        <asp:Literal ID="LiteralL" runat="server">
-                    <li><a href="/page/Report/CustomDateReport_Brand.aspx" target="main">L、日报修统计(品牌)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralM" runat="server">
-                    <li><a href="/page/Report/CustomDateReport.aspx" target="main">M、日报修统计(故障)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralP" runat="server">
-                    <li><a href="/page/Report/CustomMonthReport_Brand.aspx" target="main">P、月报修统计(品牌)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralQ" runat="server">
-                    <li><a href="/page/Report/CustomMonthReport.aspx" target="main">Q、月报修统计(故障)</a></li>
-                        </asp:Literal>
-                        
-                        <asp:Literal ID="LiteralR" runat="server">
-                    <li><a href="/page/Report/CustomDateToDate_Brand.aspx" target="main">R、日期段统计(品牌)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralS" runat="server">
-                    <li><a href="/page/Report/CustomDateToDate.aspx" target="main">S、日期段统计(故障)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralPMDB" runat="server">
-                    <li><a href="/page/Report/ProjectManagerReport/PMDateReport_Brand.aspx" target="main">PM、日报修统计(品牌)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralPMDC" runat="server">
-                    <li><a href="/page/Report/ProjectManagerReport/PMDateReport.aspx" target="main">PM、日报修统计(故障)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralPMMB" runat="server">
-                    <li><a href="/page/Report/ProjectManagerReport/PMMonthReport_Brand.aspx" target="main">PM、月报修统计(品牌)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralPMMC" runat="server">
-                    <li><a href="/page/Report/ProjectManagerReport/PMMonthReport.aspx" target="main">PM、月报修统计(故障)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralPMDTDB" runat="server">
-                    <li><a href="/page/Report/ProjectManagerReport/PMDateToDateReport.aspx" target="main">PM、日期段统计(品牌)</a></li>
-                        </asp:Literal>
-                        <asp:Literal ID="LiteralPMDTDC" runat="server">
-                    <li><a href="/page/Report/ProjectManagerReport/PMDateToDateReport_Brand.aspx" target="main">PM、日期段统计(故障)</a></li>
-                        </asp:Literal>
+                    <asp:Literal ID="LReportH" runat="server">
+                        <li><a href="/page/Report/BrandSolvedBy.aspx" target="main">K、服务方式分析</a></li>
+                    </asp:Literal>
+                    
+                    <asp:Literal ID="LiteralL" runat="server">
+                        <li><a href="/page/Report/CustomDateReport_Brand.aspx" target="main">L、日报修统计(品牌)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralM" runat="server">
+                        <li><a href="/page/Report/CustomDateReport.aspx" target="main">M、日报修统计(故障)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralP" runat="server">
+                        <li><a href="/page/Report/CustomMonthReport_Brand.aspx" target="main">P、月报修统计(品牌)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralQ" runat="server">
+                        <li><a href="/page/Report/CustomMonthReport.aspx" target="main">Q、月报修统计(故障)</a></li>
+                    </asp:Literal>
+                    
+                    <asp:Literal ID="LiteralR" runat="server">
+                        <li><a href="/page/Report/CustomDateToDate_Brand.aspx" target="main">R、日期段统计(品牌)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralS" runat="server">
+                        <li><a href="/page/Report/CustomDateToDate.aspx" target="main">S、日期段统计(故障)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralPMDB" runat="server">
+                        <li><a href="/page/Report/ProjectManagerReport/PMDateReport_Brand.aspx" target="main">PM、日报修统计(品牌)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralPMDC" runat="server">
+                        <li><a href="/page/Report/ProjectManagerReport/PMDateReport.aspx" target="main">PM、日报修统计(故障)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralPMMB" runat="server">
+                        <li><a href="/page/Report/ProjectManagerReport/PMMonthReport_Brand.aspx" target="main">PM、月报修统计(品牌)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralPMMC" runat="server">
+                        <li><a href="/page/Report/ProjectManagerReport/PMMonthReport.aspx" target="main">PM、月报修统计(故障)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralPMDTDB" runat="server">
+                        <li><a href="/page/Report/ProjectManagerReport/PMDateToDateReport.aspx" target="main">PM、日期段统计(品牌)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralPMDTDC" runat="server">
+                        <li><a href="/page/Report/ProjectManagerReport/PMDateToDateReport_Brand.aspx" target="main">PM、日期段统计(故障)</a></li>
+                    </asp:Literal>
+                    <asp:Literal ID="LiteralAPP" runat="server">
+                        <li><a href="/APPService/AppMessageReport.aspx" target="main">APP、APP使用情况报表</a></li>
+                    </asp:Literal>                      
                         
                         
                         
@@ -331,20 +334,36 @@
         </asp:Panel>
 
     </div>
-    <div style="clear: both; position: absolute; bottom: 0px; line-height: 26px; height: 26px;
-        width: 155px; text-align: center; margin-left: 3px; background: url(/images/b.gif);">
+    
+    <div id="APPMessagePic" style="clear: both; position: fixed; bottom: 26px; line-height: 40px; height: 40px;
+        width: 155px; text-align: center; margin-left: 3px; background: url(/images/b1.png);">
+        <a href="/APPService/AppMessageList.aspx" target="main">APP提醒<span id="CountSpan7"></span></a>
+    </div>
+    <div style="clear: both; position: fixed; bottom: 0px; line-height: 26px; height: 26px;
+        width: 155px; text-align: center; margin-left: 3px; background: url(/images/c.gif);">
        <a style=" margin-right:20px;" id="RefreshTimer" href="javascript:location.reload();" title="这是刷新倒计时，点我也可以手动刷新" ></a>
-        <a href="/page/trace/list.aspx" target="main">店铺催促<span id="CountSpan5"></span></a>
+        <a href="/page/trace/list.aspx" target="main">店铺催促<span id="CountSpan5"></span></a><br />
     </div>
 
     <script language="javascript">
+        function ChangeMenuInfoHight()
+        {
+            var menuIframeHight = document.body.clientHeight - 66;
+            $("#menuInfo").css("height", menuIframeHight);
         
+        }
+        window.onload=function(){  
+             ChangeMenuInfoHight();  
+        }  
+        //当浏览器窗口大小改变时，设置显示内容的高度  
+        window.onresize=function(){  
+             ChangeMenuInfoHight();  
+        }  
         function UpdateCount() {
             var arr = new Array();
             $.get("/page/call/JS/GetCallCount.ashx", function(result) {
                 arr = result.split("|");
                 for (var i = 0; i < arr.length; i++) {
-                   
                     $("#CountSpan" + i).html("(" + arr[i] + ")");
                 }
             });
@@ -358,6 +377,13 @@
                 UpdateCount();
                 TimeSpan = 60;
                 return;
+            }
+            if ($("#CountSpan7").html().indexOf('有提醒')>-1) {
+                if (TimeSpan % 2 == 1) {
+                    $("#APPMessagePic").css("background-image", "url(/images/b1.png)");
+                } else {
+                    $("#APPMessagePic").css("background-image", "url(/images/b.png)");
+                }
             }
             TimeSpan--;
             $("#RefreshTimer").html(TimeSpan);

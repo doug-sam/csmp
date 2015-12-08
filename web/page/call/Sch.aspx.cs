@@ -85,6 +85,22 @@ public partial class page_call_Sch : _Call_Sch
             HideHead.AddRange(CallBLL.GetListItem2(CurrentUser));
             
             GridViewHide(HideHead);
+            #region 如果是APP消息查看跳转过来的，执行如下步骤 ZQL 2015.11.30新增
+            string isRead = Function.GetRequestSrtring("isRead");
+            if (isRead == "1")
+            {
+                string callNo = Function.GetRequestSrtring("CallNo");
+                List<MarqueeMessage> marqueeList = MarqueeMessageBLL.GetList(" AND f_No='" + callNo + "'");
+                if (marqueeList.Count > 0)
+                {
+                    MarqueeMessage mInfo = marqueeList[0];
+                    mInfo.IsRead = true;
+                    MarqueeMessageBLL.AddBySP(mInfo);
+                }
+                
+            }
+
+            #endregion
         }
     }
 

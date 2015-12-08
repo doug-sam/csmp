@@ -111,7 +111,7 @@ public partial class page_Assign_ReassignOnsiteEngineer : _Call_Assign
            
 
         AssignInfo asinfo = new AssignInfo();
-        AssignInfo asold = AssignBLL.GetMax(oldcsinfo.CallID);
+        AssignInfo asold = AssignBLL.GetChangeEngineerMax(oldcsinfo.CallID);
         asinfo.AddDate = DateTime.Now;
         asinfo.CallID = oldcsinfo.CallID;
         asinfo.UseID = UserID;

@@ -87,6 +87,8 @@
     <Compile Include="LogInfo.cs" />
     <Compile Include="loginlogInfo.cs" />
     <Compile Include="ManufacturerInfo.cs" />
+    <Compile Include="MarqueeMessage.cs" />
+    <Compile Include="MarqueeMessageReport.cs" />
     <Compile Include="OperationRecInfo.cs" />
     <Compile Include="ProfileInfo.cs" />
     <Compile Include="PunchInInfo.cs" />

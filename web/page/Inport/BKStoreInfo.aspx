@@ -38,6 +38,19 @@
                 如果你勾选了更新数据，那么请确保你希望更新的数据中。EXCEL及系统中的店铺号高度一至
             </td>
         </tr>
+        <tr>
+            <td class="td1_2">
+            导入注意事项：
+            </td>
+            <td class="td1_3" colspan="2">
+                1.从MDS下载好Excel数据(数据一定要包含MVS维护的所有店铺信息)后，请将Excel另存为Excel997-2003工作薄;<br/>
+                2.如果Excel第一行不是表头，请将第一行删除，保证第一行为表头信息;<br/>
+                3.如果Excel的A、B、C列为隐藏列，请删除这三列，确保Excel A列表头名为Name;<br/>
+                4.删除（注意不是筛选或是隐藏）不是MVS维护的店铺信息;<br/>
+                5.请修改Excel中所有的店铺名称，只保留中文描述，另外如果只有一个英文名称，请确保不包含英文单引号;<br/>
+                6.导入Excel后，MVS系统中店铺的状态（是否禁用）是根据Excel中STATUS列的值来判断的(Excel中STATUS的值为Opened时MVS系统中的店铺状态为可用，Excel中STATUS的值为Closed时MVS系统中的店铺状态为禁用)，导入成功后请根据需要到MVS系统中修改店铺状态;<br/>
+            </td>
+        </tr>
     </table>
     <asp:GridView ID="GridView1" runat="server">
     </asp:GridView>

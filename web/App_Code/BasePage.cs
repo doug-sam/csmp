@@ -823,6 +823,18 @@ public class _Report_ReportCDTDClass : _Report_Report
     }
 }
 
+/// <summary>
+/// APP使用情况报表验证 ZQL2015.11.26
+/// </summary>
+public class _Report_APPReport: _Report_Report
+{
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+
+        GroupBLL.EnterCheck((int)PowerInfo.P5_Report.APP使用情况报表);
+    }
+}
+
 public class _Report_ReportPMDClass : _Report_Report
 {
     protected void Page_PreRender(object sender, EventArgs e)
