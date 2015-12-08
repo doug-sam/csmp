@@ -25,14 +25,13 @@ public class GetAPPPicList : IHttpHandler {
             System.Collections.Generic.List<AttachmentInfo> aList = AttachmentBLL.GetList(" f_CallID=" + callid + " AND f_Title='APP上传的图片列表'");
             if (aList.Count > 0)
             {
-                
                 string appPicCommonUrl = "http://hesheng.zen110.com/picture/";
                 int i = 1;
                 result += "{\"picList\":\"";
                 foreach (AttachmentInfo item in aList)
                 {
                     result += "<li>";
-                    result += "<a href='" + appPicCommonUrl + item.FilePath + "' title='CallID_" + callid + "_image" + i + "'>";
+                    result += "<a href='" + appPicCommonUrl + item.FilePath + "' title='APP上传的图片image" + i + "'>";
                     result += "<img src='" + appPicCommonUrl + item.FilePath + "' width='72' height='72' alt=''>";
                     result += "</a></li>";
                     i++;

@@ -29,12 +29,11 @@
 	                data: { "PARAM": GetCallID() },
 	                success: function(data) {
 	                $("#pg").html(data.picList);
+	                $('#gallery a').lightBox({ fixedNavigation: true });
 	                }
 	            });
 	        }
-	        $(function() {
-	            $('#gallery a').lightBox({ fixedNavigation: true });
-	        });
+	        
 	        function GetCallID() {
 	            var obj = {};
 	            obj.callid = GetQueryString("CallID");
