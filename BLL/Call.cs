@@ -207,6 +207,26 @@ namespace CSMP.BLL
         }
 
         /// <summary>
+        /// 获取call数
+        /// </summary>
+        /// <param name="StateMain">状态</param>
+        /// <param name="UserID">帐户ID</param>
+        /// ZQL 20151211新增
+        /// <returns></returns>
+        public static int GetCountForLeftMenuData(bool havaPower,int StateMain, UserInfo uinfo)
+        {
+            if (uinfo == null)
+            {
+                return 0;
+            }
+            if (!havaPower)
+            {
+                return dal.GetCount(StateMain, uinfo.ID, 0);
+            }
+            return dal.GetCount(StateMain, 0, uinfo.WorkGroupID);
+        }
+
+        /// <summary>
         /// 根据工作组找出等待上门call数
         /// </summary>
         /// <param name="WorkGroup"></param>

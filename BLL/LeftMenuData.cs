@@ -70,7 +70,7 @@ namespace CSMP.BLL
         /// </summary>
         /// <param name="CallID"></param>
         /// <returns></returns>
-        public static List<CallInfo> GetListTraceByCurrentUser(UserInfo info)
+        public static List<CallInfo> GetListTraceByCurrentUser(bool havePower,UserInfo info)
         {
             StringBuilder strWhere = new StringBuilder();
             strWhere.Append(" f_StateMain in(").Append((int)SysEnum.CallStateMain.处理中).Append(",").Append((int)SysEnum.CallStateMain.未处理).Append(") ");
@@ -79,7 +79,7 @@ namespace CSMP.BLL
             strWhere.Append("       SELECT MAX(f_CallID) FROM sys_CallStep WHERE f_StepType=").Append((int)SysEnum.StepType.店铺催促).Append(" group by f_CallID");
             strWhere.Append("   )");
 
-            if (GroupBLL.PowerCheck((int)PowerInfo.P1_Call.查看组内所有报修))
+            if (havePower)
             {
                 strWhere.Append(" AND f_BrandID IN(SELECT f_MID FROM sys_WorkGroupBrand WHERE f_WorkGroupID=").Append(info.WorkGroupID).Append(") ");
             }
@@ -142,39 +142,7 @@ namespace CSMP.BLL
             try {
                 List<UserInfo> userList = UserBLL.GetList("");
                 List<LeftMenuData> dataList = new List<LeftMenuData>();
-                //循环所有用户count LeftMenu数据 并写入数据库
-                //foreach (UserInfo currentUser in userList)
-                //{
-                //    //currentUser = UserBLL.Get(845);
-                //    LeftMenuData data = new LeftMenuData();
-                //    data.UserID = currentUser.ID;
-                //    data.WorkGroupID = currentUser.WorkGroupID;
-                //    data.ToBeOnSite = CallBLL.GetCountSln1(currentUser.WorkGroupID);
-                //    data.ToBeDisposed = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.未处理, currentUser);
-                //    data.Disposing = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.处理中, currentUser);
-                //    data.Complete = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已完成, currentUser);
-                //    data.Closed = CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已关闭, currentUser);
-
-                //    List<CallInfo> Tracelist = LeftMenuDataBLL.GetListTraceByCurrentUser(currentUser);
-                //    if (null == Tracelist || Tracelist.Count == 0)
-                //    {
-                //        data.StoreUrgency = 0;
-                //    }
-                //    else
-                //    {
-                //        data.StoreUrgency = Tracelist.Count;
-                //    }
-                //    data.StoreRequest = CSMP.BLL.CustomerRequestBLL.GetConut(currentUser.WorkGroupID);
-                //    data.HaveGroupPower = false;
-                //    if (LeftMenuDataBLL.Get(currentUser.ID) == null)
-                //    {
-                //        LeftMenuDataBLL.Add(data);
-                //    }
-                //    else
-                //    {
-                //        LeftMenuDataBLL.Edit(data);
-                //    }
-                //}
+                
 
                 dataList = LeftMenuDataBLL.GetListBySP();
                 CacheManage.InsertCache("leftMenuKey", dataList);

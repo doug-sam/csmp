@@ -87,6 +87,51 @@ namespace Tool
         }
 
         /// <summary>
+        /// 左侧菜单缓存数据启动页面post访问专用
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="paramStr"></param>
+        /// <param name="EncodeType"></param>
+        /// <returns></returns>
+        public static String DoPostForLeftMenu(String url, string paramStr, int EncodeType)
+        {
+            HttpWebRequest req = GetWebRequestForLeftMenu(url, "POST");
+            req.ContentType = "application/x-www-form-urlencoded;charset=utf-8";
+            Byte[] postData = Encoding.UTF8.GetBytes(paramStr);
+            if (EncodeType == 1)
+            {
+                postData = Encoding.UTF8.GetBytes(paramStr);
+            }
+            else if (EncodeType == 2)
+            {
+                postData = Encoding.GetEncoding("GB2312").GetBytes(paramStr);
+            }
+            Stream reqStream = req.GetRequestStream();
+            reqStream.Write(postData, 0, postData.Length);
+            reqStream.Close();
+            HttpWebResponse rsp = (HttpWebResponse)req.GetResponse();
+            Encoding encoding = Encoding.GetEncoding(rsp.CharacterSet);
+            string result = GetResponseAsString(rsp, encoding);
+            return result;
+        }
+        /// <summary>
+        /// 左侧菜单缓存数据启动页面post访问专用
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public static HttpWebRequest GetWebRequestForLeftMenu(String url, String method)
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            req.ServicePoint.Expect100Continue = false;
+            req.Method = method;
+            req.KeepAlive = true;
+            req.UserAgent = "CSMP";
+            req.Timeout =  30*60*1000;
+            return req;
+        }
+
+        /// <summary>
         /// 执行HTTP GET请求。
         /// </summary>
         /// <param name="url">请求地址</param>

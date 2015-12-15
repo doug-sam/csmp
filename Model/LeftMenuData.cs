@@ -36,7 +36,7 @@ namespace CSMP.Model
         public int StoreUrgency { get; set; }
 
         /// <summary>
-        ///店铺请求
+        ///报修请求
         /// </summary>
         public int StoreRequest { get; set; }
         /// <summary>

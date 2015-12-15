@@ -571,6 +571,8 @@ public partial class APPService_Default : System.Web.UI.Page
                 paramDic.Add("orderId", dr["f_No"].ToString());
                 paramDic.Add("gps", dr["f_GPS"].ToString());
                 paramDic.Add("address", DeleteSpecialChar(dr["f_Address"].ToString()));
+                paramDic.Add("storeName", DeleteSpecialChar(dr["f_Name"].ToString()));
+                paramDic.Add("majorUserName", dr["f_MajorUserName"].ToString());
                 paramDic.Add("customerName", dr["f_CustomerName"].ToString());
                 paramDic.Add("productName", dr["f_BrandName"].ToString());
                 paramDic.Add("customerLogo", "");
@@ -692,6 +694,8 @@ public partial class APPService_Default : System.Web.UI.Page
                     StoreInfo store = StoresBLL.Get(callList[i].StoreID);
                     paramDic.Add("gps", store == null ? "" : store.GPS);
                     paramDic.Add("address", store == null ? "" : DeleteSpecialChar(store.Address));
+                    paramDic.Add("storeName",store == null ? "" : DeleteSpecialChar(store.Name));
+                    paramDic.Add("majorUserName", userName);
                     paramDic.Add("customerName", callList[i].CustomerName);
                     paramDic.Add("productName", callList[i].BrandName);
                     paramDic.Add("customerLogo", "");
@@ -735,6 +739,8 @@ public partial class APPService_Default : System.Web.UI.Page
                     StoreInfo store = StoresBLL.Get(callList[i].StoreID);
                     paramDic.Add("gps", store == null ? "" : store.GPS);
                     paramDic.Add("address", store == null ? "" : DeleteSpecialChar(store.Address));
+                    paramDic.Add("storeName", store == null ? "" : DeleteSpecialChar(store.Name));
+                    paramDic.Add("majorUserName", userName);
                     paramDic.Add("customerName", callList[i].CustomerName);
                     paramDic.Add("productName", callList[i].BrandName);
                     paramDic.Add("customerLogo", "");
@@ -831,9 +837,8 @@ public partial class APPService_Default : System.Web.UI.Page
         
         StoreInfo store = StoresBLL.Get(callInfo.StoreID);
         paramDic.Add("gps", store == null ? "" : store.GPS);
-        paramDic.Add("address", store == null ? "" : DeleteSpecialChar(store.Address));
-        
-
+        paramDic.Add("address", store == null ? "" :store.CityName.Trim()+ DeleteSpecialChar(store.Address));
+        paramDic.Add("storeName", store == null ? "" : DeleteSpecialChar(store.Name));
         paramDic.Add("customerName", callInfo.CustomerName);
         paramDic.Add("productName", callInfo.BrandName);
         paramDic.Add("customerLogo", "");
@@ -1424,6 +1429,7 @@ public partial class APPService_Default : System.Web.UI.Page
                 paramDic.Add("orderId", dr["f_No"].ToString());
                 paramDic.Add("gps", dr["f_GPS"].ToString());
                 paramDic.Add("address", DeleteSpecialChar(dr["f_Address"].ToString()));
+                paramDic.Add("storeName", DeleteSpecialChar(dr["f_Name"].ToString()));
                 paramDic.Add("customerName", dr["f_CustomerName"].ToString());
                 paramDic.Add("productName", dr["f_BrandName"].ToString());
                 paramDic.Add("customerLogo", "");
@@ -1442,6 +1448,32 @@ public partial class APPService_Default : System.Web.UI.Page
                 }
                 paramDic.Add("SLA", slaDateEndStr);
                 paramDic.Add("desc", callDetails);
+                string callState = dr["f_CallStateA"].ToString().Trim();
+                if (callState == "2-6" || callState == "2-7")
+                { 
+                    callState="0";
+                    paramDic.Add("state", callState);
+                }
+                else if (callState == "2-12")
+                {
+                    callState = "1";
+                    paramDic.Add("state", callState);
+                }
+                else if (callState == "2-9")
+                {
+                    callState = "2";
+                    paramDic.Add("state", callState);
+                }
+                else if (callState == "3-")
+                {
+                    callState = "3";
+                    paramDic.Add("state", callState);
+                }
+                else {
+                    callState = "2";
+                    paramDic.Add("state", callState);
+                }
+                paramDic.Add("majorUserName", dr["f_MajorUserName"].ToString().Trim());
                 callInfo = WebUtil.BuildQueryJson(paramDic);
                 if (callInfo.EndsWith(","))
                 {

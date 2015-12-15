@@ -533,9 +533,10 @@ namespace CSMPTimerTask
                     {
                         Logger.GetLogger(this.GetType()).Info("CSMP左侧菜单数据缓存读写任务凌晨2点执行！！！\r\n", null);
                         try {
-                            
-                            string urlStr = "http://124.74.9.202:820/LeftMenu/DataCacheStartService.aspx";
-                            WebUtil.DoPost(urlStr, "param=LeftMenu", 1);
+
+                            string urlStr = ConfigHelper.GetAppendSettingValue("LeftMenuTaskUrl");
+                            string param = "param=getCache";
+                            WebUtil.DoPostForLeftMenu(urlStr, param, 1);
                            
                             Logger.GetLogger(this.GetType()).Info("CSMP左侧菜单数据缓存读写任务凌晨2点执行完成\r\n", null);
                         }

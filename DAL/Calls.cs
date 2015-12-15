@@ -359,7 +359,7 @@ namespace CSMP.DAL
             strSQLCount.Append("SELECT COUNT(1) FROM sys_Calls ");
             strSQLCount.Append(" inner join ");
             strSQLCount.Append(" (select f_MajorUserID,f_MajorUserName,CallStep.f_CallID  from sys_CallStep CallStep,(select f_CallID ,max(f_StepIndex) as maxid from sys_CallStep where f_StepType=3 and f_AddDate> DATEADD(MM,-12,GETDATE()) group by f_callid) MAXIndexCallStep where CallStep.f_callid=MAXIndexCallStep.f_CallID and CallStep.f_StepIndex=MAXIndexCallStep.maxid and f_MajorUserID =" + UserID + ") sysCallStep ");
-            strSQLCount.Append(" on sys_Calls.ID = sysCallStep.f_CallID where (f_StateMain = 3 or f_StateMain = 4 ) and f_CreateDate>DATEADD(MM,-6,GETDATE()) ");
+            strSQLCount.Append(" on sys_Calls.ID = sysCallStep.f_CallID where (f_StateMain = 3 or f_StateMain = 4 ) AND f_SloveBy='上门' and f_CreateDate>DATEADD(MM,-6,GETDATE()) ");
             using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper.SqlconnString, CommandType.Text, strSQLCount.ToString(), null))
             count =  Convert.ToInt32(SqlHelper.ExecuteScalar(SqlHelper.SqlconnString, CommandType.Text, strSQLCount.ToString(), null));
             pageCount = count / pageSize;
@@ -387,9 +387,9 @@ namespace CSMP.DAL
             List<CallInfo> list = new List<CallInfo>();
             strSQL.Append("SELECT B.* FROM ( ");
             strSQL.Append("SELECT TOP " + top1 + " A.* FROM (");
-            strSQL.Append("SELECT TOP "+top2+ALL_PARM+"  FROM sys_Calls inner join ");
+            strSQL.Append("SELECT TOP " + top2 + ALL_PARM + "  FROM sys_Calls inner join ");
             strSQL.Append(" (select f_MajorUserID,f_MajorUserName,CallStep.f_CallID  from sys_CallStep CallStep,(select f_CallID ,max(f_StepIndex) as maxid from sys_CallStep where f_StepType=3 and f_AddDate> DATEADD(MM,-6,GETDATE()) group by f_callid) MAXIndexCallStep where CallStep.f_callid=MAXIndexCallStep.f_CallID and CallStep.f_StepIndex=MAXIndexCallStep.maxid and f_MajorUserID =" + UserID + ") sysCallStep ");
-            strSQL.Append(" on sys_Calls.ID = sysCallStep.f_CallID where (f_StateMain = 3 or f_StateMain = 4 ) and f_CreateDate>DATEADD(MM,-6,GETDATE()) ORDER BY sys_Calls.f_CreateDate DESC ");
+            strSQL.Append(" on sys_Calls.ID = sysCallStep.f_CallID where (f_StateMain = 3 or f_StateMain = 4 ) AND f_SloveBy='上门' and f_CreateDate>DATEADD(MM,-6,GETDATE()) ORDER BY sys_Calls.f_CreateDate DESC ");
             strSQL.Append(") A ORDER BY  A.f_CreateDate ASC");
             strSQL.Append(" ) B ORDER BY B.f_CreateDate DESC");
 

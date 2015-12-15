@@ -23,7 +23,8 @@
         <asp:Button ID="BtnShowCache" runat="server" Text="显示内存数据" 
             onclick="BtnShowCache_Click" />&nbsp&nbsp&nbsp
         <asp:Button ID="postCachePage" runat="server" Text="访问写数据到内存的网页" 
-            onclick="postCachePage_Click" />
+            onclick="postCachePage_Click" /><br /><br />
+        <asp:Label ID="Label1" runat="server" Text=""></asp:Label>
     </div>
     </form>
 </body>

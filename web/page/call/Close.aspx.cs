@@ -222,6 +222,11 @@ public partial class page_call_Close : _Call_Close
         try
         {
             List<LeftMenuData> list = CacheManage.GetSearch("leftMenuKey") as List<LeftMenuData>;
+            if (list == null || list.Count <= 0)
+            {
+
+                LeftMenuDataBLL.InsertLeftMenuDataCache();
+            }
             //UserInfo currentUser = UserBLL.Get(845);
             int index = list.FindIndex(s => s.UserID == CurrentUserID);
             list[index].Closed += 1;

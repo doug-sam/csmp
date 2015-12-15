@@ -139,6 +139,35 @@ namespace CSMP.BLL
             bool b = Powers.Contains(Comma + ID + Comma);
             return b;
         }
+        /// <summary>
+        /// 为左侧菜单专门使用检查用户是否有某种权限
+        /// </summary>
+        /// <param name="ID">某种权限</param>
+        /// <param name="info">用户类</param>
+        /// <returns></returns>
+        public static bool PowerCheckForLeftMenuData(int ID,UserInfo info)
+        {
+            GroupInfo Ginfo;
+            if (info.Code == "admin")
+            {
+                Ginfo = new GroupInfo();
+                Ginfo.Name = "admin";
+                Ginfo.PowerList = "admin";
+                Ginfo.ID = -1;
+            }
+            else
+            {
+                Ginfo = GroupBLL.Get(info.PowerGroupID);
+            }
+
+            if (Ginfo.ID == -1 && Ginfo.Name == "admin")
+            {
+                return true;
+            }
+            string Powers = Comma + Ginfo.PowerList.Trim(',') + Comma;
+            bool b = Powers.Contains(Comma + ID + Comma);
+            return b;
+        }
 
         public static List<string> GetListItem(GroupInfo info)
         {
