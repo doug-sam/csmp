@@ -20,14 +20,16 @@ public partial class menu : BasePage
             {
                 LCallSln1.Visible = GroupBLL.PowerCheck((int)PowerInfo.P1_Call.跟进处理)||GroupBLL.PowerCheck((int)PowerInfo.P1_Call.安排上门);
                 //20150714修改判断戴姆勒这个用户不显示 等待安排上门
-                if (CurrentUserID == 948 || CurrentUserName == "戴姆勒")
+                if (CurrentUserID == 948 || CurrentUserName == "戴姆勒" || CurrentUserID == 1035 || CurrentUserName == "Auchan01" || CurrentUserID == 1036 || CurrentUserName == "Auchan02")
+                //if (CurrentUserID == 948 || CurrentUserName == "戴姆勒")
                 {
                     LCallSln1.Visible = false;
                 }
                 LCallAdd.Visible = GroupBLL.PowerCheck((int)PowerInfo.P1_Call.新建报修);
                 LCallSch.Visible= GroupBLL.PowerCheck((int)PowerInfo.PMain.报修管理);
                 //20150714修改判断戴姆勒这个用户不显示 报修查询
-                if (CurrentUserID == 948 || CurrentUserName == "戴姆勒")
+                if (CurrentUserID == 948 || CurrentUserName == "戴姆勒" || CurrentUserID == 1035 || CurrentUserName == "Auchan01" || CurrentUserID == 1036 || CurrentUserName == "Auchan02")
+                //if (CurrentUserID == 948 || CurrentUserName == "戴姆勒")
                 {
                     LCallSch.Visible = false;
                 }

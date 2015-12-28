@@ -385,6 +385,9 @@ public partial class page_call_add : _Call_Add
         }
         Logger.GetLogger(this.GetType()).Info("开单，最后选中的Store信息为，StoreID:" + sinfo.ID + "，StoreNo:" + sinfo.No + ",StoreName:" + sinfo.Name, null);
         #endregion
+        this.BtnSubmit.Enabled = false;
+        //Thread.Sleep(60000);
+
         CallInfo info = new CallInfo();
 
         info.CreatorID = CurrentUserID;

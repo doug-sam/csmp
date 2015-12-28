@@ -61,9 +61,10 @@ public partial class LeftMenu_DataCacheStartService : System.Web.UI.Page
                         LeftMenuDataBLL.Edit(data);
                     }
                 }
-                Logger.GetLogger(this.GetType()).Info("左侧菜单写缓存接口被调用！循环计算用户各数据完成\r\n", null);
+                Logger.GetLogger(this.GetType()).Info("左侧菜单写缓存接口被调用！循环计算用户各数据插入数据库完成\r\n", null);
                 dataList = LeftMenuDataBLL.GetListBySP();
                 CacheManage.InsertCache("leftMenuKey", dataList);
+                Logger.GetLogger(this.GetType()).Info("左侧菜单写缓存接口被调用！循环计算用户各数据读数据库后写入缓存完成\r\n", null);
          
             }
             catch (Exception ex)

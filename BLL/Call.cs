@@ -219,11 +219,12 @@ namespace CSMP.BLL
             {
                 return 0;
             }
-            if (!havaPower)
-            {
-                return dal.GetCount(StateMain, uinfo.ID, 0);
-            }
-            return dal.GetCount(StateMain, 0, uinfo.WorkGroupID);
+            //if (!havaPower)
+            //{
+            //    return dal.GetCount(StateMain, uinfo.ID, 0);
+            //}
+            //return dal.GetCount(StateMain, 0, uinfo.WorkGroupID);
+            return dal.GetCount(StateMain, uinfo.ID, 0);
         }
 
         /// <summary>

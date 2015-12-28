@@ -37,6 +37,7 @@
 	        function GetCallID() {
 	            var obj = {};
 	            obj.callid = GetQueryString("CallID");
+	            obj.callstepid = GetQueryString("CallStepID");
 	            return JSON.stringify(obj);
 	        }
 	        function GetQueryString(name) {

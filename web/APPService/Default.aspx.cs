@@ -2138,7 +2138,20 @@ public partial class APPService_Default : System.Web.UI.Page
         AttachmentInfo info = new AttachmentInfo();
         info.Addtime = DateTime.Now;
         info.CallID = callInfo.ID;
-        info.CallStepID = 0;
+        //插入的图片与该次上门记录关联 2015.12.18 ZQL加
+        List<CallStepInfo> callstepList = CallStepBLL.GetList(callInfo.ID, SysEnum.StepType.到达门店处理);
+        if (callstepList.Count > 0)
+        {
+            callstepList.OrderByDescending(step => step.ID);
+            if (callstepList[0].Details.Contains("工程师使用APP签到") && callstepList[0].MajorUserID == user.ID)
+            {
+                info.CallStepID = callstepList[0].ID;
+            }
+            else {
+                info.CallStepID = 0;
+            }
+        }
+        
         info.ContentType = "image";
         info.DirID = 0;
         info.Ext = "";

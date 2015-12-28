@@ -140,10 +140,7 @@ namespace CSMP.BLL
         public static bool InsertLeftMenuDataCache()
         {
             try {
-                List<UserInfo> userList = UserBLL.GetList("");
                 List<LeftMenuData> dataList = new List<LeftMenuData>();
-                
-
                 dataList = LeftMenuDataBLL.GetListBySP();
                 CacheManage.InsertCache("leftMenuKey", dataList);
                 return true;

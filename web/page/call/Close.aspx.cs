@@ -224,17 +224,20 @@ public partial class page_call_Close : _Call_Close
             List<LeftMenuData> list = CacheManage.GetSearch("leftMenuKey") as List<LeftMenuData>;
             if (list == null || list.Count <= 0)
             {
-
+                
                 LeftMenuDataBLL.InsertLeftMenuDataCache();
+                list = CacheManage.GetSearch("leftMenuKey") as List<LeftMenuData>;
+                Logger.GetLogger(this.GetType()).Info("关闭工单时缓存数据为空，从数据库中同步一次数据到缓存中。\r\n", null);
             }
             //UserInfo currentUser = UserBLL.Get(845);
             int index = list.FindIndex(s => s.UserID == CurrentUserID);
             list[index].Closed += 1;
-            list[index].Complete -= 1;
+            //list[index].Complete -= 1;
             CacheManage.InsertCache("leftMenuKey", list);
+            Logger.GetLogger(this.GetType()).Info("关闭工单时更新缓存中对应的close数成功，操作人"+CurrentUserName+"。\r\n", null);
         }
-        catch { 
-        
+        catch(Exception ex) {
+            Logger.GetLogger(this.GetType()).Info("关闭工单时更新缓存中对应的close数失败，失败原因："+ex.Message+"\r\n", null);
         }
         #endregion
 

@@ -82,6 +82,7 @@ public partial class page_call_sln : _Call_Step
                 DdlSln.Visible = false;
                 BtnDeal.Visible = true;
                 TxbDetail.Enabled = true;
+                UpdatePanel2.Visible = true;
                 break;
             case SysEnum.CallStateDetails.电话支持:
                 break;

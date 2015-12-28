@@ -7,7 +7,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div id="AjaxLoaderTipBackground" class="ajaxLoaderTipBackground"><div id="AjaxLoaderTip" class="ajaxLoaderTipDiv">通讯中,请稍候...</div></div>
     <uc1:CallState ID="CallState1" runat="server" FocusItemIndex="2" />
-    <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+    <asp:UpdatePanel ID="UpdatePanel2" runat="server" Visible="false">
         <ContentTemplate>
             <table cellpadding="0" cellspacing="0" width="100%" border="0" class="table1">
                 <tr>

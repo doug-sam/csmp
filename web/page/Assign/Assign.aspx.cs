@@ -115,6 +115,18 @@ public partial class page_Assign_Assign : _Call_Assign
 
         if (CallBLL.Edit(info))
         {
+            #region 需要更新跑马灯消息归属二线
+            List<MarqueeMessage> messageList = MarqueeMessageBLL.GetList(" and f_No ='" +info.No+"'");
+            if (messageList.Count > 0)
+            {
+                MarqueeMessage newMessage = messageList[0];
+                newMessage.MaintainUserID = asinfo.UseID;
+                newMessage.MaintainUserName = asinfo.UserName;
+                MarqueeMessageBLL.Edit(newMessage);
+            }
+
+            #endregion
+
             Logger.GetLogger(this.GetType()).Info("同组转派修改主表状态成功，callid=" + asinfo.CallID + "，操作人：" + info.CreatorName, null);
             AssignBLL.Add(asinfo);
             Function.AlertRefresh("转派成功", "main");

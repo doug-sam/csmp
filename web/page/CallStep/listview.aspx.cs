@@ -190,11 +190,27 @@ public partial class page_CallStep_listview : BasePage
             HyperLink1.NavigateUrl = "javascript:tb_show('编辑', '/page/CallStep/Edit.aspx?ID=" + ID + "&TB_iframe=true&height=400&width=700', false);";
             HyperLink1.ToolTip = "点击修改";
         }
+        else if (StepType == (int)SysEnum.StepType.到达门店处理)//&& GetInfo().StateMain != (int)SysEnum.CallStateMain.已关闭
+        {
+            List<AttachmentInfo> attList = AttachmentBLL.GetList(" f_CallStepID=" + ID + " AND f_Title='APP上传的图片列表'");
+            if (attList.Count > 0)
+            {
+                HyperLink1.Enabled = true;
+                HyperLink1.NavigateUrl = "/PicView/PicView.aspx?CallStepID=" + ID;
+                HyperLink1.ToolTip = "点击查看APP上传的图片";
+            }
+            else
+            {
+                HyperLink1.NavigateUrl = "#";
+                HyperLink1.Enabled = false;
+            }
+        }
         else
         {
             HyperLink1.NavigateUrl = "#";
             HyperLink1.Enabled = false;
         }
+        
     }
 
     protected string ProcessDetails(string Details)
@@ -252,6 +268,7 @@ public partial class page_CallStep_listview : BasePage
         return "步骤" + (index + 1).ToString();
 
     }
+    
 
 
     public string GenerateATagSufix(string index)

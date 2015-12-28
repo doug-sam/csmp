@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using CSMP.BLL;
 using CSMP.Model;
 using System.Web.SessionState;
+using Tool;
 
 
 public class GetCallCount : IHttpHandler,IRequiresSessionState //就是这样显示的实现一下，不用实现什么方法
@@ -23,6 +24,42 @@ public class GetCallCount : IHttpHandler,IRequiresSessionState //就是这样显
         list.Add(CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.处理中, CurrentUser).ToString());
         list.Add(CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已完成, CurrentUser).ToString());
         list.Add(CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已关闭, CurrentUser).ToString());
+        #region 读缓存close数
+        try
+        {
+            int closeCount = 0;
+            List<LeftMenuData> cacheList = CacheManage.GetSearch("leftMenuKey") as List<LeftMenuData>;
+            if (cacheList == null || cacheList.Count <= 0)
+            {
+
+                LeftMenuDataBLL.InsertLeftMenuDataCache();
+                cacheList = CacheManage.GetSearch("leftMenuKey") as List<LeftMenuData>;
+                Logger.GetLogger(this.GetType()).Info("获取关闭工单数时缓存数据为空，从数据库中同步一次数据到缓存中。\r\n", null);
+            }
+            int index = cacheList.FindIndex(s => s.UserID == CurrentUser.ID);
+            if (cacheList[index].HaveGroupPower)
+            {
+                foreach (LeftMenuData item in cacheList)
+                {
+                    if (item.WorkGroupID == cacheList[index].WorkGroupID)
+                    {
+                        closeCount += item.Closed;
+                    }
+                }
+            }
+            else {
+                closeCount = cacheList[index].Closed;
+            }
+
+            Logger.GetLogger(this.GetType()).Info("获取close数成功，操作人" + CurrentUser.Name + "，close总数为:" + closeCount + "。\r\n", null);
+        }
+        catch (Exception ex)
+        {
+            Logger.GetLogger(this.GetType()).Info("获取close数失败，失败原因：" + ex.Message + "\r\n", null);
+        }
+        #endregion
+        
+        
         List<CallInfo> Tracelist = CallBLL.GetListTraceByCurrentUser();
         if (null==Tracelist||Tracelist.Count==0)
         {

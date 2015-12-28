@@ -254,7 +254,7 @@ namespace CSMP.DAL
         {
             StringBuilder strSQL = new StringBuilder();
             strSQL.Append("select MAX(f_WorkGroupID) ").Append(FROM_TABLE).Append(" where f_CallID = ").Append(CallID);
-            strSQL.Append(" AND f_CrossWorkGroup=1 ");
+            strSQL.Append(" AND f_CrossWorkGroup=1 AND f_AssignType=0");
            object obj= SqlHelper.ExecuteScalar(CommandType.Text, strSQL.ToString(), null);
            if (obj==DBNull.Value)
            {

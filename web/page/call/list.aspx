@@ -303,7 +303,7 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="后续处理" Visible="true">
                 <ItemTemplate>
-                    <a href="javascript:tb_show('后续处理', '/page/callStep/StepSwitchAfterFinish.aspx?ID=<%#Eval("ID") %>&TB_iframe=true&height=450&width=730', false);">
+                    <a href="javascript:tb_showOnlyClickButtoneClose('后续处理', '/page/callStep/StepSwitchAfterFinish.aspx?ID=<%#Eval("ID") %>&TB_iframe=true&height=450&width=730', false);">
                         <img src="/images/up.gif" title="后续处理" alt="后续处理" /></a>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />

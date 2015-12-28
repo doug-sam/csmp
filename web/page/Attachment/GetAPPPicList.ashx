@@ -15,14 +15,24 @@ public class GetAPPPicList : IHttpHandler {
         string param = context.Request.Form["PARAM"];
         JObject obj = JObject.Parse(param);
         string callid = obj["callid"].ToString();
+        string callstepid = obj["callstepid"].ToString();
         callid = callid.Trim('"');
+        callstepid = callstepid.Trim('"');
         string result = string.Empty;
-        if (string.IsNullOrEmpty(callid))
+        if (string.IsNullOrEmpty(callid) && string.IsNullOrEmpty(callstepid))
         {
             result = "{\"picList\":\"<h2>没有对应的图片</h2>";
         }
         else {
-            System.Collections.Generic.List<AttachmentInfo> aList = AttachmentBLL.GetList(" f_CallID=" + callid + " AND f_Title='APP上传的图片列表'");
+            System.Collections.Generic.List<AttachmentInfo> aList = null;
+            if (string.IsNullOrEmpty(callstepid))
+            {
+                aList = AttachmentBLL.GetList(" f_CallID=" + callid + " AND f_Title='APP上传的图片列表'");
+            }
+            else {
+                aList = AttachmentBLL.GetList(" f_CallStepID=" + callstepid + " AND f_Title='APP上传的图片列表'");
+            }
+            
             if (aList.Count > 0)
             {
                 string appPicCommonUrl = "http://hesheng.zen110.com/picture/";
