@@ -467,6 +467,9 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
                     {
                         list[i].GPS = "";
                     }
+                    else {
+                        list[i].GPS = InfoExist.GPS;
+                    }
                     if (StoresBLL.Edit(list[i]))
                     {
                         FlagEdit++;
@@ -647,13 +650,15 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
         string result = string.Empty;
         //string url = "http://helpdesk.bkchina.cn/siweb_test/ws_hesheng.ashx";
         string url = ConfigurationManager.AppSettings["BKStoreDataUrl"].ToString();
-        
-        
+
+        Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，点击了同步按钮，操作人："+CurrentUserName+"。\r\n", null);
             
         List<BKStoreInfo> bkStoreList = BKStoreInfoBLL.GetList(" order by id ");
         if (bkStoreList == null || bkStoreList.Count <= 0)
         {
+            Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统，没有任何数据，取消调用接口。\r\n", null);
             Function.AlertBack("数据库中没有任何数据。"); return;
+            
 
         }
         else {
@@ -681,6 +686,7 @@ public partial class page_Inport_BKStoreInfo : _Sys_Inport
                 }
             }
             para = "para={\"Action\":\"updateStoreMaster\",\"stores\":[" + para + "]}";
+            Logger.GetLogger(this.GetType()).Info("同步店铺信息到汉堡王转呈系统。发送参数为：" + para + "\r\n", null);
             result = WebUtil.DoPost(url, para, 2);
             JObject obj = null;
             try

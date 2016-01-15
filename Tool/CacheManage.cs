@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Caching;
 
 namespace Tool
 {
@@ -29,8 +30,17 @@ namespace Tool
         /// <param name="obj"></param>
         public static void InsertCache(string cacheKey, object obj)
         {
-            HttpRuntime.Cache.Insert(cacheKey, obj);
+           // HttpRuntime.Cache.Insert(cacheKey, obj);
+
+            //HttpRuntime.Cache.Insert(cacheKey, obj, null, DateTime.Now.AddMonths(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.High, insertIntoDB);
+            HttpRuntime.Cache.Insert(cacheKey, obj, null, DateTime.Now.AddMonths(2), System.Web.Caching.Cache.NoSlidingExpiration);
         }
+
+        //public static void insertIntoDB(string key, object value, CacheItemRemovedReason reason)
+        //{ 
+
+        
+        //}
 
         /// <summary>
         /// 删除缓存

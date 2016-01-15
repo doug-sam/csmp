@@ -5,6 +5,7 @@ using System.Text;
 using CSMP.Model;
 using Tool;
 
+
 namespace CSMP.BLL
 {
     /// <summary>
@@ -73,7 +74,47 @@ namespace CSMP.BLL
             {
                 return ActionZara.API_Step1(cinfo);
             }
+            //2015.12.29新增麦德龙 开单发送邮件
+            if ((cinfo.CustomerID==179) ||(cinfo.CustomerName.Trim()=="麦德龙"))
+            {
+                return SendEmailMDL(cinfo);
+            }
             return null;
+        }
+        //2015.12.29 暂时给麦德龙使用
+        public static string SendEmailMDL(CallInfo cinfo)
+        {
+            StoreInfo storeInfo = StoresBLL.Get(cinfo.StoreID);
+            EmailInfo einfo = new EmailInfo();
+            einfo.FromPort = Tool.Function.ConverToInt(ProfileBLL.GetValue(ProfileInfo.YUM_API.发件邮箱端口));
+            einfo.FromEmailAddress = ProfileBLL.GetValue(ProfileInfo.YUM_API.发件邮箱地址);
+            einfo.FromEmailPwd = ProfileBLL.GetValue(ProfileInfo.YUM_API.发件邮箱密码);
+            einfo.FromEmailHost = ProfileBLL.GetValue(ProfileInfo.YUM_API.发件邮件主机);
+            einfo.FromEmailDisplayName = ProfileBLL.GetValue(ProfileInfo.YUM_API.发件人显示名);
+            
+
+            einfo.Attachment = null;
+            einfo.CC = null;
+            einfo.MailAddress = new List<System.Net.Mail.MailAddress>();
+            string sendToAddress = ConfigHelper.GetAppendSettingValue("MDLErrorEmailTo");
+            List<string> SendTo = sendToAddress.Split(';').ToList();
+            foreach (string item in SendTo)
+            {
+                if (string.IsNullOrEmpty(item.Trim()))
+                {
+                    continue;
+                }
+                einfo.MailAddress.Add(new System.Net.Mail.MailAddress(item.Trim()));
+            }
+            einfo.Subject = string.Format("{0}##{1}## {2}", cinfo.BrandName, storeInfo.Name,storeInfo.No);
+
+            einfo.Body = string.Format("单号：{0}<br/>", cinfo.No);
+            einfo.Body +=string.Format("报修时间：{0}<br/>", cinfo.ErrorDate.ToString("yyyy-MM-dd HH:mm"));
+            einfo.Body += string.Format("店铺名：{0}<br/>", storeInfo.Name.Trim());
+            einfo.Body += string.Format("店铺编号：{0}<br/>", storeInfo.No.Trim());
+            einfo.Body += string.Format("故障描述：{0}<br/>", cinfo.Details.Trim());
+
+            return EmailBLL.Email_Send(einfo);
         }
 
         /// <summary>

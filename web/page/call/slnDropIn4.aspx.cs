@@ -420,4 +420,20 @@ public partial class page_call_slnDropIn4 : _Call_Step
 
     #endregion
 
+    protected void btnSHowKnowledge_Click(object sender, EventArgs e)
+    {
+        CallInfo info = GetInfo();
+        string returnInfo = "javascript:tb_show('知识库查看', '/page/KnowledgeBase/ListOnSolutionPage.aspx?";
+        if (info != null)
+        {
+            returnInfo += "CustomerID=" + info.CustomerID.ToString() + "&BrandID=" + info.BrandID.ToString();
+        }
+        else
+        {
+            returnInfo += "CustomerID=0&BrandID=0";
+        }
+        returnInfo += "&TB_iframe=true&height=500&width=1200&modal=false', false);";
+        ScriptManager.RegisterStartupScript(this.btnSHowKnowledge, this.GetType(), "", returnInfo, true);
+    }
+
 }

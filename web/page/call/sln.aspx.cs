@@ -171,6 +171,8 @@ public partial class page_call_sln : _Call_Step
     protected void BtnDeal_Click(object sender, EventArgs e)
     {
         string callbackrecordid = Request["callbackrecordid"];
+        string hidCallbackrecordid = this.hidCallbackrecid.Value;
+        
         int POS1 = callbackrecordid.IndexOf("#");
         if ((POS1 + 1) >= callbackrecordid.Length)
             POS1 = -1;
@@ -190,7 +192,8 @@ public partial class page_call_sln : _Call_Step
 
         CallInfo cinfo = GetInfo();
         CheckStatus(cinfo);
-        Logger.GetLogger(this.GetType()).Info("开始处理log，点击开始处理按钮，callNo=" + cinfo.No + "，操作人：" + CurrentUser.Name.ToString() + "，录音ID：" + callbackrecordid + "\r\n", null);
+        Logger.GetLogger(this.GetType()).Info("开始处理log，点击开始处理按钮，callNo=" + cinfo.No + "，操作人：" + CurrentUser.Name.ToString() + "，隐藏控件ID：" + hidCallbackrecordid + "，描述：" + TxbDetail.Text.Trim() + "\r\n", null);
+        Logger.GetLogger(this.GetType()).Info("开始处理log，点击开始处理按钮，callNo=" + cinfo.No + "，操作人：" + CurrentUser.Name.ToString() + "，录音ID：" + callbackrecordid + "，描述：" + TxbDetail.Text.Trim() + "\r\n", null);
 
         CallStepInfo sinfo = new CallStepInfo();
         sinfo.StepType = (int)SysEnum.StepType.开始处理;

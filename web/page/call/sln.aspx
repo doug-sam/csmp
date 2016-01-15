@@ -27,7 +27,9 @@
                          line-height: 22px; padding: 10px 10px;">
                         <asp:Label ID="labStation" runat="server" Text="分机号"></asp:Label><asp:TextBox ID="txtStation" runat="server"></asp:TextBox>
                         <asp:Label ID="labCalledNO" runat="server" Text="被叫号码"></asp:Label><asp:TextBox ID="txtCalledNO" runat="server"></asp:TextBox>
-                        <input type="button" onclick="OutboundCall();" value="拨打" class="BigButton"/><input type="text" name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
+                        <input type="button" onclick="OutboundCall();" value="拨打" class="BigButton"/>
+                        <input type="text"  name="callbackrecordid" id="callbackrecid" value="" style="display:none"/>
+                        <input type="hidden"  ID="hidCallbackrecid" runat="server" /> 
                     </div>
             </td></tr>
             </table>
@@ -101,6 +103,8 @@
                         pos = receivedstr.indexOf("#");
                         if ( pos != -1 )  {
                             $("#callbackrecid").val(data);
+                            $("#<%=hidCallbackrecid.ClientID %>").val(data); 
+
                             WriteToSysLog("开始处理外呼成功：" + data + "  url:" + originalUrlStr + callIDStr);
                             alert("外呼成功。");
                         }
@@ -120,6 +124,13 @@
                         alert("外呼请求无响应，请稍后再试。");
                 }
             });
+        }
+        //测试用
+        function setHiddeValue() {
+
+            $("#callbackrecid").val('20151231');
+           
+
         }
     </script>    
 </asp:Content>

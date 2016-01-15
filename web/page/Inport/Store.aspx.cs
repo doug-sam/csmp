@@ -364,6 +364,10 @@ public partial class page_Inport_Store : _Sys_Inport
                     {
                         item.GPS = "";
                     }
+                    else
+                    {
+                        item.GPS = InfoExist.GPS;
+                    }
                     if (StoresBLL.Edit(item))
                     {
                         FlagEdit++;

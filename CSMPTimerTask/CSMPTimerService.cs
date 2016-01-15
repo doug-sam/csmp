@@ -386,8 +386,8 @@ namespace CSMPTimerTask
                             catch (Exception ex)
                             {
                                 Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "\r\n", null);
-                                if (ex.Message.Contains("远程服务器返回错误: (500)"))
-                                {
+                                //if (ex.Message.Contains("远程服务器返回错误: (500)"))
+                                //{
                                     if (WebServiceTaskBLL.Delete(id))
                                     {
                                         Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息成功。\r\n", null);
@@ -397,7 +397,7 @@ namespace CSMPTimerTask
                                         Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息失败。\r\n", null);
                                     }
                                     EmailInfo(taskList[i], "错误原因：发送请求响应错误，异常：" + ex.Message);
-                                }
+                                //}
                                 continue;
                             }
 

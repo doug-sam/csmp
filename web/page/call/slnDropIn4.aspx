@@ -98,6 +98,8 @@
                         OnSelectedIndexChanged="DdlSln_SelectedIndexChanged">
                         </asp:DropDownList>
                         <asp:TextBox ID="TxbSln" runat="server" Visible="false" Width="400px"></asp:TextBox>
+                        <asp:Button ID="btnSHowKnowledge" runat="server" Text="查看知识库" 
+                            onclick="btnSHowKnowledge_Click"/>
                     </td>
                 </tr>
                 <tr>
