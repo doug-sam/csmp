@@ -97,6 +97,8 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
         }
 
 
+        BtnSubmit.Visible = false;
+
         CallInfo cinfo = GetInfo();
         CallStepInfo sinfo = new CallStepInfo();
         sinfo.StepType = (int)SysEnum.StepType.上门安排;
@@ -218,7 +220,7 @@ public partial class page_call_slnDropIn1 : _Call_Sln1
         #endregion
 
 
-        BtnSubmit.Visible = false;
+        
 
     }
 

@@ -25,13 +25,7 @@
             </td>
             <td class="td1_3">
                 <ul class="ulAttachment">
-                <asp:Repeater ID="Repeater1" runat="server">
-                    <ItemTemplate>
-                        <li>
-                            <a href='/page/sys/DownLoadFile.ashx?ID=<%#Eval("ID") %>' target="_blank"><%#Eval("Memo") %></a>
-                        </li>
-                    </ItemTemplate>
-                </asp:Repeater>
+                <%=content %>
             </ul>
             </td>
         </tr>

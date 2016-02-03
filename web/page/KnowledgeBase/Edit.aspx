@@ -134,6 +134,14 @@
             </td>
         </tr>
         <tr>
+            <td class="td1_2">
+                是否启用：
+            </td>
+            <td class="td1_3">
+                <asp:CheckBox ID="CbEnable" runat="server" Text="禁用" />
+            </td>
+        </tr>
+        <tr>
             <td class="td1_2" colspan="2">
                 <asp:Label ID="LabUserInfo" runat="server" Text=""></asp:Label>
             </td>

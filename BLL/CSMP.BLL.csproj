@@ -63,6 +63,7 @@
     <Compile Include="BillRec.cs" />
     <Compile Include="BKStoreInfo.cs" />
     <Compile Include="Brand.cs" />
+    <Compile Include="CacheManage.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="CallCategory.cs" />
     <Compile Include="CallStep.cs" />

@@ -64,7 +64,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CacheManage.cs" />
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="CookiesHelper.cs" />
     <Compile Include="DataHelper.cs" />
@@ -85,6 +84,7 @@
     <Compile Include="Reverser.cs" />
     <Compile Include="WebUtil.cs" />
     <Compile Include="WordHelper.cs" />
+    <Compile Include="WordToHTML.cs" />
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>

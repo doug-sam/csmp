@@ -69,9 +69,11 @@ public partial class page_KnowledgeBase_ListOnSolutionPage : System.Web.UI.Page
     protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.DataItem == null) return;
-        int ID = Function.ConverToInt(DataBinder.Eval(e.Row.DataItem, "ID").ToString());
+        //int ID = Function.ConverToInt(DataBinder.Eval(e.Row.DataItem, "ID").ToString());
+        int knowType = Function.ConverToInt(DataBinder.Eval(e.Row.DataItem, "KnowledgeType").ToString());
         Image Control1 = (Image)e.Row.FindControl("ImgHaveAttachment");
-        Control1.Visible = AttachmentBLL.GetList(ID, AttachmentInfo.EUserFor.KnowledgeBase).Count > 0;
+        //Control1.Visible= AttachmentBLL.GetList(ID, AttachmentInfo.EUserFor.KnowledgeBase).Count > 0;
+        Control1.Visible = knowType == 1;
 
     }
 

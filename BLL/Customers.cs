@@ -95,6 +95,16 @@ namespace CSMP.BLL
             return dal.GetCustomerByUserID(userID);
         
         }
+        /// <summary>
+        /// 根据openid 找到对应的客户列表，用于微信
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
+        public static DataTable GetCustomerByOpenID(string openId)
+        {
+            return dal.GetCustomerByOpenID(openId);
+
+        }
 
 
         #endregion

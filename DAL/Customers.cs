@@ -151,7 +151,24 @@ namespace CSMP.DAL
             string strSQL = "SELECT DISTINCT f_CustomerName Name,f_CustomerID ID From sys_Customers, sys_User, sys_WorkGroupBrand,sys_Brand WHERE sys_User.ID = " + userID + " AND sys_User.f_WorkGroupID = sys_WorkGroupBrand.f_WorkGroupID AND sys_WorkGroupBrand.f_MID = sys_Brand.ID";
             return SqlHelper.ExecuteReader(strSQL, "0");
         }
+        /// <summary>
+        /// 根据openid 找到对应的客户列表，用于微信
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public DataTable GetCustomerByOpenID(string openId)
+        {
+            StoreProcedure sp = new StoreProcedure("sp_wx_querycustomers");//类的对象
+            Object[] paraValues = new object[2];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
+            paraValues[0] = openId;//从第二个参数开始赋值
+            paraValues[1] = "";
+            object[] output = new object[1];
+            DataTable dt = new DataTable();
+            dt = sp.ExecuteDataTable(out output,1, paraValues);
+            return dt;
+        }
 
+        
         #endregion
 
 

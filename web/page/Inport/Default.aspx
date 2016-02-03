@@ -22,6 +22,8 @@
 <a href="StoreTemplate.xls">店铺导入模板</a>
 <br />
 <a href="Class.xls">故障类整体导入模板</a>
+<br />
+<a href="BURGERKING20160113.xls">汉堡王店铺数据导入模板</a>
 </div>
 </asp:Content>
 

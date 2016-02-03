@@ -172,6 +172,11 @@ public partial class page_call_sln : _Call_Step
     {
         string callbackrecordid = Request["callbackrecordid"];
         string hidCallbackrecordid = this.hidCallbackrecid.Value;
+        //hidCallbackrecordid = "ok#callid=1405021697##";
+        if (!string.IsNullOrEmpty(hidCallbackrecordid))
+        {
+            callbackrecordid = hidCallbackrecordid;
+        }
         
         int POS1 = callbackrecordid.IndexOf("#");
         if ((POS1 + 1) >= callbackrecordid.Length)

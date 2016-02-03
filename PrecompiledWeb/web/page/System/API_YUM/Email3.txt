@@ -1,7 +1,0 @@
-﻿Onsite time: (((((到达现场时间)))))
-Close time: (((((完成时间)))))
-Team: MVS
-Engineer: (((((上门工程师)))))
-Spare parts: N
-Spare machine: N
-Description: (((((描述)))))

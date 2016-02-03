@@ -104,6 +104,12 @@
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Left" />
             </asp:TemplateField>
+            <asp:TemplateField HeaderText="是否启用">
+                <ItemTemplate>
+                    <%#Eval("Enable").ToString().ToLower()=="true"?"启用":"已禁用"%>
+                </ItemTemplate>
+                <ItemStyle HorizontalAlign="Center" />
+            </asp:TemplateField>
             <%--<asp:TemplateField HeaderText="支持数">
                 <ItemTemplate>
                     <%#Eval("GoodCount") %>
@@ -112,7 +118,7 @@
             </asp:TemplateField>--%>
             <asp:TemplateField HeaderText="详细资料">
                 <ItemTemplate>
-                    <a href="#" onclick='tb_show("", "Edit.aspx?ID=<%# Eval("ID")%>&TB_iframe=true&height=400&width=800&modal=false", false); return false;'>编辑</a>
+                    <a href="#" onclick='tb_show("", "<%# Eval("KnowledgeType").ToString()=="1"?"EditForAtt.aspx":"Edit.aspx"%>?ID=<%# Eval("ID")%>&TB_iframe=true&height=400&width=800&modal=false", false); return false;'>编辑</a>
                 </ItemTemplate>
                 <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateField>
@@ -124,6 +130,7 @@
     <p style="padding: 10px;">
         <asp:Literal ID="LtlAdd" runat="server">    
             <a href="javascript:tb_show('添加', 'Edit.aspx?TB_iframe=true&height=450&width=730', false);" >添加</a>
+            &nbsp&nbsp&nbsp<a href="javascript:tb_show('添加', 'EditForAtt.aspx?TB_iframe=true&height=450&width=730', false);" >添加文件类型知识库</a>
         </asp:Literal>
         <asp:Panel ID="LtlDelete" runat="server">
             <input type='checkbox' name='ckAll' value='1' onclick="checkAll('ckAll', 'ckDel')" />全选&nbsp;&nbsp;

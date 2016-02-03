@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CSMP.DAL;
 using CSMP.Model;
+using System.Data;
 
 namespace CSMP.BLL
 {
@@ -52,6 +53,17 @@ namespace CSMP.BLL
         public static KnowledgeBaseInfo Get(int id)
         {
             return dal.Get(id);
+        }
+        /// <summary>
+        /// 根据传来的客户ID和品牌ID显示列表
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="brandId"></param>
+        /// <returns></returns>
+        public static DataTable GetListByBothId(string openId, string customerId, string brandId)
+        {
+            return dal.GetListByBothId(openId,customerId, brandId);
+
         }
 
         #endregion

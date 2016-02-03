@@ -23,7 +23,7 @@ public class GetCallCount : IHttpHandler,IRequiresSessionState //就是这样显
         list.Add( CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.未处理, CurrentUser).ToString());
         list.Add(CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.处理中, CurrentUser).ToString());
         list.Add(CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已完成, CurrentUser).ToString());
-        list.Add(CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已关闭, CurrentUser).ToString());
+        //list.Add(CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已关闭, CurrentUser).ToString());
         #region 读缓存close数
         try
         {
@@ -50,13 +50,15 @@ public class GetCallCount : IHttpHandler,IRequiresSessionState //就是这样显
             else {
                 closeCount = cacheList[index].Closed;
             }
-
+            list.Add(closeCount.ToString());
             Logger.GetLogger(this.GetType()).Info("获取close数成功，操作人" + CurrentUser.Name + "，close总数为:" + closeCount + "。\r\n", null);
         }
         catch (Exception ex)
         {
+            list.Add(CSMP.BLL.CallBLL.GetCount((int)SysEnum.CallStateMain.已关闭, CurrentUser).ToString());
             Logger.GetLogger(this.GetType()).Info("获取close数失败，失败原因：" + ex.Message + "\r\n", null);
         }
+        
         #endregion
         
         

@@ -50,6 +50,11 @@ namespace CSMP.Model
         /// </summary>
         public string Labs { get; set; }
 
+        /// <summary>
+        /// 0表示普通知识库，1表示是附件类型的知识库
+        /// </summary>
+        public int KnowledgeType { get; set; }
+
 
     }
 }

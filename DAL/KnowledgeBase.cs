@@ -10,11 +10,11 @@ namespace CSMP.DAL
 {
     public class KnowledgeBaseDAL
     {
-        private const string ALL_PARM = "  ID,f_Title,f_Content,f_AddByUserName,f_Enable,f_AddDate,f_ViewCount,f_GoodCount,f_Labs ";
+        private const string ALL_PARM = "  ID,f_Title,f_Content,f_AddByUserName,f_Enable,f_AddDate,f_ViewCount,f_GoodCount,f_Labs,f_KnowledgeType ";
         private const string FROM_TABLE = " from [sys_KnowledgeBase] ";
         private const string TABLE = " sys_KnowledgeBase ";
-        private const string INSET = " (f_Title,f_Content,f_AddByUserName,f_Enable,f_AddDate,f_ViewCount,f_GoodCount,f_Labs) values(@Title,@Content,@AddByUserName,@Enable,@AddDate,@ViewCount,@GoodCount,@Labs)  ";
-        private const string UPDATE = " f_Title=@Title,f_Content=@Content,f_AddByUserName=@AddByUserName,f_Enable=@Enable,f_AddDate=@AddDate,f_ViewCount=@ViewCount,f_GoodCount=@GoodCount,f_Labs=@Labs ";
+        private const string INSET = " (f_Title,f_Content,f_AddByUserName,f_Enable,f_AddDate,f_ViewCount,f_GoodCount,f_Labs,f_KnowledgeType) values(@Title,@Content,@AddByUserName,@Enable,@AddDate,@ViewCount,@GoodCount,@Labs,@KnowledgeType)  ";
+        private const string UPDATE = " f_Title=@Title,f_Content=@Content,f_AddByUserName=@AddByUserName,f_Enable=@Enable,f_AddDate=@AddDate,f_ViewCount=@ViewCount,f_GoodCount=@GoodCount,f_Labs=@Labs,f_KnowledgeType=@KnowledgeType ";
 
         #region ReadyData
         private KnowledgeBaseInfo GetByDataReader(SqlDataReader rdr)
@@ -29,6 +29,7 @@ namespace CSMP.DAL
             info.ViewCount = Convert.ToInt32(rdr["f_ViewCount"]);
             info.GoodCount = Convert.ToInt32(rdr["f_GoodCount"]);
             info.Labs = rdr["f_Labs"].ToString();
+            info.KnowledgeType = Convert.ToInt32(rdr["f_KnowledgeType"]);
             
             return info;
         }
@@ -44,6 +45,7 @@ namespace CSMP.DAL
             new SqlParameter("@ViewCount", info.ViewCount),
             new SqlParameter("@GoodCount", info.GoodCount),
             new SqlParameter("@Labs", info.Labs),
+            new SqlParameter("@KnowledgeType", info.KnowledgeType),
             
             };
 
@@ -85,6 +87,26 @@ namespace CSMP.DAL
             }
             return list;
         }
+        /// <summary>
+        /// 根据传来的客户ID和品牌ID显示列表
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="brandId"></param>
+        /// <returns></returns>
+        public DataTable GetListByBothId(string openId,string customerId, string brandId)
+        {
+            StoreProcedure sp = new StoreProcedure("sp_wx_queryknowledges");//类的对象
+            Object[] paraValues = new object[4];//注意,这里是存储过程中全部的参数,一共有三个,还要注意顺序啊,返回值是第一个,那么赋值时第一个参数就为空
+            paraValues[0] = customerId;//从第二个参数开始赋值
+            paraValues[1] = brandId;
+            paraValues[2] = openId;
+            paraValues[3] = "";
+            object[] output = new object[3];
+            DataTable dt = new DataTable();
+            dt = sp.ExecuteDataTable(out output, paraValues);
+            return dt;
+        }
+
 
         /// <summary>
         /// 根据小类故障查找

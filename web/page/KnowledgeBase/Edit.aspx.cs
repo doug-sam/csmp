@@ -32,12 +32,14 @@ public partial class page_KnowledgeBase_Edit : _KnowledgeBase_Library
                 TxbTitle.Text = info.Title;
                 TxbContent.Text = info.Content;
                 TxbLab.Text = info.Labs;
+                CbEnable.Checked = !info.Enable;
                 LabUserInfo.Text = string.Format("添加人：{0}；添加时间：{1}；当前点击量：{2}，顶数：{3}", info.AddByUserName, info.AddDate,info.ViewCount,info.GoodCount);
                 List<BrandInfo> list = BrandBLL.GetListByKnowledgeID(info.ID);
                 BindClass3(list); 
 
-                string UploadText="<a href='javascript:tb_show(\"\", \"/page/Attachment/Upload.aspx?UserFor={0}&KnowledgeBaseID={1}&returnID=true&TB_iframe=true&height=300&width=500&modal=false\", false); return false;'>点击上传</a>";
-                LtlUpload.Text = string.Format(UploadText, (int)AttachmentInfo.EUserFor.KnowledgeBase, info.ID);
+                //禁用了上传附件的链接
+                //string UploadText = "<a href='javascript:tb_show(\"\", \"/page/Attachment/Upload.aspx?UserFor={0}&KnowledgeBaseID={1}&returnID=true&TB_iframe=true&height=300&width=500\", false);'>点击上传</a>";
+                //LtlUpload.Text = string.Format(UploadText, (int)AttachmentInfo.EUserFor.KnowledgeBase, info.ID);
             }
             else
             {
@@ -83,11 +85,12 @@ public partial class page_KnowledgeBase_Edit : _KnowledgeBase_Library
             info.AddDate = DateTime.Now;
             info.GoodCount = 0;
             info.ViewCount = 0;
+            info.KnowledgeType = 0;
         }
         info.Title = TxbTitle.Text.Trim();
         info.Content = TxbContent.Text; ;
         info.Labs = TxbLab.Text;
-        info.Enable = true;
+        info.Enable = CbEnable.Checked ? false : true;
 
         List<BrandInfo> list = null;
         if (null != ViewState["listBrandInfo"])

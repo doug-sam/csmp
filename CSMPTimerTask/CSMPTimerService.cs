@@ -351,58 +351,122 @@ namespace CSMPTimerTask
                             int id = taskList[i].ID;
                             string paramStr = taskList[i].TaskUrl;
                             Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务,任务ID：" + id + "，参数：" + paramStr + "，CustomerName:" + taskList[i].CustomerName + ",BrandName:" + taskList[i].BrandName + "\r\n", null);
-                            System.Text.Encoding encode = System.Text.Encoding.GetEncoding("GB2312");
-                            string content = HttpUtility.UrlEncode(paramStr, encode);
-
+                            
                             string url = ConfigHelper.GetAppendSettingValue("BKWebServiceURL");
                             //string url = "http://helpdesk.bkchina.cn/siweb/ws_hesheng.ashx?";
-                            url = url + "para={" + content + "}";
-                            string targeturl = url.Trim().ToString();
-                            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务，任务ID=" + id + "，URL：" + targeturl + "\r\n", null);
-                            HttpWebRequest hr = null;
-                            try
-                            {
-                                //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，httpcreate开始", null);
-                                hr = (HttpWebRequest)WebRequest.Create(targeturl);
-                                //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，httpcreate成功", null);
+                            paramStr = "para={" + paramStr + "}";
+                            HttpWebRequest req = null;
+                            try {
+                                req = (HttpWebRequest)WebRequest.Create(url);
                             }
                             catch (Exception ex)
                             {
                                 Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：创建链接失败，异常：" + ex.Message + "\r\n", null);
                                 continue;
                             }
-                            hr.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
-                            hr.Method = "GET";
-                            hr.Timeout = 30 * 60 * 1000;
-                            StreamReader ser = null;
-                            //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：开始stream", null);
+
+                            req.ServicePoint.Expect100Continue = false;
+                            req.Method = "POST";
+                            req.KeepAlive = true;
+                            req.UserAgent = "HurbergKing";
+                            req.Timeout = 30 * 60 * 1000;
+
+                            req.ContentType = "application/x-www-form-urlencoded;charset=utf-8";
+                            Byte[] postData = Encoding.GetEncoding("GB2312").GetBytes(paramStr);
+                            Stream stream = null;
+                            StreamReader reader = null;
+                            HttpWebResponse rsp = null;
+                            string sendResult = string.Empty;
                             try
                             {
 
-                                WebResponse hs = hr.GetResponse();
-                                Stream sr = hs.GetResponseStream();
-                                ser = new StreamReader(sr, System.Text.Encoding.UTF8);
+                                Stream reqStream = req.GetRequestStream();
+                                reqStream.Write(postData, 0, postData.Length);
+                                reqStream.Close();
+                                rsp = (HttpWebResponse)req.GetResponse();
+                                Encoding encoding = Encoding.GetEncoding(rsp.CharacterSet);
+                                stream = rsp.GetResponseStream();
+                                reader = new StreamReader(stream, encoding);
+                                sendResult= reader.ReadToEnd();
+                                                                
                             }
                             catch (Exception ex)
                             {
                                 Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "\r\n", null);
                                 //if (ex.Message.Contains("远程服务器返回错误: (500)"))
                                 //{
-                                    if (WebServiceTaskBLL.Delete(id))
-                                    {
-                                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息成功。\r\n", null);
-                                    }
-                                    else
-                                    {
-                                        Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息失败。\r\n", null);
-                                    }
-                                    EmailInfo(taskList[i], "错误原因：发送请求响应错误，异常：" + ex.Message);
+                                if (WebServiceTaskBLL.Delete(id))
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息成功。\r\n", null);
+                                }
+                                else
+                                {
+                                    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息失败。\r\n", null);
+                                }
+                                EmailInfo(taskList[i], "错误原因：发送请求响应错误，异常：" + ex.Message);
                                 //}
                                 continue;
                             }
+                            finally
+                            {
+                                // 释放资源
+                                if (reader != null) reader.Close();
+                                if (stream != null) stream.Close();
+                                if (rsp != null) rsp.Close();
+                            }
 
-                            string sendResult = ser.ReadToEnd();
+
+                            #region  注释就代码（get方法换为post）
+                            //System.Text.Encoding encode = System.Text.Encoding.GetEncoding("GB2312");
+                            //string content = HttpUtility.UrlEncode(paramStr, encode);
+
+                            //string url = ConfigHelper.GetAppendSettingValue("BKWebServiceURL");
+                            //url = url + "para={" + content + "}";
+                            //string targeturl = url.Trim().ToString();
+                            //Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务，任务ID=" + id + "，URL：" + targeturl + "\r\n", null);
+                            //HttpWebRequest hr = null;
+                            //try
+                            //{
+                            //    hr = (HttpWebRequest)WebRequest.Create(targeturl);
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：创建链接失败，异常：" + ex.Message + "\r\n", null);
+                            //    continue;
+                            //}
+                            //hr.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
+                            //hr.Method = "GET";
+                            //hr.Timeout = 30 * 60 * 1000;
+                            //StreamReader ser = null;
+                            //try
+                            //{
+
+                            //    WebResponse hs = hr.GetResponse();
+                            //    Stream sr = hs.GetResponseStream();
+                            //    ser = new StreamReader(sr, System.Text.Encoding.UTF8);
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "\r\n", null);
+                            //    //if (ex.Message.Contains("远程服务器返回错误: (500)"))
+                            //    //{
+                            //        if (WebServiceTaskBLL.Delete(id))
+                            //        {
+                            //            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息成功。\r\n", null);
+                            //        }
+                            //        else
+                            //        {
+                            //            Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务执行失败，任务ID=" + id + "，错误原因：发送请求响应错误，异常：" + ex.Message + "删除数据库中的信息失败。\r\n", null);
+                            //        }
+                            //        EmailInfo(taskList[i], "错误原因：发送请求响应错误，异常：" + ex.Message);
+                            //    //}
+                            //    continue;
+                            //}
+                            //string sendResult = ser.ReadToEnd();
                             //string sendResult = "{\"status\":true,\"errNo\":101,\"Desc\":\"执行失败，请与管理员联系exec [p_SIWeb_OpenTask] @tNumber='20150821101401245',@tSupply=N'MVSHD',@tAgent=N'admin',@userCode=N'L0098677',@tCaller=N'孙先生',@tTime1='2015-08-21 10:12:00',@tIssue=N'中毒',@tStatus=N'新建',@tPriority='P2',@tPrimary=N'外设支付设备',@tSecondary=N'门店网络问题',@tThird=N'中毒',@iAction=N'新建',@iSolution=N'开案',@iAttachment=N''\"}";
+                            #endregion
+
+
                             Logger.GetLogger(this.GetType()).Info("Windows定时调用接口任务,任务ID：" + id + "，接口返回结果：" + sendResult + "\n\n", null);
 
                             JObject obj = null;
